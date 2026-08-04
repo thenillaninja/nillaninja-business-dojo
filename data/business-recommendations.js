@@ -803,6 +803,151 @@ export const businessRecommendations = [
       "Workflow",
       "Business visibility"
     ]
+  },
+  {
+    id: "clarify-team-responsibilities",
+    title: "Clarify who is responsible for important work",
+    summary:
+      "Define who owns recurring tasks, customer follow-up, approvals, and other important responsibilities.",
+    whyItMatters:
+      "Unclear ownership can lead to duplicated work, missed tasks, and people assuming someone else will handle the issue.",
+    expectedImpact:
+      "Clearer accountability, fewer missed responsibilities, and smoother coordination.",
+    priority: "high",
+    difficulty: "easy",
+    estimatedEffort: "A few hours",
+    firstAction:
+      "List the ten most important recurring responsibilities and assign one primary owner to each.",
+    suggestedApproach:
+      "Document ownership in a simple responsibility chart and review it whenever roles change.",
+    possibleTools: [
+      "Responsibility chart",
+      "Task list",
+      "Shared document",
+      "Existing business software"
+    ],
+    impactAreas: [
+      "Accountability",
+      "Team coordination",
+      "Delegation",
+      "Consistency"
+    ]
+  },
+  {
+    id: "standardize-training-and-onboarding",
+    title: "Standardize training and onboarding",
+    summary:
+      "Create a simple repeatable process for helping new employees or contractors learn the business.",
+    whyItMatters:
+      "Informal training can leave important knowledge incomplete and create different expectations from one person to another.",
+    expectedImpact:
+      "Faster onboarding, more consistent work, and less repeated explanation from the owner or experienced staff.",
+    priority: "medium",
+    difficulty: "moderate",
+    estimatedEffort: "Several days",
+    firstAction:
+      "Write down what a new person must understand during their first week.",
+    suggestedApproach:
+      "Build a short checklist covering responsibilities, tools, procedures, communication, and where to find help.",
+    possibleTools: [
+      "Onboarding checklist",
+      "Training guide",
+      "Shared folder",
+      "Process documents"
+    ],
+    impactAreas: [
+      "Training",
+      "Consistency",
+      "Team confidence",
+      "Owner workload"
+    ]
+  },
+  {
+    id: "improve-team-information-access",
+    title: "Give the team reliable access to needed information",
+    summary:
+      "Make sure employees and contractors can find the schedules, files, instructions, and customer details required for their work.",
+    whyItMatters:
+      "Work slows down when people must repeatedly ask for information or wait for one person to become available.",
+    expectedImpact:
+      "Faster decisions, fewer interruptions, and less dependence on verbal handoffs.",
+    priority: "high",
+    difficulty: "moderate",
+    estimatedEffort: "Several days",
+    firstAction:
+      "Ask which information team members most often have to request from someone else.",
+    suggestedApproach:
+      "Create one dependable location for current information and define who should have access to each type.",
+    possibleTools: [
+      "Shared folder",
+      "Knowledge base",
+      "Team calendar",
+      "Existing business software"
+    ],
+    impactAreas: [
+      "Information access",
+      "Productivity",
+      "Delegation",
+      "Business continuity"
+    ]
+  },
+  {
+    id: "define-routine-decision-authority",
+    title: "Define authority for routine decisions",
+    summary:
+      "Set clear limits for which decisions employees or partners can make without waiting for the owner.",
+    whyItMatters:
+      "When every small decision requires approval, customers wait longer and the owner becomes a bottleneck.",
+    expectedImpact:
+      "Faster service, stronger team confidence, and reduced owner interruption.",
+    priority: "high",
+    difficulty: "moderate",
+    estimatedEffort: "One business day",
+    firstAction:
+      "List the routine decisions that most often require the owner’s approval.",
+    suggestedApproach:
+      "Create simple decision rules covering common situations, spending limits, customer remedies, and when escalation is required.",
+    possibleTools: [
+      "Decision guide",
+      "Approval limits",
+      "Escalation checklist",
+      "Responsibility chart"
+    ],
+    impactAreas: [
+      "Decision making",
+      "Owner workload",
+      "Customer response",
+      "Team confidence"
+    ]
+  },
+  {
+    id: "create-accountability-check-ins",
+    title: "Create simple accountability check-ins",
+    summary:
+      "Review priorities, unfinished work, obstacles, and results on a predictable schedule.",
+    whyItMatters:
+      "Without regular check-ins, problems may remain hidden until deadlines are missed or customers are affected.",
+    expectedImpact:
+      "Earlier problem detection, clearer priorities, and more consistent follow-through.",
+    priority: "medium",
+    difficulty: "easy",
+    estimatedEffort: "Thirty minutes each week",
+    firstAction:
+      "Choose a regular weekly time to review priorities, overdue work, and current obstacles.",
+    suggestedApproach:
+      "Keep the meeting short and use the same simple agenda each time.",
+    possibleTools: [
+      "Weekly agenda",
+      "Task list",
+      "Shared dashboard",
+      "Team meeting"
+    ],
+    impactAreas: [
+      "Accountability",
+      "Communication",
+      "Deadlines",
+      "Performance"
+    ]
   }
 ];
 
