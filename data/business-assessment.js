@@ -168,5 +168,19 @@ export const businessAssessmentQuestions = [
       "stop-sharing-passwords"
     ],
     required: true
+  },
+  {
+    id: "security-data-backups",
+    category: "security-and-continuity",
+    title: "Data backups",
+    question: "Does your business regularly back up important files and information?",
+    helpText: "Important information may include customer records, estimates, invoices, financial documents, photos, procedures, and other files needed to continue operating.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 4,
+    recommendationKeys: [
+      "establish-reliable-backups"
+    ],
+    required: true
   }
 ];
