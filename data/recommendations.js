@@ -161,5 +161,33 @@ export const businessRecommendations = [
       "Delegation",
       "Business continuity"
     ]
+  },
+  {
+    id: "reduce-owner-dependency",
+    title: "Reduce the business’s dependence on the owner",
+    summary: "Make important information, routine decisions, and recurring tasks easier for others to handle when the owner is unavailable.",
+    whyItMatters: "When the owner is the only person who knows how everything works, daily operations can slow down or stop whenever that person is unavailable.",
+    expectedImpact: "Reducing owner dependency can improve continuity, delegation, employee confidence, and the owner’s ability to step away from daily operations.",
+    priority: "high",
+    difficulty: "moderate",
+    estimatedEffort: "Several days",
+    firstAction: "List the five tasks or decisions that most often require the owner’s direct involvement.",
+    suggestedApproach: "Document the most important steps, assign clear responsibility where possible, and make sure needed information and account access are available to the right people.",
+    possibleTools: [
+      "Responsibility checklist",
+      "Shared procedures",
+      "Access list",
+      "Training notes"
+    ],
+    relatedQuestionIds: [
+      "team-owner-dependency",
+      "operations-written-procedures"
+    ],
+    impactAreas: [
+      "Business continuity",
+      "Delegation",
+      "Owner workload",
+      "Team confidence"
+    ]
   }
 ];
