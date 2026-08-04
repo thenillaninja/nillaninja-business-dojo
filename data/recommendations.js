@@ -134,5 +134,32 @@ export const businessRecommendations = [
       "Workflow efficiency",
       "Consistency"
     ]
+  },
+  {
+    id: "organize-business-files",
+    title: "Create a clear system for business files",
+    summary: "Store important documents in a consistent structure so they can be found quickly.",
+    whyItMatters: "Disorganized files waste time, create duplicate records, and make it harder to respond to customers or continue work when someone is unavailable.",
+    expectedImpact: "A clear file system can reduce search time, improve consistency, support delegation, and lower the risk of losing important information.",
+    priority: "medium",
+    difficulty: "easy",
+    estimatedEffort: "A few hours",
+    firstAction: "Choose one location for active business files and create a small set of clearly named folders.",
+    suggestedApproach: "Organize files by a simple pattern such as customer, job, date, or document type. Avoid creating more folders than the business can maintain consistently.",
+    possibleTools: [
+      "Computer folders",
+      "Cloud storage",
+      "Shared drive",
+      "File-naming checklist"
+    ],
+    relatedQuestionIds: [
+      "technology-file-organization"
+    ],
+    impactAreas: [
+      "Organization",
+      "Time savings",
+      "Delegation",
+      "Business continuity"
+    ]
   }
 ];
