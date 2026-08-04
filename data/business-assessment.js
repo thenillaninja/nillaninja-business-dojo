@@ -127,6 +127,76 @@ export const businessAssessmentQuestions = [
     required: true
   },
   {
+    id: "customer-response-expectations",
+    category: "customer-experience",
+    title: "Customer response expectations",
+    question: "Does your business clearly tell customers when and how they should expect a response?",
+    helpText: "This may include voicemail messages, email replies, website confirmations, text messages, or another method that gives customers a realistic timeframe.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 2,
+    recommendationKeys: [
+      "set-customer-response-expectations"
+    ],
+    required: true
+  },
+  {
+    id: "customer-information-organization",
+    category: "customer-experience",
+    title: "Customer information organization",
+    question: "Does your business keep important customer details, conversations, and next actions in one dependable place?",
+    helpText: "Consider contact details, estimates, preferences, service history, notes, promises, and any follow-up that still needs to happen.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 3,
+    recommendationKeys: [
+      "organize-customer-information"
+    ],
+    required: true
+  },
+  {
+    id: "customer-issue-handling",
+    category: "customer-experience",
+    title: "Customer issue handling",
+    question: "Does your business use a consistent process to handle complaints, mistakes, refunds, or service problems?",
+    helpText: "A consistent process should clarify who responds, how quickly the issue is addressed, what decisions can be made, and when the matter should be escalated.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 3,
+    recommendationKeys: [
+      "standardize-customer-issue-handling"
+    ],
+    required: true
+  },
+  {
+    id: "customer-feedback-collection",
+    category: "customer-experience",
+    title: "Customer feedback collection",
+    question: "Does your business consistently ask customers for useful feedback about their experience?",
+    helpText: "This may be a short follow-up message, review request, survey, or direct conversation that helps identify what is working and what needs improvement.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 1,
+    recommendationKeys: [
+      "collect-customer-feedback"
+    ],
+    required: true
+  },
+  {
+    id: "customer-retention-process",
+    category: "customer-experience",
+    title: "Customer retention process",
+    question: "Does your business have a practical process for staying connected with customers who may need future service or repeat purchases?",
+    helpText: "This may include reminders, maintenance follow-up, helpful updates, reordering prompts, or another relevant reason to reconnect.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 2,
+    recommendationKeys: [
+      "create-customer-retention-process"
+    ],
+    required: true
+  },
+  {
     id: "sales-lead-tracking",
     category: "sales-and-marketing",
     title: "Lead tracking",
