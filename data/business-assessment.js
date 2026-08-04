@@ -83,5 +83,19 @@ export const businessAssessmentQuestions = [
       "standardize-customer-follow-up"
     ],
     required: true
+  },
+  {
+    id: "sales-lead-tracking",
+    category: "sales-and-marketing",
+    title: "Lead tracking",
+    question: "Does your business track potential customers and sales opportunities in one consistent place?",
+    helpText: "This could be a notebook, spreadsheet, customer management system, or another dependable method that shows who needs follow-up and what should happen next.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 2,
+    recommendationKeys: [
+      "track-leads-in-one-place"
+    ],
+    required: true
   }
 ];
