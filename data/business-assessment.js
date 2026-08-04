@@ -69,5 +69,19 @@ export const businessAssessmentQuestions = [
       "create-reliable-scheduling-process"
     ],
     required: true
+  },
+  {
+    id: "customer-follow-up-process",
+    category: "customer-experience",
+    title: "Customer follow-up",
+    question: "Does your business have a consistent process for following up with customers after an inquiry, estimate, purchase, or completed service?",
+    helpText: "Follow-up may include checking on an unanswered estimate, confirming satisfaction, requesting feedback, or reminding a customer about the next step.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 3,
+    recommendationKeys: [
+      "standardize-customer-follow-up"
+    ],
+    required: true
   }
 ];
