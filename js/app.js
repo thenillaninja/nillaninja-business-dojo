@@ -6,8 +6,10 @@ import {
   getQuestionByIndex,
   updateAssessmentState
 } from "./engines/assessment-engine.js";
+import { calculateAssessmentScores } from "./engines/scoring-engine.js";
 import { renderProfileView } from "./views/profile-view.js";
 import { renderAssessmentView } from "./views/assessment-view.js";
+import { renderReportView } from "./views/report-view.js";
 
 const app = document.querySelector("#app");
 const stepItems = document.querySelectorAll(".step-navigation__item");
@@ -152,6 +154,28 @@ function renderBusinessProfile(errors = {}) {
   });
 }
 
+function renderReport() {
+  state.navigation.currentView = "report";
+  state.navigation.currentStep = 4;
+
+  updateStepNavigation(4);
+
+  app.innerHTML = renderReportView({
+    businessProfile: state.businessProfile,
+    results: state.results
+  });
+
+  document
+    .querySelector("#report-back")
+    ?.addEventListener("click", () => {
+      state.navigation.currentQuestionIndex =
+        businessAssessmentQuestions.length - 1;
+
+      renderAssessment();
+      focusMainContent();
+    });
+}
+
 function renderAssessment(errorMessage = "") {
   state.navigation.currentView = "assessment";
   state.navigation.currentStep = 3;
@@ -223,9 +247,22 @@ function renderAssessment(errorMessage = "") {
       questionIndex === businessAssessmentQuestions.length - 1;
 
     if (isLastQuestion) {
-      window.alert(
-        "Assessment complete. Business Snapshot Report development begins next."
+      const scores = calculateAssessmentScores(
+        businessAssessmentQuestions,
+        state.assessment.answers
       );
+
+      state.results = {
+        ...state.results,
+        overallScore: scores.overallScore,
+        categoryScores: scores.categoryScores,
+        earnedPoints: scores.earnedPoints,
+        possiblePoints: scores.possiblePoints,
+        scoredQuestionCount: scores.scoredQuestionCount
+      };
+
+      renderReport();
+      focusMainContent();
       return;
     }
 
