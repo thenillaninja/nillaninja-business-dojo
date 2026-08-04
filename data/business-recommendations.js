@@ -397,6 +397,151 @@ export const businessRecommendations = [
       "Team experience",
       "Continuous improvement"
     ]
+  },
+  {
+    id: "set-customer-response-expectations",
+    title: "Set clear customer response expectations",
+    summary:
+      "Tell customers when and how they should expect a response from the business.",
+    whyItMatters:
+      "Unclear response timing can make customers feel ignored even when the business is working normally.",
+    expectedImpact:
+      "Fewer repeated inquiries, stronger trust, and clearer communication.",
+    priority: "medium",
+    difficulty: "easy",
+    estimatedEffort: "A few hours",
+    firstAction:
+      "Choose a realistic response timeframe for phone calls, messages, emails, and website inquiries.",
+    suggestedApproach:
+      "Publish the timeframe in voicemail greetings, automatic replies, website forms, and customer messages.",
+    possibleTools: [
+      "Voicemail greeting",
+      "Email auto-reply",
+      "Website confirmation message",
+      "Message template"
+    ],
+    impactAreas: [
+      "Customer communication",
+      "Trust",
+      "Response time",
+      "Customer experience"
+    ]
+  },
+  {
+    id: "organize-customer-information",
+    title: "Organize customer information in one dependable place",
+    summary:
+      "Keep important customer details, conversations, and next actions together.",
+    whyItMatters:
+      "Scattered customer information can cause repeated questions, missed details, and inconsistent service.",
+    expectedImpact:
+      "Faster service, better continuity, and fewer communication mistakes.",
+    priority: "high",
+    difficulty: "moderate",
+    estimatedEffort: "Several days",
+    firstAction:
+      "List every place customer information is currently stored.",
+    suggestedApproach:
+      "Choose one primary customer record and define which details should always be included.",
+    possibleTools: [
+      "Customer spreadsheet",
+      "CRM",
+      "Job-management software",
+      "Existing business software"
+    ],
+    impactAreas: [
+      "Customer records",
+      "Service consistency",
+      "Communication",
+      "Team access"
+    ]
+  },
+  {
+    id: "standardize-customer-issue-handling",
+    title: "Create a consistent customer issue process",
+    summary:
+      "Define how complaints, mistakes, refunds, and service problems should be handled.",
+    whyItMatters:
+      "Inconsistent responses can increase frustration, create avoidable conflict, and damage customer trust.",
+    expectedImpact:
+      "Faster resolution, fairer decisions, and more consistent customer care.",
+    priority: "high",
+    difficulty: "moderate",
+    estimatedEffort: "One business day",
+    firstAction:
+      "Write down the most common customer problems and how each should normally be resolved.",
+    suggestedApproach:
+      "Create a short escalation guide covering responsibility, response timing, documentation, and decision limits.",
+    possibleTools: [
+      "Issue-resolution checklist",
+      "Customer notes",
+      "Refund policy",
+      "Escalation guide"
+    ],
+    impactAreas: [
+      "Customer trust",
+      "Complaint resolution",
+      "Consistency",
+      "Reputation"
+    ]
+  },
+  {
+    id: "collect-customer-feedback",
+    title: "Collect customer feedback consistently",
+    summary:
+      "Use a simple repeatable method to learn what customers value and where service can improve.",
+    whyItMatters:
+      "Without feedback, recurring problems and improvement opportunities may remain hidden.",
+    expectedImpact:
+      "Better service decisions, stronger customer insight, and earlier awareness of problems.",
+    priority: "future",
+    difficulty: "easy",
+    estimatedEffort: "A few hours",
+    firstAction:
+      "Choose one point in the customer journey when feedback can be requested consistently.",
+    suggestedApproach:
+      "Ask one or two focused questions and review the responses regularly instead of creating a long survey.",
+    possibleTools: [
+      "Follow-up message",
+      "Review request",
+      "Short survey",
+      "Customer conversation"
+    ],
+    impactAreas: [
+      "Customer insight",
+      "Service quality",
+      "Reputation",
+      "Continuous improvement"
+    ]
+  },
+  {
+    id: "create-customer-retention-process",
+    title: "Create a simple customer retention process",
+    summary:
+      "Stay connected with past customers when future service, maintenance, or repeat purchases may be useful.",
+    whyItMatters:
+      "Satisfied customers may not return simply because the business never reminds them or stays in contact.",
+    expectedImpact:
+      "More repeat business, stronger customer relationships, and lower dependence on constant new-customer acquisition.",
+    priority: "medium",
+    difficulty: "easy",
+    estimatedEffort: "A few hours",
+    firstAction:
+      "Identify which customers are most likely to need the business again and when.",
+    suggestedApproach:
+      "Create a small reminder list or follow-up schedule using helpful, relevant communication rather than frequent promotions.",
+    possibleTools: [
+      "Reminder list",
+      "Email list",
+      "Calendar",
+      "Customer management system"
+    ],
+    impactAreas: [
+      "Repeat business",
+      "Customer relationships",
+      "Revenue stability",
+      "Retention"
+    ]
   }
 ];
 
