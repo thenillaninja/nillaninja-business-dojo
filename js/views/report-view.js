@@ -25,6 +25,71 @@ function getScoreSummary(score) {
   return "Your business has important opportunities to strengthen consistency, reduce risk, and make daily operations easier.";
 }
 
+function getHighestCategory(categoryScores = {}) {
+  const scoredCategories = Object.entries(categoryScores)
+    .filter(([, result]) => Number.isFinite(result?.score))
+    .sort(([, a], [, b]) => b.score - a.score);
+
+  if (scoredCategories.length === 0) {
+    return null;
+  }
+
+  const [category, result] = scoredCategories[0];
+
+  return {
+    category,
+    score: result.score
+  };
+}
+
+function renderExecutiveSummary(results = {}) {
+  const score = Number.isFinite(results.overallScore)
+    ? results.overallScore
+    : 0;
+
+  const strongestCategory = getHighestCategory(results.categoryScores);
+  const topRecommendation = Array.isArray(results.recommendations)
+    ? results.recommendations[0]
+    : null;
+
+  const strengthsCount = Array.isArray(results.strengths)
+    ? results.strengths.length
+    : 0;
+
+  const strongestAreaText = strongestCategory
+    ? `Your strongest assessed area is ${formatCategoryName(
+        strongestCategory.category
+      )}, with a score of ${strongestCategory.score}/100.`
+    : "Your strongest assessed area will appear as more results become available.";
+
+  const priorityText = topRecommendation
+    ? `The first priority is to ${topRecommendation.title.toLowerCase()}.`
+    : "No major priority recommendation was triggered by your current answers.";
+
+  const strengthsText =
+    strengthsCount === 1
+      ? "The assessment identified one standout business strength."
+      : `The assessment identified ${strengthsCount} standout business strengths.`;
+
+  return `
+    <div class="executive-summary">
+      <div class="report-section__heading">
+        <p class="eyebrow">At a Glance</p>
+        <h2>Executive summary</h2>
+      </div>
+
+      <p>
+        Your Business Snapshot score is <strong>${score}/100</strong>.
+        ${getScoreSummary(score)}
+      </p>
+
+      <p>${strongestAreaText} ${strengthsText}</p>
+
+      <p>${priorityText}</p>
+    </div>
+  `;
+}
+
 function renderCategoryScores(categoryScores = {}) {
   const entries = Object.entries(categoryScores);
 
@@ -197,10 +262,7 @@ export function renderReportView({
         </div>
       </div>
 
-      <div class="report-summary">
-        <h2>What your score means</h2>
-        <p>${getScoreSummary(score)}</p>
-      </div>
+      ${renderExecutiveSummary(results)}
 
       <section class="report-section" aria-labelledby="category-scores-heading">
         <div class="report-section__heading">

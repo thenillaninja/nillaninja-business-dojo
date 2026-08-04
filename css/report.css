@@ -359,3 +359,33 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+.executive-summary {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border: 1px solid rgba(121, 215, 255, 0.32);
+  border-radius: var(--radius-medium);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(121, 215, 255, 0.08),
+      rgba(121, 215, 255, 0.02)
+    );
+}
+
+.executive-summary .report-section__heading {
+  margin-bottom: var(--space-1);
+}
+
+.executive-summary p {
+  max-width: 52rem;
+  margin: 0;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+
+.executive-summary strong {
+  color: var(--color-text);
+}
