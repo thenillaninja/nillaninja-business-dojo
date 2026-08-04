@@ -38,5 +38,13 @@ export const recommendationRules = [
     questionId: "technology-duplicate-data-entry",
     maximumAnswerValue: 0.67,
     priorityOverride: null
+  },
+  {
+    id: "rule-organize-business-files",
+    recommendationId: "organize-business-files",
+    triggerType: "answer-threshold",
+    questionId: "technology-file-organization",
+    maximumAnswerValue: 0.67,
+    priorityOverride: null
   }
 ];
