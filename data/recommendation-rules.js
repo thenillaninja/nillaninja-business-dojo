@@ -54,5 +54,13 @@ export const recommendationRules = [
     questionId: "team-owner-dependency",
     maximumAnswerValue: 0.67,
     priorityOverride: null
+  },
+  {
+    id: "rule-improve-customer-contact-options",
+    recommendationId: "improve-customer-contact-options",
+    triggerType: "answer-threshold",
+    questionId: "accessibility-customer-contact-options",
+    maximumAnswerValue: 0.67,
+    priorityOverride: null
   }
 ];
