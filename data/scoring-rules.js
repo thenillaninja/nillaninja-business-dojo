@@ -49,3 +49,42 @@ export const findingTypes = {
     label: "Human Review Recommended"
   }
 };
+
+
+export const assessmentCategories = [
+  {
+    id: "operations",
+    label: "Operations",
+    description: "How consistently recurring work is organized, scheduled, documented, and completed."
+  },
+  {
+    id: "customer-experience",
+    label: "Customer Experience",
+    description: "How reliably the business communicates with customers and follows through."
+  },
+  {
+    id: "sales-and-marketing",
+    label: "Sales and Marketing",
+    description: "How consistently potential customers and sales opportunities are tracked."
+  },
+  {
+    id: "technology-and-workflow",
+    label: "Technology and Workflow",
+    description: "How effectively information, files, and tools support daily work."
+  },
+  {
+    id: "team-and-responsibility",
+    label: "Team and Responsibility",
+    description: "How clearly work can continue without depending entirely on the owner."
+  },
+  {
+    id: "accessibility-and-inclusion",
+    label: "Accessibility and Inclusion",
+    description: "How easily customers can contact and interact with the business."
+  },
+  {
+    id: "security-and-continuity",
+    label: "Security and Continuity",
+    description: "How well the business protects access, information, and operational continuity."
+  }
+];
