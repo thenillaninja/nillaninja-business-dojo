@@ -1,7 +1,13 @@
 import { businessProfileFields } from "../data/business-profile.js";
+import { businessAssessmentQuestions } from "../data/business-assessment.js";
 import { createInitialState } from "./core/state.js";
 import { validateBusinessProfile } from "./core/validation.js";
+import {
+  getQuestionByIndex,
+  updateAssessmentState
+} from "./engines/assessment-engine.js";
 import { renderProfileView } from "./views/profile-view.js";
+import { renderAssessmentView } from "./views/assessment-view.js";
 
 const app = document.querySelector("#app");
 const stepItems = document.querySelectorAll(".step-navigation__item");
@@ -23,9 +29,14 @@ function updateStepNavigation(currentStep) {
   });
 }
 
+function focusMainContent() {
+  document.querySelector("#main-content")?.focus();
+}
+
 function renderWelcomeView() {
   state.navigation.currentView = "welcome";
   state.navigation.currentStep = 1;
+
   updateStepNavigation(1);
 
   app.innerHTML = `
@@ -35,25 +46,33 @@ function renderWelcomeView() {
       <h1>Understand your business. Strengthen your systems.</h1>
 
       <p class="welcome-panel__intro">
-        Complete a guided assessment and receive a practical report showing what is working, where opportunities exist, and what to do next.
+        Complete a guided assessment and receive a practical report showing
+        what is working, where opportunities exist, and what to do next.
       </p>
 
       <div class="information-box">
         <h2>What you will receive</h2>
         <p>
-          Your Business Snapshot Report will include category scores, business strengths, priority opportunities, implementation difficulty, expected impact, and clear first actions.
+          Your Business Snapshot Report will include category scores,
+          business strengths, priority opportunities, implementation
+          difficulty, expected impact, and clear first actions.
         </p>
       </div>
 
       <div class="privacy-notice">
         <h2>Your information stays in this browser</h2>
         <p>
-          Version 0.1 stores assessment progress locally on this device. Nothing is uploaded or transmitted.
+          Version 0.1 stores assessment progress locally on this device.
+          Nothing is uploaded or transmitted.
         </p>
       </div>
 
       <div class="action-bar">
-        <button class="button button--primary" type="button" id="begin-assessment">
+        <button
+          class="button button--primary"
+          type="button"
+          id="begin-assessment"
+        >
           Begin Business Snapshot
         </button>
       </div>
@@ -62,16 +81,19 @@ function renderWelcomeView() {
 
   document
     .querySelector("#begin-assessment")
-    ?.addEventListener("click", renderBusinessProfile);
+    ?.addEventListener("click", () => {
+      renderBusinessProfile();
+      focusMainContent();
+    });
 }
 
 function getProfileFromForm(form) {
   const formData = new FormData(form);
   const profile = {};
 
-  for (const field of businessProfileFields) {
-    profile[field.name] = String(formData.get(field.name) ?? "").trim();
-  }
+  businessProfileFields.forEach((field) => {
+    profile[field.name] = formData.get(field.name)?.toString().trim() ?? "";
+  });
 
   return profile;
 }
@@ -79,6 +101,7 @@ function getProfileFromForm(form) {
 function renderBusinessProfile(errors = {}) {
   state.navigation.currentView = "profile";
   state.navigation.currentStep = 2;
+
   updateStepNavigation(2);
 
   app.innerHTML = renderProfileView(state.businessProfile, errors);
@@ -86,7 +109,10 @@ function renderBusinessProfile(errors = {}) {
   const form = document.querySelector("#business-profile-form");
   const backButton = document.querySelector("#profile-back");
 
-  backButton?.addEventListener("click", renderWelcomeView);
+  backButton?.addEventListener("click", () => {
+    renderWelcomeView();
+    focusMainContent();
+  });
 
   form?.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -120,7 +146,92 @@ function renderBusinessProfile(errors = {}) {
       return;
     }
 
-    window.alert("Business Profile complete. Assessment development begins next.");
+    state.navigation.currentQuestionIndex = 0;
+    renderAssessment();
+    focusMainContent();
+  });
+}
+
+function renderAssessment(errorMessage = "") {
+  state.navigation.currentView = "assessment";
+  state.navigation.currentStep = 3;
+
+  updateStepNavigation(3);
+
+  const questionIndex = state.navigation.currentQuestionIndex ?? 0;
+  const question = getQuestionByIndex(
+    businessAssessmentQuestions,
+    questionIndex
+  );
+
+  const savedAnswer = question
+    ? state.assessment.answers[question.id]
+    : null;
+
+  app.innerHTML = renderAssessmentView({
+    question,
+    questionIndex,
+    questionCount: businessAssessmentQuestions.length,
+    selectedOptionId: savedAnswer?.optionId ?? "",
+    completionPercentage: state.assessment.completionPercentage,
+    errorMessage
+  });
+
+  const form = document.querySelector("#assessment-form");
+  const backButton = document.querySelector("#assessment-back");
+
+  backButton?.addEventListener("click", () => {
+    if (questionIndex === 0) {
+      renderBusinessProfile();
+    } else {
+      state.navigation.currentQuestionIndex = questionIndex - 1;
+      renderAssessment();
+    }
+
+    focusMainContent();
+  });
+
+  form?.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    if (!question) {
+      return;
+    }
+
+    const selectedOption = form.querySelector(
+      `input[name="${question.id}"]:checked`
+    );
+
+    if (!selectedOption) {
+      renderAssessment("Choose the answer that best describes your business.");
+
+      document
+        .querySelector("#assessment-error")
+        ?.scrollIntoView({ block: "center" });
+
+      return;
+    }
+
+    state.assessment = updateAssessmentState(
+      state.assessment,
+      businessAssessmentQuestions,
+      question.id,
+      selectedOption.value
+    );
+
+    const isLastQuestion =
+      questionIndex === businessAssessmentQuestions.length - 1;
+
+    if (isLastQuestion) {
+      window.alert(
+        "Assessment complete. Business Snapshot Report development begins next."
+      );
+      return;
+    }
+
+    state.navigation.currentQuestionIndex = questionIndex + 1;
+    renderAssessment();
+    focusMainContent();
   });
 }
 
