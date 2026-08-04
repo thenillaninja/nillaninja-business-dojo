@@ -23,6 +23,20 @@ export const standardAnswerOptions = [
     id: "not-applicable",
     label: "Not applicable",
     value: null
+  },
+  {
+    id: "operations-scheduling-process",
+    category: "operations",
+    title: "Scheduling process",
+    question: "Does your business use a reliable process to schedule work, appointments, shifts, or important deadlines?",
+    helpText: "A reliable process could be a calendar, scheduling app, planner, spreadsheet, or another system that is updated consistently.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 2,
+    recommendationKeys: [
+      "create-reliable-scheduling-process"
+    ],
+    required: true
   }
 ];
 
@@ -39,6 +53,20 @@ export const businessAssessmentQuestions = [
     recommendationKeys: [
       "document-recurring-processes",
       "reduce-owner-dependency"
+    ],
+    required: true
+  },
+  {
+    id: "operations-scheduling-process",
+    category: "operations",
+    title: "Scheduling process",
+    question: "Does your business use a reliable process to schedule work, appointments, shifts, or important deadlines?",
+    helpText: "A reliable process could be a calendar, scheduling app, planner, spreadsheet, or another system that is updated consistently.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 2,
+    recommendationKeys: [
+      "create-reliable-scheduling-process"
     ],
     required: true
   }
