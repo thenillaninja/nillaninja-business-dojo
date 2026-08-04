@@ -309,6 +309,62 @@ export const businessAssessmentQuestions = [
     required: true
   },
   {
+    id: "technology-tool-usefulness",
+    category: "technology-and-workflow",
+    title: "Tool and software usefulness",
+    question: "Do the tools, software, spreadsheets, and systems your business uses still fit the way the business operates?",
+    helpText: "Consider whether current tools are easy enough to use, solve a clear problem, avoid unnecessary duplication, and support the work people actually perform.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 2,
+    recommendationKeys: [
+      "review-business-tools"
+    ],
+    required: true
+  },
+  {
+    id: "technology-mobile-information-access",
+    category: "technology-and-workflow",
+    title: "Mobile information access",
+    question: "Can people safely access the important schedules, files, instructions, and customer information they need while away from the main workplace?",
+    helpText: "This may apply to field work, remote work, deliveries, customer visits, emergencies, or any situation where work happens away from one computer or location.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 2,
+    recommendationKeys: [
+      "improve-mobile-information-access"
+    ],
+    required: true
+  },
+  {
+    id: "technology-repetitive-task-automation",
+    category: "technology-and-workflow",
+    title: "Repetitive task automation",
+    question: "Has your business reduced or automated repetitive administrative tasks where doing so would save meaningful time?",
+    helpText: "Examples may include appointment reminders, follow-up messages, recurring reports, form processing, document creation, or moving information between systems.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 1,
+    recommendationKeys: [
+      "automate-repetitive-tasks"
+    ],
+    required: true
+  },
+  {
+    id: "technology-disconnected-systems",
+    category: "technology-and-workflow",
+    title: "Disconnected systems",
+    question: "Does information move smoothly between the systems used for customers, scheduling, sales, payments, and operations?",
+    helpText: "Consider whether information must be copied manually, becomes outdated in one place, or is difficult to follow as a customer or job moves through the business.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 3,
+    recommendationKeys: [
+      "connect-disconnected-systems"
+    ],
+    required: true
+  },
+  {
     id: "team-owner-dependency",
     category: "team-and-responsibility",
     title: "Owner dependency",
