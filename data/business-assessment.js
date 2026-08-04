@@ -154,5 +154,19 @@ export const businessAssessmentQuestions = [
       "improve-customer-contact-options"
     ],
     required: true
+  },
+  {
+    id: "security-password-sharing",
+    category: "security-and-continuity",
+    title: "Password sharing",
+    question: "Do people in the business use separate account access instead of sharing the same passwords?",
+    helpText: "Shared passwords make it harder to control access, remove former users, recover accounts, and understand who changed important information.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 4,
+    recommendationKeys: [
+      "stop-sharing-passwords"
+    ],
+    required: true
   }
 ];
