@@ -140,5 +140,19 @@ export const businessAssessmentQuestions = [
       "document-recurring-processes"
     ],
     required: true
+  },
+  {
+    id: "accessibility-customer-contact-options",
+    category: "accessibility-and-inclusion",
+    title: "Customer contact options",
+    question: "Does your business offer customers more than one practical way to get in touch or complete an important request?",
+    helpText: "Examples may include phone, email, a website form, text messaging, in-person support, or another accessible option that fits the business.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 2,
+    recommendationKeys: [
+      "improve-customer-contact-options"
+    ],
+    required: true
   }
 ];
