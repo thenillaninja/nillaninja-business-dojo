@@ -79,5 +79,32 @@ export const businessRecommendations = [
       "Consistency",
       "Repeat business"
     ]
+  },
+  {
+    id: "track-leads-in-one-place",
+    title: "Track potential customers in one place",
+    summary: "Use one consistent system to record new inquiries, estimates, follow-up dates, and sales opportunities.",
+    whyItMatters: "When lead information is scattered across messages, notes, memory, and multiple tools, potential customers can be forgotten or contacted too late.",
+    expectedImpact: "A simple lead-tracking process can improve follow-up, reduce missed sales, and make it easier to see which opportunities need attention.",
+    priority: "medium",
+    difficulty: "easy",
+    estimatedEffort: "A few hours",
+    firstAction: "Create one list containing each active lead, their contact information, current status, and next follow-up date.",
+    suggestedApproach: "Start with a notebook or spreadsheet if that is easiest. Use it consistently before considering more advanced software.",
+    possibleTools: [
+      "Notebook",
+      "Spreadsheet",
+      "Shared document",
+      "Customer management system"
+    ],
+    relatedQuestionIds: [
+      "sales-lead-tracking"
+    ],
+    impactAreas: [
+      "Sales follow-up",
+      "Consistency",
+      "Revenue opportunities",
+      "Organization"
+    ]
   }
 ];
