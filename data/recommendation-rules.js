@@ -30,5 +30,13 @@ export const recommendationRules = [
     questionId: "sales-lead-tracking",
     maximumAnswerValue: 0.67,
     priorityOverride: null
+  },
+  {
+    id: "rule-reduce-duplicate-data-entry",
+    recommendationId: "reduce-duplicate-data-entry",
+    triggerType: "answer-threshold",
+    questionId: "technology-duplicate-data-entry",
+    maximumAnswerValue: 0.67,
+    priorityOverride: null
   }
 ];
