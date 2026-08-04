@@ -70,5 +70,13 @@ export const recommendationRules = [
     questionId: "security-password-sharing",
     maximumAnswerValue: 0.67,
     priorityOverride: "immediate"
+  },
+  {
+    id: "rule-establish-reliable-backups",
+    recommendationId: "establish-reliable-backups",
+    triggerType: "answer-threshold",
+    questionId: "security-data-backups",
+    maximumAnswerValue: 0.67,
+    priorityOverride: "immediate"
   }
 ];
