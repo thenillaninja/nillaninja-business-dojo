@@ -125,5 +125,20 @@ export const businessAssessmentQuestions = [
       "organize-business-files"
     ],
     required: true
+  },
+  {
+    id: "team-owner-dependency",
+    category: "team-and-responsibility",
+    title: "Owner dependency",
+    question: "Can the business continue operating smoothly when the owner is unavailable?",
+    helpText: "Consider whether employees or partners can access needed information, make routine decisions, complete important tasks, and respond to customers without waiting for the owner.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 3,
+    recommendationKeys: [
+      "reduce-owner-dependency",
+      "document-recurring-processes"
+    ],
+    required: true
   }
 ];
