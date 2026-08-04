@@ -65,6 +65,83 @@ function renderCategoryScores(categoryScores = {}) {
     .join("");
 }
 
+function formatLabel(value) {
+  if (!value) {
+    return "";
+  }
+
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function renderRecommendations(recommendations = []) {
+  if (!Array.isArray(recommendations) || recommendations.length === 0) {
+    return `
+      <div class="report-empty-state">
+        <h3>No priority recommendations were triggered</h3>
+        <p>
+          Your answers did not identify any major gaps within the current
+          assessment.
+        </p>
+      </div>
+    `;
+  }
+
+  return recommendations
+    .map(
+      (recommendation, index) => `
+        <article class="recommendation-card">
+          <div class="recommendation-card__header">
+            <div>
+              <p class="recommendation-card__number">
+                Recommendation ${index + 1}
+              </p>
+              <h3>${recommendation.title}</h3>
+            </div>
+
+            <span
+              class="recommendation-card__priority recommendation-card__priority--${recommendation.priority}"
+            >
+              ${formatLabel(recommendation.priority)}
+            </span>
+          </div>
+
+          <p class="recommendation-card__summary">
+            ${recommendation.summary}
+          </p>
+
+          <div class="recommendation-card__meta">
+            <p>
+              <strong>Difficulty:</strong>
+              ${formatLabel(recommendation.difficulty)}
+            </p>
+            <p>
+              <strong>Estimated effort:</strong>
+              ${recommendation.estimatedEffort}
+            </p>
+          </div>
+
+          <div class="recommendation-card__details">
+            <div>
+              <h4>Why it matters</h4>
+              <p>${recommendation.whyItMatters}</p>
+            </div>
+
+            <div>
+              <h4>Expected impact</h4>
+              <p>${recommendation.expectedImpact}</p>
+            </div>
+          </div>
+
+          <div class="recommendation-card__first-action">
+            <h4>Start here</h4>
+            <p>${recommendation.firstAction}</p>
+          </div>
+        </article>
+      `
+    )
+    .join("");
+}
+
 export function renderReportView({
   businessProfile,
   results
@@ -108,17 +185,22 @@ export function renderReportView({
         </div>
       </section>
 
-      <section class="report-section report-section--placeholder">
+      <section
+        class="report-section"
+        aria-labelledby="recommendations-heading"
+      >
         <div class="report-section__heading">
-          <p class="eyebrow">Coming Next</p>
-          <h2>Strengths and recommendations</h2>
+          <p class="eyebrow">Priority Action Plan</p>
+          <h2 id="recommendations-heading">Recommended next steps</h2>
+          <p class="report-section__intro">
+            These recommendations are based on the areas where your answers
+            showed the greatest opportunity or risk.
+          </p>
         </div>
 
-        <p>
-          The next development step will turn your assessment answers into
-          clear business strengths, priority opportunities, and practical
-          first actions.
-        </p>
+        <div class="recommendation-list">
+          ${renderRecommendations(results?.recommendations)}
+        </div>
       </section>
 
       <div class="form-actions">
