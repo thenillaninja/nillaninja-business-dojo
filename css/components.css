@@ -1,0 +1,87 @@
+.welcome-panel {
+  padding: clamp(1.5rem, 4vw, 3rem);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-large);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(121, 215, 255, 0.06),
+      transparent 45%
+    ),
+    var(--color-surface);
+  box-shadow: var(--shadow-soft);
+}
+
+.eyebrow {
+  margin-bottom: var(--space-3);
+  color: var(--color-accent);
+  font-size: var(--font-size-small);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.welcome-panel__intro {
+  max-width: 42rem;
+  margin-bottom: var(--space-6);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-large);
+}
+
+.information-box,
+.privacy-notice {
+  padding: var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-medium);
+  background: var(--color-surface-raised);
+}
+
+.information-box {
+  margin-bottom: var(--space-4);
+}
+
+.privacy-notice {
+  margin-bottom: var(--space-6);
+}
+
+.information-box p,
+.privacy-notice p {
+  margin-bottom: 0;
+  color: var(--color-text-muted);
+}
+
+.action-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.button {
+  min-height: 3rem;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-small);
+  font-weight: 800;
+  transition:
+    transform var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.button:hover {
+  transform: translateY(-1px);
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+.button--primary {
+  background: var(--color-accent);
+  color: var(--color-background);
+}
+
+.button--primary:hover {
+  background: var(--color-accent-strong);
+}

@@ -1,0 +1,54 @@
+@media (max-width: 48rem) {
+  .site-header__inner {
+    align-items: flex-start;
+  }
+
+  .site-header__status {
+    max-width: 12rem;
+  }
+
+  .step-navigation__list {
+    gap: var(--space-2);
+  }
+
+  .step-navigation__item {
+    justify-content: center;
+  }
+
+  .step-navigation__label {
+    display: none;
+  }
+
+  .main-content {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .site-footer {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 32rem) {
+  .site-header__inner {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .site-header__status {
+    max-width: none;
+    text-align: left;
+  }
+
+  .welcome-panel {
+    padding: var(--space-5);
+  }
+
+  .information-box,
+  .privacy-notice {
+    padding: var(--space-4);
+  }
+
+  .button {
+    width: 100%;
+  }
+}

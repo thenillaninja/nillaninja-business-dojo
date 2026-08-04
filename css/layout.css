@@ -1,0 +1,124 @@
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.site-header {
+  border-bottom: 1px solid var(--color-border);
+  background: rgba(13, 17, 23, 0.88);
+  backdrop-filter: blur(18px);
+}
+
+.site-header__inner {
+  display: flex;
+  width: min(100% - 2rem, var(--content-width));
+  margin: 0 auto;
+  padding: var(--space-4) 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+
+.brand {
+  display: inline-flex;
+  flex-direction: column;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.brand__name {
+  font-size: var(--font-size-large);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.brand__product {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-small);
+}
+
+.site-header__status {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-small);
+  text-align: right;
+}
+
+.step-navigation {
+  border-bottom: 1px solid var(--color-border);
+  background: rgba(21, 27, 35, 0.76);
+}
+
+.step-navigation__list {
+  display: grid;
+  width: min(100% - 2rem, var(--content-width));
+  margin: 0 auto;
+  padding: var(--space-4) 0;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  list-style: none;
+}
+
+.step-navigation__item {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+}
+
+.step-navigation__number {
+  display: inline-grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  font-size: var(--font-size-small);
+  font-weight: 700;
+}
+
+.step-navigation__item.is-current {
+  color: var(--color-text);
+}
+
+.step-navigation__item.is-current .step-navigation__number {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-background);
+}
+
+.step-navigation__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.main-content {
+  display: grid;
+  flex: 1;
+  place-items: center;
+  width: 100%;
+  padding: var(--space-7) var(--space-4);
+}
+
+.app-view {
+  width: min(100%, var(--content-width-narrow));
+}
+
+.site-footer {
+  display: flex;
+  width: min(100% - 2rem, var(--content-width));
+  margin: 0 auto;
+  padding: var(--space-5) 0;
+  justify-content: space-between;
+  gap: var(--space-4);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-small);
+}
+
+.site-footer p {
+  margin: 0;
+}
