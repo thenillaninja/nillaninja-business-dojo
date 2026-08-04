@@ -1,0 +1,45 @@
+export const standardAnswerOptions = [
+  {
+    id: "strong",
+    label: "Yes, consistently",
+    value: 1
+  },
+  {
+    id: "partial",
+    label: "Somewhat established",
+    value: 0.67
+  },
+  {
+    id: "inconsistent",
+    label: "Informal or inconsistent",
+    value: 0.33
+  },
+  {
+    id: "missing",
+    label: "Not currently in place",
+    value: 0
+  },
+  {
+    id: "not-applicable",
+    label: "Not applicable",
+    value: null
+  }
+];
+
+export const businessAssessmentQuestions = [
+  {
+    id: "operations-written-procedures",
+    category: "operations",
+    title: "Written procedures",
+    question: "Does your business have written instructions for important recurring tasks?",
+    helpText: "This may include opening procedures, scheduling, customer follow-up, ordering, invoicing, or other work completed regularly.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 3,
+    recommendationKeys: [
+      "document-recurring-processes",
+      "reduce-owner-dependency"
+    ],
+    required: true
+  }
+];
