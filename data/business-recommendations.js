@@ -948,6 +948,151 @@ export const businessRecommendations = [
       "Deadlines",
       "Performance"
     ]
+  },
+  {
+    id: "improve-website-readability-and-usability",
+    title: "Improve website readability and usability",
+    summary:
+      "Make important website content easier to read, understand, and use across different devices and customer needs.",
+    whyItMatters:
+      "Small text, poor contrast, confusing navigation, and difficult forms can prevent customers from finding information or completing important actions.",
+    expectedImpact:
+      "Broader customer access, fewer abandoned visits, and a more usable experience for everyone.",
+    priority: "high",
+    difficulty: "moderate",
+    estimatedEffort: "Several days",
+    firstAction:
+      "Review the website on both a phone and computer and note anything difficult to read, find, or complete.",
+    suggestedApproach:
+      "Prioritize readable text, clear headings, strong contrast, simple navigation, and forms that explain what is required.",
+    possibleTools: [
+      "Accessibility checker",
+      "Mobile device testing",
+      "Browser zoom",
+      "Manual usability review"
+    ],
+    impactAreas: [
+      "Website usability",
+      "Accessibility",
+      "Customer access",
+      "Customer experience"
+    ]
+  },
+  {
+    id: "make-digital-content-accessible",
+    title: "Make digital content more accessible",
+    summary:
+      "Improve images, documents, videos, and social content so more customers can understand and use them.",
+    whyItMatters:
+      "Content without image descriptions, captions, readable documents, or clear structure may exclude customers who use assistive technology or have different access needs.",
+    expectedImpact:
+      "More inclusive communication, broader reach, and clearer information for all customers.",
+    priority: "medium",
+    difficulty: "moderate",
+    estimatedEffort: "Several days",
+    firstAction:
+      "Choose the five most important pieces of digital content and check whether each can be understood without relying only on sight or sound.",
+    suggestedApproach:
+      "Add useful alternative text, captions, clear headings, readable formatting, and accessible document structure where needed.",
+    possibleTools: [
+      "Captioning tools",
+      "Document accessibility checker",
+      "Alternative text guide",
+      "Content checklist"
+    ],
+    impactAreas: [
+      "Digital accessibility",
+      "Communication",
+      "Inclusion",
+      "Customer reach"
+    ]
+  },
+  {
+    id: "offer-alternative-completion-methods",
+    title: "Offer alternative ways to complete important actions",
+    summary:
+      "Provide another practical option when a customer cannot use the primary website, form, payment, or communication method.",
+    whyItMatters:
+      "A single required method can create barriers for customers with disabilities, limited technology access, language needs, or different communication preferences.",
+    expectedImpact:
+      "Fewer abandoned requests, broader customer access, and more flexible service.",
+    priority: "high",
+    difficulty: "easy",
+    estimatedEffort: "A few hours",
+    firstAction:
+      "List the customer actions that currently depend on only one method.",
+    suggestedApproach:
+      "Add a reasonable alternative such as phone support, email, text, in-person help, or staff-assisted completion.",
+    possibleTools: [
+      "Phone support",
+      "Email",
+      "Text messaging",
+      "Staff-assisted process"
+    ],
+    impactAreas: [
+      "Accessibility",
+      "Customer access",
+      "Service flexibility",
+      "Inclusion"
+    ]
+  },
+  {
+    id: "clarify-customer-instructions",
+    title: "Make customer instructions clearer",
+    summary:
+      "Use plain language and clear steps for appointments, forms, payments, preparation, and other important actions.",
+    whyItMatters:
+      "Unclear instructions create avoidable questions, mistakes, delays, and frustration.",
+    expectedImpact:
+      "Fewer misunderstandings, smoother customer interactions, and less repeated explanation.",
+    priority: "medium",
+    difficulty: "easy",
+    estimatedEffort: "A few hours",
+    firstAction:
+      "Choose the customer instruction that causes the most repeated questions.",
+    suggestedApproach:
+      "Rewrite it using short sentences, numbered steps, clear deadlines, and direct contact information for help.",
+    possibleTools: [
+      "Instruction template",
+      "Checklist",
+      "FAQ",
+      "Plain-language review"
+    ],
+    impactAreas: [
+      "Communication",
+      "Customer understanding",
+      "Accessibility",
+      "Efficiency"
+    ]
+  },
+  {
+    id: "create-accommodation-request-process",
+    title: "Create a simple accommodation request process",
+    summary:
+      "Give customers a clear way to ask for reasonable help or an alternative way to access service.",
+    whyItMatters:
+      "Customers may not know whom to contact or whether the business can adjust a process to meet an access need.",
+    expectedImpact:
+      "More inclusive service, better communication, and fewer preventable barriers.",
+    priority: "medium",
+    difficulty: "moderate",
+    estimatedEffort: "One business day",
+    firstAction:
+      "Choose one contact method customers can use to request accessibility-related assistance.",
+    suggestedApproach:
+      "Explain how requests are received, who responds, what information is needed, and how the business will communicate the next step.",
+    possibleTools: [
+      "Contact form",
+      "Email address",
+      "Phone process",
+      "Staff guidance"
+    ],
+    impactAreas: [
+      "Accessibility",
+      "Customer support",
+      "Inclusion",
+      "Service consistency"
+    ]
   }
 ];
 
