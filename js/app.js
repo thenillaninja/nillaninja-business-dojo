@@ -9,6 +9,7 @@ import {
 } from "./engines/assessment-engine.js";
 import { calculateAssessmentScores } from "./engines/scoring-engine.js";
 import { generateRecommendations } from "./engines/recommendation-engine.js";
+import { generateStrengths } from "./engines/strengths-engine.js";
 import { renderProfileView } from "./views/profile-view.js";
 import { renderAssessmentView } from "./views/assessment-view.js";
 import { renderReportView } from "./views/report-view.js";
@@ -347,6 +348,11 @@ function renderAssessment(errorMessage = "") {
         state.assessment.answers
       );
 
+      const strengths = generateStrengths(
+        businessAssessmentQuestions,
+        state.assessment.answers
+      );
+
       state.results = {
         ...state.results,
         overallScore: scores.overallScore,
@@ -354,6 +360,7 @@ function renderAssessment(errorMessage = "") {
         earnedPoints: scores.earnedPoints,
         possiblePoints: scores.possiblePoints,
         scoredQuestionCount: scores.scoredQuestionCount,
+        strengths,
         recommendations
       };
 

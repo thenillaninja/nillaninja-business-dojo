@@ -73,6 +73,34 @@ function formatLabel(value) {
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
+function renderStrengths(strengths = []) {
+  if (!Array.isArray(strengths) || strengths.length === 0) {
+    return `
+      <div class="report-empty-state">
+        <h3>No standout strengths were identified</h3>
+        <p>
+          Fully established business practices will appear here as positive
+          findings.
+        </p>
+      </div>
+    `;
+  }
+
+  return strengths
+    .map(
+      (strength) => `
+        <article class="strength-card">
+          <p class="strength-card__category">
+            ${formatCategoryName(strength.category)}
+          </p>
+          <h3>${strength.title}</h3>
+          <p>${strength.summary}</p>
+        </article>
+      `
+    )
+    .join("");
+}
+
 function renderRecommendations(recommendations = []) {
   if (!Array.isArray(recommendations) || recommendations.length === 0) {
     return `
@@ -182,6 +210,24 @@ export function renderReportView({
 
         <div class="category-score-grid">
           ${renderCategoryScores(results?.categoryScores)}
+        </div>
+      </section>
+
+      <section
+        class="report-section"
+        aria-labelledby="strengths-heading"
+      >
+        <div class="report-section__heading">
+          <p class="eyebrow">What Is Working</p>
+          <h2 id="strengths-heading">Business strengths</h2>
+          <p class="report-section__intro">
+            These are the strongest systems and practices reflected in your
+            assessment answers.
+          </p>
+        </div>
+
+        <div class="strength-grid">
+          ${renderStrengths(results?.strengths)}
         </div>
       </section>
 
