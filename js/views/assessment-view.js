@@ -85,9 +85,13 @@ export function renderAssessmentView({
 
       <form id="assessment-form" novalidate>
         <fieldset class="question-card">
-          <legend id="assessment-heading" class="question-card__legend">
+          <legend class="question-card__legend--accessible">
             ${question.question}
           </legend>
+
+          <h1 id="assessment-heading" class="question-card__heading">
+            ${question.question}
+          </h1>
 
           <p class="question-card__help" id="${question.id}-help">
             ${question.helpText}
