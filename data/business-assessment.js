@@ -57,6 +57,62 @@ export const businessAssessmentQuestions = [
     required: true
   },
   {
+    id: "operations-task-deadline-tracking",
+    category: "operations",
+    title: "Task and deadline tracking",
+    question: "Does your business track important tasks, responsibilities, and deadlines in one dependable place?",
+    helpText: "This may include active jobs, follow-up tasks, ordering, paperwork, maintenance, employee responsibilities, or other work that must be completed on time.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 2,
+    recommendationKeys: [
+      "centralize-task-tracking"
+    ],
+    required: true
+  },
+  {
+    id: "operations-estimate-proposal-consistency",
+    category: "operations",
+    title: "Estimate and proposal consistency",
+    question: "Does your business use a consistent process and format for estimates, proposals, or quotes?",
+    helpText: "Consider whether pricing, scope, timing, terms, customer details, and approval information are included reliably.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 3,
+    recommendationKeys: [
+      "standardize-estimates-and-proposals"
+    ],
+    required: true
+  },
+  {
+    id: "operations-inventory-supply-monitoring",
+    category: "operations",
+    title: "Inventory and supply monitoring",
+    question: "Does your business monitor important products, materials, tools, or supplies before shortages interrupt work or sales?",
+    helpText: "This may involve reorder levels, regular stock checks, supply lists, purchasing reminders, or another method that prevents unexpected shortages.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 2,
+    recommendationKeys: [
+      "monitor-inventory-and-supplies"
+    ],
+    required: true
+  },
+  {
+    id: "operations-process-improvement-review",
+    category: "operations",
+    title: "Process improvement review",
+    question: "Does your business regularly review recurring problems, delays, mistakes, or unnecessary work?",
+    helpText: "A review may be informal, but it should lead to a specific change, test, or decision instead of accepting the same problem repeatedly.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 1,
+    recommendationKeys: [
+      "review-and-improve-processes"
+    ],
+    required: true
+  },
+  {
     id: "customer-follow-up-process",
     category: "customer-experience",
     title: "Customer follow-up",
