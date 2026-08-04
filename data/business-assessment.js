@@ -111,5 +111,19 @@ export const businessAssessmentQuestions = [
       "reduce-duplicate-data-entry"
     ],
     required: true
+  },
+  {
+    id: "technology-file-organization",
+    category: "technology-and-workflow",
+    title: "Business file organization",
+    question: "Can important business files and documents be found quickly when they are needed?",
+    helpText: "This includes estimates, invoices, customer records, forms, photos, contracts, procedures, and other files used to operate the business.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 2,
+    recommendationKeys: [
+      "organize-business-files"
+    ],
+    required: true
   }
 ];
