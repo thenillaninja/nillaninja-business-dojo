@@ -88,3 +88,27 @@ export const assessmentCategories = [
     description: "How well the business protects access, information, and operational continuity."
   }
 ];
+
+
+export const answerValueRules = {
+  strong: 1,
+  partial: 0.67,
+  inconsistent: 0.33,
+  missing: 0,
+  notApplicable: null
+};
+
+export const findingThresholds = {
+  strength: {
+    min: 0.85,
+    max: 1
+  },
+  opportunity: {
+    min: 0.5,
+    max: 0.8499
+  },
+  needsAttention: {
+    min: 0,
+    max: 0.4999
+  }
+};
