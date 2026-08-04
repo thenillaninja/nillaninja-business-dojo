@@ -25,5 +25,32 @@ export const businessRecommendations = [
       "Delegation",
       "Owner dependency"
     ]
+  },
+  {
+    id: "create-reliable-scheduling-process",
+    title: "Create one reliable scheduling process",
+    summary: "Use one dependable place to manage appointments, jobs, shifts, and important deadlines.",
+    whyItMatters: "When scheduling information is spread across texts, notes, memory, and multiple calendars, important work can be missed or duplicated.",
+    expectedImpact: "A consistent scheduling process can reduce missed appointments, improve coordination, and make daily planning easier.",
+    priority: "medium",
+    difficulty: "easy",
+    estimatedEffort: "Less than one hour",
+    firstAction: "Choose one calendar, planner, spreadsheet, or scheduling tool to become the main source of truth.",
+    suggestedApproach: "Move current commitments into the chosen system and make updating it part of the daily routine.",
+    possibleTools: [
+      "Calendar",
+      "Planner",
+      "Spreadsheet",
+      "Scheduling app"
+    ],
+    relatedQuestionIds: [
+      "operations-scheduling-process"
+    ],
+    impactAreas: [
+      "Consistency",
+      "Time management",
+      "Customer reliability",
+      "Coordination"
+    ]
   }
 ];
