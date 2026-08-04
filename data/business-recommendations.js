@@ -1093,6 +1093,122 @@ export const businessRecommendations = [
       "Inclusion",
       "Service consistency"
     ]
+  },
+  {
+    id: "enable-multi-factor-authentication",
+    title: "Enable multi-factor authentication",
+    summary:
+      "Add a second verification step to important business accounts wherever it is available.",
+    whyItMatters:
+      "A stolen or reused password may be enough for someone to access email, financial, customer, or business systems when no second verification step is required.",
+    expectedImpact:
+      "Stronger account protection and reduced risk from stolen passwords.",
+    priority: "immediate",
+    difficulty: "easy",
+    estimatedEffort: "A few hours",
+    firstAction:
+      "List the most important business accounts and identify which ones support multi-factor authentication.",
+    suggestedApproach:
+      "Start with email, financial, cloud storage, website, and administrative accounts, then store recovery codes securely.",
+    possibleTools: [
+      "Authenticator app",
+      "Security key",
+      "Account security settings",
+      "Password manager"
+    ],
+    impactAreas: [
+      "Account security",
+      "Data protection",
+      "Fraud prevention",
+      "Business continuity"
+    ]
+  },
+  {
+    id: "remove-unneeded-account-access",
+    title: "Remove access when people leave or roles change",
+    summary:
+      "Use a consistent process to remove accounts, permissions, keys, and device access that are no longer needed.",
+    whyItMatters:
+      "Former employees, contractors, and outdated permissions can leave important systems exposed long after access should have ended.",
+    expectedImpact:
+      "Better access control, reduced security risk, and clearer responsibility.",
+    priority: "immediate",
+    difficulty: "moderate",
+    estimatedEffort: "One business day",
+    firstAction:
+      "Create a list of every account, device, key, and shared resource that must be reviewed when someone leaves.",
+    suggestedApproach:
+      "Use a departure checklist and review access whenever responsibilities change, not only when someone leaves the business.",
+    possibleTools: [
+      "Access checklist",
+      "Account administrator",
+      "Password manager",
+      "Device inventory"
+    ],
+    impactAreas: [
+      "Access control",
+      "Security",
+      "Responsibility",
+      "Business continuity"
+    ]
+  },
+  {
+    id: "keep-devices-and-software-updated",
+    title: "Keep devices and software updated",
+    summary:
+      "Apply important operating-system, browser, application, and device updates on a regular schedule.",
+    whyItMatters:
+      "Outdated software may contain known security weaknesses, compatibility problems, and unresolved reliability issues.",
+    expectedImpact:
+      "Lower security risk, better reliability, and fewer preventable software problems.",
+    priority: "high",
+    difficulty: "easy",
+    estimatedEffort: "A few hours each month",
+    firstAction:
+      "Check every business computer, phone, tablet, browser, and critical application for available updates.",
+    suggestedApproach:
+      "Enable automatic updates where practical and assign responsibility for reviewing devices that require manual action.",
+    possibleTools: [
+      "Automatic updates",
+      "Device checklist",
+      "Software inventory",
+      "Managed device settings"
+    ],
+    impactAreas: [
+      "Security",
+      "Reliability",
+      "Device management",
+      "Software maintenance"
+    ]
+  },
+  {
+    id: "create-business-recovery-plan",
+    title: "Create a basic business interruption and recovery plan",
+    summary:
+      "Document how the business will continue or recover after a major outage, loss, emergency, or unavailable owner.",
+    whyItMatters:
+      "Without a recovery plan, even a temporary disruption can create confusion, lost revenue, missed customer commitments, and delayed decisions.",
+    expectedImpact:
+      "Faster recovery, clearer emergency responsibilities, and stronger operational resilience.",
+    priority: "immediate",
+    difficulty: "advanced",
+    estimatedEffort: "Several days",
+    firstAction:
+      "List the five events most likely to prevent the business from operating normally.",
+    suggestedApproach:
+      "Document essential contacts, backup methods, priority systems, customer communication, decision authority, and the first actions for each major disruption.",
+    possibleTools: [
+      "Recovery checklist",
+      "Emergency contact list",
+      "Backup communication plan",
+      "Business continuity document"
+    ],
+    impactAreas: [
+      "Business continuity",
+      "Emergency response",
+      "Recovery",
+      "Customer communication"
+    ]
   }
 ];
 
