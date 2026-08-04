@@ -211,6 +211,76 @@ export const businessAssessmentQuestions = [
     required: true
   },
   {
+    id: "sales-business-message-clarity",
+    category: "sales-and-marketing",
+    title: "Business message clarity",
+    question: "Does your business use a clear and consistent message explaining what it offers, who it helps, and why customers should choose it?",
+    helpText: "Consider whether the website, social profiles, advertisements, estimates, and customer conversations describe the business in a similar way.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 2,
+    recommendationKeys: [
+      "clarify-business-message"
+    ],
+    required: true
+  },
+  {
+    id: "sales-online-presence-accuracy",
+    category: "sales-and-marketing",
+    title: "Online presence accuracy",
+    question: "Is your business information accurate and consistent across its website, search listings, directories, and social profiles?",
+    helpText: "Check the business name, phone number, address, hours, services, links, contact methods, and other details customers may rely on.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 3,
+    recommendationKeys: [
+      "update-online-business-information"
+    ],
+    required: true
+  },
+  {
+    id: "sales-marketing-results-tracking",
+    category: "sales-and-marketing",
+    title: "Marketing results tracking",
+    question: "Does your business track which marketing activities produce inquiries, customers, or sales?",
+    helpText: "This may include referrals, search results, social media, advertisements, repeat customers, events, printed materials, or other lead sources.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 2,
+    recommendationKeys: [
+      "track-marketing-results"
+    ],
+    required: true
+  },
+  {
+    id: "sales-referral-process",
+    category: "sales-and-marketing",
+    title: "Referral process",
+    question: "Does your business have a simple process for asking satisfied customers or business contacts for referrals?",
+    helpText: "A referral process may include choosing the right time to ask, explaining who the business can help, and making the next step easy.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 1,
+    recommendationKeys: [
+      "create-referral-process"
+    ],
+    required: true
+  },
+  {
+    id: "sales-follow-up-responsibility",
+    category: "sales-and-marketing",
+    title: "Sales follow-up responsibility",
+    question: "Is one person clearly responsible for each active sales opportunity and its next follow-up action?",
+    helpText: "Consider whether every lead has an owner, a current status, and a specific next action or follow-up date.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 3,
+    recommendationKeys: [
+      "assign-sales-follow-up-responsibility"
+    ],
+    required: true
+  },
+  {
     id: "technology-duplicate-data-entry",
     category: "technology-and-workflow",
     title: "Duplicate data entry",
