@@ -243,5 +243,32 @@ export const businessRecommendations = [
       "Access control",
       "Business continuity"
     ]
+  },
+  {
+    id: "establish-reliable-backups",
+    title: "Establish reliable backups for important business information",
+    summary: "Create a consistent backup process for the files and records the business needs to keep operating.",
+    whyItMatters: "Without reliable backups, equipment failure, accidental deletion, theft, malware, or account loss can permanently remove important business information.",
+    expectedImpact: "A dependable backup process can reduce downtime, protect critical records, and improve the business’s ability to recover from unexpected problems.",
+    priority: "immediate",
+    difficulty: "moderate",
+    estimatedEffort: "A few hours",
+    firstAction: "List the files and information the business could not afford to lose.",
+    suggestedApproach: "Keep at least one automatic backup in a separate location and confirm regularly that important files can actually be restored.",
+    possibleTools: [
+      "Cloud backup",
+      "External drive",
+      "Automatic backup service",
+      "Backup checklist"
+    ],
+    relatedQuestionIds: [
+      "security-data-backups"
+    ],
+    impactAreas: [
+      "Business continuity",
+      "Data protection",
+      "Recovery",
+      "Risk reduction"
+    ]
   }
 ];
