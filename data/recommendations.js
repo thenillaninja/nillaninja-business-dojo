@@ -216,5 +216,32 @@ export const businessRecommendations = [
       "Lead capture",
       "Communication"
     ]
+  },
+  {
+    id: "stop-sharing-passwords",
+    title: "Stop sharing passwords between users",
+    summary: "Give each person their own account access wherever the system allows it.",
+    whyItMatters: "Shared passwords make it difficult to control access, remove former users, recover accounts, and understand who changed important information.",
+    expectedImpact: "Individual access can improve security, accountability, account recovery, and control over sensitive business systems.",
+    priority: "immediate",
+    difficulty: "easy",
+    estimatedEffort: "A few hours",
+    firstAction: "List the business accounts currently using shared passwords and identify which people need individual access.",
+    suggestedApproach: "Create separate user accounts where possible, enable multi-factor authentication, and use a password manager for credentials that must be stored securely.",
+    possibleTools: [
+      "Individual user accounts",
+      "Password manager",
+      "Multi-factor authentication",
+      "Account access checklist"
+    ],
+    relatedQuestionIds: [
+      "security-password-sharing"
+    ],
+    impactAreas: [
+      "Security",
+      "Accountability",
+      "Access control",
+      "Business continuity"
+    ]
   }
 ];
