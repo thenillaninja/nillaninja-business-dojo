@@ -282,6 +282,121 @@ export const businessRecommendations = [
       "Recovery",
       "Security"
     ]
+  },
+  {
+    id: "centralize-task-tracking",
+    title: "Track important tasks and deadlines in one place",
+    summary:
+      "Use one dependable system to record active tasks, responsibilities, and due dates.",
+    whyItMatters:
+      "Tasks kept in memory, messages, or scattered notes are easier to overlook and harder to coordinate.",
+    expectedImpact:
+      "Fewer missed deadlines, clearer priorities, and better visibility into unfinished work.",
+    priority: "medium",
+    difficulty: "easy",
+    estimatedEffort: "A few hours",
+    firstAction:
+      "Create one list containing every active task, its owner, and its due date.",
+    suggestedApproach:
+      "Choose the simplest task system the business will review and update consistently.",
+    possibleTools: [
+      "Task list",
+      "Shared calendar",
+      "Whiteboard",
+      "Existing business software"
+    ],
+    impactAreas: [
+      "Organization",
+      "Deadlines",
+      "Responsibility",
+      "Daily workflow"
+    ]
+  },
+  {
+    id: "standardize-estimates-and-proposals",
+    title: "Standardize estimates, proposals, and quotes",
+    summary:
+      "Use a consistent format and process when preparing pricing or proposed work for customers.",
+    whyItMatters:
+      "Inconsistent estimates can cause missing details, unclear expectations, pricing mistakes, and customer confusion.",
+    expectedImpact:
+      "More professional proposals, fewer omissions, faster preparation, and clearer customer expectations.",
+    priority: "high",
+    difficulty: "easy",
+    estimatedEffort: "One business day",
+    firstAction:
+      "Collect three recent estimates or proposals and identify the information that should appear in every one.",
+    suggestedApproach:
+      "Create one reusable template with standard sections for scope, price, timing, terms, and customer approval.",
+    possibleTools: [
+      "Document template",
+      "Spreadsheet",
+      "Estimate software",
+      "Existing business software"
+    ],
+    impactAreas: [
+      "Sales",
+      "Pricing consistency",
+      "Customer expectations",
+      "Professionalism"
+    ]
+  },
+  {
+    id: "monitor-inventory-and-supplies",
+    title: "Create a reliable supply and inventory check",
+    summary:
+      "Track important products, materials, tools, or supplies before shortages interrupt work.",
+    whyItMatters:
+      "Unexpected shortages can delay jobs, disappoint customers, increase rush costs, and reduce sales.",
+    expectedImpact:
+      "Fewer interruptions, better purchasing decisions, and more dependable customer service.",
+    priority: "medium",
+    difficulty: "moderate",
+    estimatedEffort: "Several days",
+    firstAction:
+      "List the ten items most likely to interrupt work or sales when they run out.",
+    suggestedApproach:
+      "Set a minimum quantity for important items and assign responsibility for checking them regularly.",
+    possibleTools: [
+      "Inventory checklist",
+      "Spreadsheet",
+      "Reorder list",
+      "Existing business software"
+    ],
+    impactAreas: [
+      "Inventory",
+      "Purchasing",
+      "Scheduling",
+      "Customer experience"
+    ]
+  },
+  {
+    id: "review-and-improve-processes",
+    title: "Review recurring processes for improvement",
+    summary:
+      "Set aside time to identify recurring delays, mistakes, complaints, and unnecessary work.",
+    whyItMatters:
+      "Small workflow problems can become accepted as normal and continue consuming time or creating frustration.",
+    expectedImpact:
+      "More efficient work, fewer repeated problems, and steady improvement without a major system overhaul.",
+    priority: "future",
+    difficulty: "easy",
+    estimatedEffort: "One hour each month",
+    firstAction:
+      "Ask which recurring task currently causes the most wasted time or frustration.",
+    suggestedApproach:
+      "Choose one small process each month, document the problem, test one improvement, and review the result.",
+    possibleTools: [
+      "Monthly review checklist",
+      "Team discussion",
+      "Simple improvement log"
+    ],
+    impactAreas: [
+      "Efficiency",
+      "Quality",
+      "Team experience",
+      "Continuous improvement"
+    ]
   }
 ];
 
