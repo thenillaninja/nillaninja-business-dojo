@@ -106,5 +106,33 @@ export const businessRecommendations = [
       "Revenue opportunities",
       "Organization"
     ]
+  },
+  {
+    id: "reduce-duplicate-data-entry",
+    title: "Reduce repeated data entry",
+    summary: "Identify where the same information is being entered more than once and simplify the process.",
+    whyItMatters: "Repeatedly copying the same information takes time, increases the chance of mistakes, and makes records harder to keep consistent.",
+    expectedImpact: "Reducing duplicate entry can save time, improve accuracy, and make daily work easier to manage.",
+    priority: "medium",
+    difficulty: "moderate",
+    estimatedEffort: "Several hours",
+    firstAction: "List each place where the same customer, job, or transaction information is entered.",
+    suggestedApproach: "Start with the most repetitive process. Remove unnecessary steps, reuse existing information, or connect tools only when the benefit is clear.",
+    possibleTools: [
+      "Shared spreadsheet",
+      "Reusable form",
+      "Template",
+      "Automation",
+      "Existing business software"
+    ],
+    relatedQuestionIds: [
+      "technology-duplicate-data-entry"
+    ],
+    impactAreas: [
+      "Time savings",
+      "Accuracy",
+      "Workflow efficiency",
+      "Consistency"
+    ]
   }
 ];
