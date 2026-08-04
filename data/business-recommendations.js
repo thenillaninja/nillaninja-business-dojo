@@ -542,6 +542,151 @@ export const businessRecommendations = [
       "Revenue stability",
       "Retention"
     ]
+  },
+  {
+    id: "clarify-business-message",
+    title: "Clarify the business message",
+    summary:
+      "Use a clear and consistent explanation of what the business offers, who it helps, and why customers should choose it.",
+    whyItMatters:
+      "Mixed or unclear messaging makes it harder for customers to understand the business and decide whether it fits their needs.",
+    expectedImpact:
+      "Clearer marketing, stronger customer understanding, and more qualified inquiries.",
+    priority: "medium",
+    difficulty: "easy",
+    estimatedEffort: "A few hours",
+    firstAction:
+      "Write one sentence explaining what the business does, who it serves, and the main value it provides.",
+    suggestedApproach:
+      "Use the same core message across the website, social profiles, estimates, advertisements, and customer conversations.",
+    possibleTools: [
+      "Messaging guide",
+      "Website copy",
+      "Social profile",
+      "Sales script"
+    ],
+    impactAreas: [
+      "Marketing clarity",
+      "Customer understanding",
+      "Brand consistency",
+      "Lead quality"
+    ]
+  },
+  {
+    id: "update-online-business-information",
+    title: "Keep online business information accurate",
+    summary:
+      "Review the website, search listings, and social profiles so customers see correct and consistent information.",
+    whyItMatters:
+      "Outdated hours, contact details, services, or pricing can create confusion and cause customers to leave.",
+    expectedImpact:
+      "Fewer customer misunderstandings, stronger credibility, and easier contact.",
+    priority: "high",
+    difficulty: "easy",
+    estimatedEffort: "One business day",
+    firstAction:
+      "Search for the business online and list every page or profile customers may rely on.",
+    suggestedApproach:
+      "Check the business name, address, phone number, hours, services, links, and contact methods on each listing.",
+    possibleTools: [
+      "Website",
+      "Search listing",
+      "Social profile",
+      "Business directory"
+    ],
+    impactAreas: [
+      "Online presence",
+      "Customer trust",
+      "Local discovery",
+      "Communication"
+    ]
+  },
+  {
+    id: "track-marketing-results",
+    title: "Track which marketing activities produce results",
+    summary:
+      "Record where inquiries and customers come from so the business can focus on what works.",
+    whyItMatters:
+      "Without basic tracking, time and money may continue going toward marketing that produces little value.",
+    expectedImpact:
+      "Better spending decisions, clearer priorities, and stronger return from marketing effort.",
+    priority: "medium",
+    difficulty: "easy",
+    estimatedEffort: "A few hours",
+    firstAction:
+      "Add a simple source field to the place where new inquiries or customers are recorded.",
+    suggestedApproach:
+      "Review results monthly using a small set of sources such as referral, search, social media, advertisement, or repeat customer.",
+    possibleTools: [
+      "Spreadsheet",
+      "Lead tracker",
+      "Customer form",
+      "Existing business software"
+    ],
+    impactAreas: [
+      "Marketing effectiveness",
+      "Budget decisions",
+      "Lead sources",
+      "Growth"
+    ]
+  },
+  {
+    id: "create-referral-process",
+    title: "Create a simple referral process",
+    summary:
+      "Make it easy for satisfied customers and business contacts to recommend the business.",
+    whyItMatters:
+      "Referrals often happen inconsistently when the business never asks, explains who it serves, or provides an easy next step.",
+    expectedImpact:
+      "More qualified leads, stronger word-of-mouth growth, and lower customer-acquisition costs.",
+    priority: "future",
+    difficulty: "easy",
+    estimatedEffort: "A few hours",
+    firstAction:
+      "Choose the best moment to ask a satisfied customer for a referral.",
+    suggestedApproach:
+      "Use a short message that explains who the business can help and how the referral should contact you.",
+    possibleTools: [
+      "Referral message",
+      "Follow-up template",
+      "Business card",
+      "Customer email"
+    ],
+    impactAreas: [
+      "Referrals",
+      "Lead quality",
+      "Customer relationships",
+      "Growth"
+    ]
+  },
+  {
+    id: "assign-sales-follow-up-responsibility",
+    title: "Assign clear responsibility for sales follow-up",
+    summary:
+      "Make one person responsible for each active opportunity and its next action.",
+    whyItMatters:
+      "When responsibility is unclear, multiple people may assume someone else will follow up.",
+    expectedImpact:
+      "Fewer forgotten opportunities, faster responses, and clearer sales accountability.",
+    priority: "high",
+    difficulty: "easy",
+    estimatedEffort: "A few hours",
+    firstAction:
+      "Review every active lead and assign one person and one next follow-up date.",
+    suggestedApproach:
+      "Include ownership and next-action fields in the lead-tracking system and review overdue follow-ups regularly.",
+    possibleTools: [
+      "Lead tracker",
+      "Shared spreadsheet",
+      "CRM",
+      "Task list"
+    ],
+    impactAreas: [
+      "Sales follow-up",
+      "Responsibility",
+      "Response time",
+      "Revenue opportunities"
+    ]
   }
 ];
 
