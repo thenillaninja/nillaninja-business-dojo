@@ -52,5 +52,32 @@ export const businessRecommendations = [
       "Customer reliability",
       "Coordination"
     ]
+  },
+  {
+    id: "standardize-customer-follow-up",
+    title: "Create a consistent customer follow-up process",
+    summary: "Define when and how customers should be contacted after an inquiry, estimate, purchase, or completed service.",
+    whyItMatters: "Inconsistent follow-up can cause missed sales, unanswered estimates, uncertain customers, and lost opportunities for repeat business.",
+    expectedImpact: "A reliable follow-up process can improve response consistency, increase completed sales, strengthen customer relationships, and reduce missed opportunities.",
+    priority: "high",
+    difficulty: "easy",
+    estimatedEffort: "A few hours",
+    firstAction: "Choose one common customer situation, such as an unanswered estimate, and decide when the first follow-up should happen.",
+    suggestedApproach: "Create a short checklist or message template for each important follow-up point and assign responsibility for sending it.",
+    possibleTools: [
+      "Calendar reminder",
+      "Checklist",
+      "Message template",
+      "Customer tracking system"
+    ],
+    relatedQuestionIds: [
+      "customer-follow-up-process"
+    ],
+    impactAreas: [
+      "Customer experience",
+      "Sales",
+      "Consistency",
+      "Repeat business"
+    ]
   }
 ];
