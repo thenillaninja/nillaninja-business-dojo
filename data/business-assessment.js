@@ -97,5 +97,19 @@ export const businessAssessmentQuestions = [
       "track-leads-in-one-place"
     ],
     required: true
+  },
+  {
+    id: "technology-duplicate-data-entry",
+    category: "technology-and-workflow",
+    title: "Duplicate data entry",
+    question: "Does your business regularly enter the same information into more than one system, document, or spreadsheet?",
+    helpText: "Examples include copying customer details between forms, invoices, calendars, spreadsheets, or separate software tools.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 2,
+    recommendationKeys: [
+      "reduce-duplicate-data-entry"
+    ],
+    required: true
   }
 ];
