@@ -62,5 +62,13 @@ export const recommendationRules = [
     questionId: "accessibility-customer-contact-options",
     maximumAnswerValue: 0.67,
     priorityOverride: null
+  },
+  {
+    id: "rule-stop-sharing-passwords",
+    recommendationId: "stop-sharing-passwords",
+    triggerType: "answer-threshold",
+    questionId: "security-password-sharing",
+    maximumAnswerValue: 0.67,
+    priorityOverride: "immediate"
   }
 ];
