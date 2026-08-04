@@ -6,5 +6,13 @@ export const recommendationRules = [
     questionId: "operations-written-procedures",
     maximumAnswerValue: 0.67,
     priorityOverride: null
+  },
+  {
+    id: "rule-create-reliable-scheduling-process",
+    recommendationId: "create-reliable-scheduling-process",
+    triggerType: "answer-threshold",
+    questionId: "operations-scheduling-process",
+    maximumAnswerValue: 0.67,
+    priorityOverride: null
   }
 ];
