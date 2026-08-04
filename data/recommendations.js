@@ -189,5 +189,32 @@ export const businessRecommendations = [
       "Owner workload",
       "Team confidence"
     ]
+  },
+  {
+    id: "improve-customer-contact-options",
+    title: "Give customers more than one practical way to contact the business",
+    summary: "Offer clear contact options so customers can choose a method that works for them.",
+    whyItMatters: "Relying on only one contact method can make it harder for some customers to ask questions, request service, or complete an important next step.",
+    expectedImpact: "Additional contact options can improve accessibility, reduce missed inquiries, and make the business easier to work with.",
+    priority: "medium",
+    difficulty: "easy",
+    estimatedEffort: "A few hours",
+    firstAction: "Review the contact methods currently available and add one practical alternative where customers are most likely to need it.",
+    suggestedApproach: "Choose options the business can maintain consistently, such as phone, email, text, a website form, or in-person support.",
+    possibleTools: [
+      "Phone",
+      "Email",
+      "Text messaging",
+      "Website contact form"
+    ],
+    relatedQuestionIds: [
+      "accessibility-customer-contact-options"
+    ],
+    impactAreas: [
+      "Accessibility",
+      "Customer experience",
+      "Lead capture",
+      "Communication"
+    ]
   }
 ];
