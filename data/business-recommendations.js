@@ -687,6 +687,122 @@ export const businessRecommendations = [
       "Response time",
       "Revenue opportunities"
     ]
+  },
+  {
+    id: "review-business-tools",
+    title: "Review whether current tools still fit the business",
+    summary:
+      "Evaluate whether the software, spreadsheets, and systems in daily use still support the way the business operates.",
+    whyItMatters:
+      "Businesses often continue using tools that are confusing, duplicated, outdated, or no longer matched to current needs.",
+    expectedImpact:
+      "Simpler workflows, lower frustration, reduced waste, and better use of existing technology.",
+    priority: "medium",
+    difficulty: "moderate",
+    estimatedEffort: "Several days",
+    firstAction:
+      "List every tool used during a typical week and note what each one is supposed to accomplish.",
+    suggestedApproach:
+      "Keep tools that clearly solve a problem, improve confusing ones, and remove systems that duplicate work without adding value.",
+    possibleTools: [
+      "Tool inventory",
+      "Workflow review",
+      "Software comparison",
+      "Existing business software"
+    ],
+    impactAreas: [
+      "Technology",
+      "Workflow",
+      "Cost control",
+      "Team experience"
+    ]
+  },
+  {
+    id: "improve-mobile-information-access",
+    title: "Improve mobile access to important information",
+    summary:
+      "Make sure essential schedules, customer details, files, and instructions can be reached safely when work happens away from a desk.",
+    whyItMatters:
+      "Field work and mobile decisions become slower when needed information is only available on one computer, in paper files, or through the owner.",
+    expectedImpact:
+      "Faster decisions, fewer delays, and better support for field or remote work.",
+    priority: "medium",
+    difficulty: "moderate",
+    estimatedEffort: "Several days",
+    firstAction:
+      "List the information employees or contractors most often need while away from the main workplace.",
+    suggestedApproach:
+      "Provide secure access only to the information needed and test the process from the devices people actually use.",
+    possibleTools: [
+      "Cloud storage",
+      "Mobile app",
+      "Shared calendar",
+      "Existing business software"
+    ],
+    impactAreas: [
+      "Mobile work",
+      "Information access",
+      "Response time",
+      "Productivity"
+    ]
+  },
+  {
+    id: "automate-repetitive-tasks",
+    title: "Automate one repetitive administrative task",
+    summary:
+      "Use simple automation where it can remove repeated manual steps without making the workflow harder to understand.",
+    whyItMatters:
+      "Small repetitive tasks can consume many hours over time and increase the chance of missed steps or inconsistent information.",
+    expectedImpact:
+      "Time savings, fewer errors, and more attention available for customers and higher-value work.",
+    priority: "future",
+    difficulty: "moderate",
+    estimatedEffort: "Several days",
+    firstAction:
+      "Choose the repeated task that consumes the most time each week.",
+    suggestedApproach:
+      "Document the current steps first, remove unnecessary work, then automate only the stable part of the process.",
+    possibleTools: [
+      "Email template",
+      "Form automation",
+      "Calendar automation",
+      "Existing business software"
+    ],
+    impactAreas: [
+      "Automation",
+      "Time savings",
+      "Accuracy",
+      "Administrative workload"
+    ]
+  },
+  {
+    id: "connect-disconnected-systems",
+    title: "Reduce gaps between disconnected systems",
+    summary:
+      "Improve how information moves between the tools used for customers, scheduling, sales, payments, and operations.",
+    whyItMatters:
+      "Disconnected systems create duplicate work, missing updates, conflicting records, and extra dependence on manual communication.",
+    expectedImpact:
+      "Smoother handoffs, more accurate information, and fewer repeated administrative steps.",
+    priority: "high",
+    difficulty: "advanced",
+    estimatedEffort: "One to several weeks",
+    firstAction:
+      "Map how one customer or job moves through every system from first contact to completion.",
+    suggestedApproach:
+      "Identify the most damaging handoff first and improve it through consolidation, shared data, or a practical integration.",
+    possibleTools: [
+      "Workflow map",
+      "Shared database",
+      "Software integration",
+      "Consolidated business platform"
+    ],
+    impactAreas: [
+      "System integration",
+      "Data accuracy",
+      "Workflow",
+      "Business visibility"
+    ]
   }
 ];
 
