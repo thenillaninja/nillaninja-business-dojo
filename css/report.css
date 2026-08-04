@@ -389,3 +389,137 @@
 .executive-summary strong {
   color: var(--color-text);
 }
+
+
+.report-export {
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-6);
+  border: 1px solid rgba(121, 215, 255, 0.38);
+  border-radius: var(--radius-medium);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(121, 215, 255, 0.09),
+      rgba(121, 215, 255, 0.025)
+    );
+}
+
+.report-export::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: var(--color-accent);
+}
+
+.report-export .report-section__heading {
+  max-width: 42rem;
+}
+
+.report-export__actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.report-export__actions .button {
+  min-height: 3.5rem;
+  justify-content: center;
+  text-align: center;
+}
+
+.report-export__status {
+  min-height: 1.5rem;
+  margin: var(--space-4) 0 0;
+  padding-left: var(--space-3);
+  border-left: 2px solid transparent;
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+.report-export__status:not(:empty) {
+  border-left-color: var(--color-accent);
+}
+
+@media (max-width: 44rem) {
+  .report-export {
+    padding: var(--space-5);
+  }
+
+  .report-export__actions {
+    grid-template-columns: 1fr;
+  }
+
+  .report-export__actions .button {
+    width: 100%;
+  }
+}
+
+@media print {
+  body {
+    background: #ffffff;
+    color: #111111;
+  }
+
+  .site-header,
+  .step-navigation,
+  .report-export,
+  .form-actions {
+    display: none !important;
+  }
+
+  #app,
+  .report-panel,
+  .report-section,
+  .category-score-card,
+  .strength-card,
+  .recommendation-card,
+  .executive-summary {
+    width: 100%;
+    max-width: none;
+    box-shadow: none;
+  }
+
+  .report-panel,
+  .report-section,
+  .category-score-card,
+  .strength-card,
+  .recommendation-card,
+  .executive-summary {
+    border-color: #bbbbbb;
+    background: #ffffff;
+    color: #111111;
+  }
+
+  .report-panel {
+    padding: 0;
+  }
+
+  .report-section,
+  .recommendation-card,
+  .strength-card,
+  .category-score-card {
+    break-inside: avoid;
+  }
+
+  .recommendation-card__priority,
+  .eyebrow,
+  .category-score-card__score,
+  .overall-score__value,
+  .overall-score__maximum {
+    color: #111111;
+  }
+
+  p,
+  .report-panel__business-name,
+  .recommendation-card__summary,
+  .recommendation-card__meta p,
+  .recommendation-card__details p,
+  .recommendation-card__first-action p,
+  .strength-card > p:last-child,
+  .executive-summary p {
+    color: #222222;
+  }
+}

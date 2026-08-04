@@ -10,9 +10,13 @@ import {
 import { calculateAssessmentScores } from "./engines/scoring-engine.js";
 import { generateRecommendations } from "./engines/recommendation-engine.js";
 import { generateStrengths } from "./engines/strengths-engine.js";
+import {
+  createReportFilename,
+  generateReportText
+} from "./engines/export-engine.js";
 import { renderProfileView } from "./views/profile-view.js";
 import { renderAssessmentView } from "./views/assessment-view.js";
-import { renderReportView } from "./views/report-view.js?v=2";
+import { renderReportView } from "./views/report-view.js?v=3";
 
 const app = document.querySelector("#app");
 const stepItems = document.querySelectorAll(".step-navigation__item");
@@ -254,6 +258,65 @@ function renderReport() {
     businessProfile: state.businessProfile,
     results: state.results
   });
+
+  const reportText = generateReportText({
+    businessProfile: state.businessProfile,
+    results: state.results
+  });
+
+  const exportStatus = document.querySelector(
+    "#report-export-status"
+  );
+
+  function setExportStatus(message) {
+    if (exportStatus) {
+      exportStatus.textContent = message;
+    }
+  }
+
+  document
+    .querySelector("#report-copy")
+    ?.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(reportText);
+        setExportStatus("Report copied to your clipboard.");
+      } catch (error) {
+        console.error("Unable to copy report:", error);
+        setExportStatus(
+          "The report could not be copied. Try downloading it instead."
+        );
+      }
+    });
+
+  document
+    .querySelector("#report-download")
+    ?.addEventListener("click", () => {
+      const file = new Blob([reportText], {
+        type: "text/plain;charset=utf-8"
+      });
+
+      const downloadUrl = URL.createObjectURL(file);
+      const downloadLink = document.createElement("a");
+
+      downloadLink.href = downloadUrl;
+      downloadLink.download = createReportFilename(
+        state.businessProfile.businessName
+      );
+
+      document.body.append(downloadLink);
+      downloadLink.click();
+      downloadLink.remove();
+
+      URL.revokeObjectURL(downloadUrl);
+      setExportStatus("Text report downloaded.");
+    });
+
+  document
+    .querySelector("#report-print")
+    ?.addEventListener("click", () => {
+      setExportStatus("Opening your browser print options.");
+      window.print();
+    });
 
   document
     .querySelector("#report-back")

@@ -311,6 +311,53 @@ export function renderReportView({
         </div>
       </section>
 
+      <section
+        class="report-section report-export"
+        aria-labelledby="export-heading"
+      >
+        <div class="report-section__heading">
+          <p class="eyebrow">Step 5 of 5</p>
+          <h2 id="export-heading">Export your report</h2>
+          <p class="report-section__intro">
+            Copy the report, download it as a text file, or print it from your
+            browser.
+          </p>
+        </div>
+
+        <div class="report-export__actions">
+          <button
+            class="button button--primary"
+            type="button"
+            id="report-copy"
+          >
+            Copy Report
+          </button>
+
+          <button
+            class="button button--secondary"
+            type="button"
+            id="report-download"
+          >
+            Download TXT
+          </button>
+
+          <button
+            class="button button--secondary"
+            type="button"
+            id="report-print"
+          >
+            Print Report
+          </button>
+        </div>
+
+        <p
+          class="report-export__status"
+          id="report-export-status"
+          role="status"
+          aria-live="polite"
+        ></p>
+      </section>
+
       <div class="form-actions">
         <button
           class="button button--secondary"
