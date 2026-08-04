@@ -1,6 +1,7 @@
 import { businessProfileFields } from "../data/business-profile.js";
 import { businessAssessmentQuestions } from "../data/business-assessment.js";
 import { createInitialState } from "./core/state.js";
+import { loadState, saveState } from "./core/storage.js";
 import { validateBusinessProfile } from "./core/validation.js";
 import {
   getQuestionByIndex,
@@ -14,7 +15,57 @@ import { renderReportView } from "./views/report-view.js";
 const app = document.querySelector("#app");
 const stepItems = document.querySelectorAll(".step-navigation__item");
 
-let state = createInitialState();
+function restoreApplicationState() {
+  const initialState = createInitialState();
+  const savedState = loadState();
+
+  if (!savedState) {
+    return initialState;
+  }
+
+  return {
+    ...initialState,
+    ...savedState,
+    metadata: {
+      ...initialState.metadata,
+      ...savedState.metadata
+    },
+    navigation: {
+      ...initialState.navigation,
+      ...savedState.navigation
+    },
+    businessProfile: {
+      ...initialState.businessProfile,
+      ...savedState.businessProfile
+    },
+    assessment: {
+      ...initialState.assessment,
+      ...savedState.assessment,
+      answers: {
+        ...initialState.assessment.answers,
+        ...savedState.assessment?.answers
+      }
+    },
+    results: {
+      ...initialState.results,
+      ...savedState.results,
+      categoryScores: {
+        ...initialState.results.categoryScores,
+        ...savedState.results?.categoryScores
+      }
+    },
+    report: {
+      ...initialState.report,
+      ...savedState.report
+    }
+  };
+}
+
+let state = restoreApplicationState();
+
+function persistState() {
+  saveState(state);
+}
 
 function updateStepNavigation(currentStep) {
   stepItems.forEach((item, index) => {
@@ -40,6 +91,7 @@ function renderWelcomeView() {
   state.navigation.currentStep = 1;
 
   updateStepNavigation(1);
+  persistState();
 
   app.innerHTML = `
     <div class="welcome-panel">
@@ -105,6 +157,7 @@ function renderBusinessProfile(errors = {}) {
   state.navigation.currentStep = 2;
 
   updateStepNavigation(2);
+  persistState();
 
   app.innerHTML = renderProfileView(state.businessProfile, errors);
 
@@ -112,7 +165,41 @@ function renderBusinessProfile(errors = {}) {
   const backButton = document.querySelector("#profile-back");
 
   backButton?.addEventListener("click", () => {
-    renderWelcomeView();
+    function renderSavedView() {
+  switch (state.navigation.currentView) {
+    case "profile":
+      renderBusinessProfile();
+      break;
+
+    case "assessment": {
+      const questionCount = businessAssessmentQuestions.length;
+      const savedIndex = Number(state.navigation.currentQuestionIndex);
+
+      state.navigation.currentQuestionIndex =
+        Number.isInteger(savedIndex) &&
+        savedIndex >= 0 &&
+        savedIndex < questionCount
+          ? savedIndex
+          : 0;
+
+      renderAssessment();
+      break;
+    }
+
+    case "report":
+      if (Number.isFinite(state.results.overallScore)) {
+        renderReport();
+      } else {
+        renderAssessment();
+      }
+      break;
+
+    default:
+      renderWelcomeView();
+  }
+}
+
+renderSavedView();
     focusMainContent();
   });
 
@@ -159,6 +246,7 @@ function renderReport() {
   state.navigation.currentStep = 4;
 
   updateStepNavigation(4);
+  persistState();
 
   app.innerHTML = renderReportView({
     businessProfile: state.businessProfile,
@@ -181,6 +269,7 @@ function renderAssessment(errorMessage = "") {
   state.navigation.currentStep = 3;
 
   updateStepNavigation(3);
+  persistState();
 
   const questionIndex = state.navigation.currentQuestionIndex ?? 0;
   const question = getQuestionByIndex(
@@ -272,4 +361,38 @@ function renderAssessment(errorMessage = "") {
   });
 }
 
-renderWelcomeView();
+function renderSavedView() {
+  switch (state.navigation.currentView) {
+    case "profile":
+      renderBusinessProfile();
+      break;
+
+    case "assessment": {
+      const questionCount = businessAssessmentQuestions.length;
+      const savedIndex = Number(state.navigation.currentQuestionIndex);
+
+      state.navigation.currentQuestionIndex =
+        Number.isInteger(savedIndex) &&
+        savedIndex >= 0 &&
+        savedIndex < questionCount
+          ? savedIndex
+          : 0;
+
+      renderAssessment();
+      break;
+    }
+
+    case "report":
+      if (Number.isFinite(state.results.overallScore)) {
+        renderReport();
+      } else {
+        renderAssessment();
+      }
+      break;
+
+    default:
+      renderWelcomeView();
+  }
+}
+
+renderSavedView();
