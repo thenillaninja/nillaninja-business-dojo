@@ -14,5 +14,13 @@ export const recommendationRules = [
     questionId: "operations-scheduling-process",
     maximumAnswerValue: 0.67,
     priorityOverride: null
+  },
+  {
+    id: "rule-standardize-customer-follow-up",
+    recommendationId: "standardize-customer-follow-up",
+    triggerType: "answer-threshold",
+    questionId: "customer-follow-up-process",
+    maximumAnswerValue: 0.67,
+    priorityOverride: null
   }
 ];
