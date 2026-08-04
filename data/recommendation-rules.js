@@ -46,5 +46,13 @@ export const recommendationRules = [
     questionId: "technology-file-organization",
     maximumAnswerValue: 0.67,
     priorityOverride: null
+  },
+  {
+    id: "rule-reduce-owner-dependency",
+    recommendationId: "reduce-owner-dependency",
+    triggerType: "answer-threshold",
+    questionId: "team-owner-dependency",
+    maximumAnswerValue: 0.67,
+    priorityOverride: null
   }
 ];
