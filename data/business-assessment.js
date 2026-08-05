@@ -464,6 +464,76 @@ export const businessAssessmentQuestions = [
     required: true
   },
   {
+    id: "accessibility-website-readability-usability",
+    category: "accessibility-and-inclusion",
+    title: "Website readability and usability",
+    question: "Is your website easy to read, navigate, and use across phones, computers, and different customer needs?",
+    helpText: "Consider text size, color contrast, headings, navigation, forms, buttons, mobile layout, and whether important information is easy to find.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 3,
+    recommendationKeys: [
+      "improve-website-readability-and-usability"
+    ],
+    required: true
+  },
+  {
+    id: "accessibility-digital-content",
+    category: "accessibility-and-inclusion",
+    title: "Accessible digital content",
+    question: "Does your business make important images, documents, videos, and social content understandable to customers with different access needs?",
+    helpText: "This may include useful image descriptions, captions, readable documents, clear headings, and content that does not depend only on sight or sound.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 2,
+    recommendationKeys: [
+      "make-digital-content-accessible"
+    ],
+    required: true
+  },
+  {
+    id: "accessibility-alternative-completion-methods",
+    category: "accessibility-and-inclusion",
+    title: "Alternative completion methods",
+    question: "Can customers use another practical method when they cannot complete an important action through the primary website, form, payment, or communication process?",
+    helpText: "Alternatives may include phone support, email, text messaging, in-person help, or staff-assisted completion.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 3,
+    recommendationKeys: [
+      "offer-alternative-completion-methods"
+    ],
+    required: true
+  },
+  {
+    id: "accessibility-clear-customer-instructions",
+    category: "accessibility-and-inclusion",
+    title: "Clear customer instructions",
+    question: "Does your business provide clear, plain-language instructions for appointments, forms, payments, preparation, and other important actions?",
+    helpText: "Good instructions use short sentences, logical steps, clear deadlines, and an obvious way to ask for help.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 2,
+    recommendationKeys: [
+      "clarify-customer-instructions"
+    ],
+    required: true
+  },
+  {
+    id: "accessibility-accommodation-request-process",
+    category: "accessibility-and-inclusion",
+    title: "Accommodation request process",
+    question: "Does your business give customers a clear way to request reasonable assistance or an alternative way to access service?",
+    helpText: "Consider whether customers know whom to contact, how requests are handled, and what they should expect after asking for help.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 2,
+    recommendationKeys: [
+      "create-accommodation-request-process"
+    ],
+    required: true
+  },
+  {
     id: "security-password-sharing",
     category: "security-and-continuity",
     title: "Password sharing",
