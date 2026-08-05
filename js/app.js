@@ -234,8 +234,17 @@ renderSavedView();
       const summary = document.querySelector("#profile-error-summary");
 
       if (summary) {
-        const errorItems = Object.values(validation.errors)
-          .map((message) => `<li>${message}</li>`)
+        const errorItems = businessProfileFields
+          .filter((field) => validation.errors[field.name])
+          .map(
+            (field) => `
+              <li>
+                <a href="#${field.id}">
+                  ${validation.errors[field.name]}
+                </a>
+              </li>
+            `
+          )
           .join("");
 
         summary.hidden = false;
