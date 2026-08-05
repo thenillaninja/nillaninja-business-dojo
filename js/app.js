@@ -410,6 +410,28 @@ function renderAssessment(errorMessage = "") {
       questionIndex === businessAssessmentQuestions.length - 1;
 
     if (isLastQuestion) {
+      const firstUnansweredQuestionIndex =
+        businessAssessmentQuestions.findIndex(
+          (assessmentQuestion) =>
+            !state.assessment.answers[assessmentQuestion.id]
+        );
+
+      if (firstUnansweredQuestionIndex !== -1) {
+        state.navigation.currentQuestionIndex =
+          firstUnansweredQuestionIndex;
+
+        renderAssessment(
+          "Complete this unanswered question before generating your report."
+        );
+
+        document
+          .querySelector("#assessment-error")
+          ?.scrollIntoView({ block: "center" });
+
+        focusMainContent();
+        return;
+      }
+
       const scores = calculateAssessmentScores(
         businessAssessmentQuestions,
         state.assessment.answers
@@ -419,7 +441,7 @@ function renderAssessment(errorMessage = "") {
         businessAssessmentQuestions,
         state.assessment.answers,
         6,
-        state.profile.currentPriority
+        state.businessProfile.currentPriority
       );
 
       const strengths = generateStrengths(
