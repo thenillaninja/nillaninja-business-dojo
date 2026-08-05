@@ -6,12 +6,12 @@ export const standardAnswerOptions = [
   },
   {
     id: "partial",
-    label: "Somewhat established",
+    label: "Mostly in place",
     value: 0.67
   },
   {
     id: "inconsistent",
-    label: "Informal or inconsistent",
+    label: "Partly in place or inconsistent",
     value: 0.33
   },
   {
