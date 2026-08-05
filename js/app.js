@@ -150,7 +150,7 @@ function renderWelcomeView() {
   document
     .querySelector("#begin-assessment")
     ?.addEventListener("click", () => {
-      renderBusinessProfile();
+      renderBusinessProfile({}, "welcome");
       focusMainContent();
     });
 }
@@ -166,7 +166,13 @@ function getProfileFromForm(form) {
   return profile;
 }
 
-function renderBusinessProfile(errors = {}) {
+function renderBusinessProfile(errors = {}, returnView = null) {
+  if (returnView) {
+    state.navigation.profileReturnView = returnView;
+  } else if (!state.navigation.profileReturnView) {
+    state.navigation.profileReturnView = "welcome";
+  }
+
   state.navigation.currentView = "profile";
   state.navigation.currentStep = 2;
 
@@ -179,41 +185,12 @@ function renderBusinessProfile(errors = {}) {
   const backButton = document.querySelector("#profile-back");
 
   backButton?.addEventListener("click", () => {
-    function renderSavedView() {
-  switch (state.navigation.currentView) {
-    case "profile":
-      renderBusinessProfile();
-      break;
-
-    case "assessment": {
-      const questionCount = businessAssessmentQuestions.length;
-      const savedIndex = Number(state.navigation.currentQuestionIndex);
-
-      state.navigation.currentQuestionIndex =
-        Number.isInteger(savedIndex) &&
-        savedIndex >= 0 &&
-        savedIndex < questionCount
-          ? savedIndex
-          : 0;
-
+    if (state.navigation.profileReturnView === "assessment") {
       renderAssessment();
-      break;
+    } else {
+      renderWelcomeView();
     }
 
-    case "report":
-      if (Number.isFinite(state.results.overallScore)) {
-        renderReport();
-      } else {
-        renderAssessment();
-      }
-      break;
-
-    default:
-      renderWelcomeView();
-  }
-}
-
-renderSavedView();
     focusMainContent();
   });
 
@@ -401,13 +378,13 @@ function renderAssessment(errorMessage = "") {
   const profileButton = document.querySelector("#assessment-profile");
 
   profileButton?.addEventListener("click", () => {
-    renderBusinessProfile();
+    renderBusinessProfile({}, "assessment");
     focusMainContent();
   });
 
   backButton?.addEventListener("click", () => {
     if (questionIndex === 0) {
-      renderBusinessProfile();
+      renderBusinessProfile({}, "welcome");
     } else {
       state.navigation.currentQuestionIndex = questionIndex - 1;
       renderAssessment();
