@@ -359,6 +359,7 @@ function renderAssessment(errorMessage = "") {
     questionIndex,
     questionCount: businessAssessmentQuestions.length,
     selectedOptionId: savedAnswer?.optionId ?? "",
+    completedQuestionCount: state.assessment.completedQuestionIds.length,
     completionPercentage: state.assessment.completionPercentage,
     errorMessage
   });

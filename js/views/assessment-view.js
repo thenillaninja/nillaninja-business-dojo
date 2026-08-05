@@ -36,6 +36,7 @@ export function renderAssessmentView({
   questionIndex,
   questionCount,
   selectedOptionId = "",
+  completedQuestionCount = 0,
   completionPercentage = 0,
   errorMessage = ""
 }) {
@@ -67,7 +68,7 @@ export function renderAssessmentView({
       <div class="assessment-progress">
         <div class="assessment-progress__text">
           <span>Question ${questionNumber} of ${questionCount}</span>
-          <span>${completionPercentage}% complete</span>
+          <span>${completedQuestionCount} answered · ${completionPercentage}% complete</span>
         </div>
 
         <progress
