@@ -380,6 +380,76 @@ export const businessAssessmentQuestions = [
     required: true
   },
   {
+    id: "team-responsibility-clarity",
+    category: "team-and-responsibility",
+    title: "Responsibility clarity",
+    question: "Are important recurring responsibilities clearly assigned to specific employees, contractors, or partners?",
+    helpText: "Consider customer follow-up, scheduling, ordering, approvals, paperwork, quality checks, and other work that could be missed when ownership is unclear.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 3,
+    recommendationKeys: [
+      "clarify-team-responsibilities"
+    ],
+    required: true
+  },
+  {
+    id: "team-training-onboarding",
+    category: "team-and-responsibility",
+    title: "Training and onboarding",
+    question: "Does your business use a repeatable process to train and onboard new employees or contractors?",
+    helpText: "This may include role expectations, tools, procedures, communication methods, safety information, customer standards, and where to find help.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 2,
+    recommendationKeys: [
+      "standardize-training-and-onboarding"
+    ],
+    required: true
+  },
+  {
+    id: "team-information-access",
+    category: "team-and-responsibility",
+    title: "Access to needed information",
+    question: "Can employees, contractors, or partners reliably find the schedules, files, instructions, and customer information needed for their work?",
+    helpText: "Consider whether people can access current information without repeatedly asking the owner or waiting for one specific person.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 3,
+    recommendationKeys: [
+      "improve-team-information-access"
+    ],
+    required: true
+  },
+  {
+    id: "team-routine-decision-authority",
+    category: "team-and-responsibility",
+    title: "Routine decision authority",
+    question: "Are people given clear authority to make routine decisions without waiting for the owner?",
+    helpText: "This may include customer remedies, small purchases, scheduling changes, routine approvals, or other common situations with defined limits.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 3,
+    recommendationKeys: [
+      "define-routine-decision-authority"
+    ],
+    required: true
+  },
+  {
+    id: "team-accountability-check-ins",
+    category: "team-and-responsibility",
+    title: "Accountability check-ins",
+    question: "Does your business review priorities, unfinished work, obstacles, and results on a predictable schedule?",
+    helpText: "This may be a short weekly meeting, dashboard review, task check, or another consistent method for identifying issues before they grow.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 2,
+    recommendationKeys: [
+      "create-accountability-check-ins"
+    ],
+    required: true
+  },
+  {
     id: "accessibility-customer-contact-options",
     category: "accessibility-and-inclusion",
     title: "Customer contact options",
