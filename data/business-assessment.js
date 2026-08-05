@@ -560,5 +560,61 @@ export const businessAssessmentQuestions = [
       "establish-reliable-backups"
     ],
     required: true
+  },
+  {
+    id: "security-multi-factor-authentication",
+    category: "security-and-continuity",
+    title: "Multi-factor authentication",
+    question: "Does your business use multi-factor authentication on important accounts whenever it is available?",
+    helpText: "Important accounts may include email, financial services, cloud storage, website administration, customer systems, and other tools that could cause serious disruption if accessed by someone else.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 4,
+    recommendationKeys: [
+      "enable-multi-factor-authentication"
+    ],
+    required: true
+  },
+  {
+    id: "security-access-removal",
+    category: "security-and-continuity",
+    title: "Access removal",
+    question: "Does your business consistently remove account, device, key, and file access when someone leaves or changes roles?",
+    helpText: "Consider employees, contractors, former partners, temporary workers, shared devices, physical keys, software accounts, and cloud folders.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 4,
+    recommendationKeys: [
+      "remove-unneeded-account-access"
+    ],
+    required: true
+  },
+  {
+    id: "security-device-software-updates",
+    category: "security-and-continuity",
+    title: "Device and software updates",
+    question: "Are business devices, browsers, operating systems, and important software kept up to date?",
+    helpText: "A reliable process may use automatic updates, regular manual checks, or assigned responsibility for devices and applications that require attention.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 3,
+    recommendationKeys: [
+      "keep-devices-and-software-updated"
+    ],
+    required: true
+  },
+  {
+    id: "security-business-recovery-plan",
+    category: "security-and-continuity",
+    title: "Business recovery plan",
+    question: "Does your business have a basic written plan for continuing or recovering after a major outage, loss, emergency, or unavailable owner?",
+    helpText: "The plan may cover essential contacts, backup systems, customer communication, decision authority, urgent responsibilities, and the first actions needed to resume operations.",
+    responseType: "single-choice",
+    options: standardAnswerOptions,
+    weight: 4,
+    recommendationKeys: [
+      "create-business-recovery-plan"
+    ],
+    required: true
   }
 ];
