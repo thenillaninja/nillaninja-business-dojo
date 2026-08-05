@@ -1,7 +1,7 @@
 import { businessProfileFields } from "../data/business-profile.js";
 import { businessAssessmentQuestions } from "../data/business-assessment.js";
 import { createInitialState } from "./core/state.js";
-import { loadState, saveState } from "./core/storage.js";
+import { clearState, loadState, saveState } from "./core/storage.js";
 import { validateBusinessProfile } from "./core/validation.js";
 import {
   getQuestionByIndex,
@@ -16,7 +16,7 @@ import {
 } from "./engines/export-engine.js";
 import { renderProfileView } from "./views/profile-view.js";
 import { renderAssessmentView } from "./views/assessment-view.js";
-import { renderReportView } from "./views/report-view.js?v=3";
+import { renderReportView } from "./views/report-view.js?v=4";
 
 const app = document.querySelector("#app");
 const stepItems = document.querySelectorAll(".step-navigation__item");
@@ -339,6 +339,23 @@ function renderReport() {
         businessAssessmentQuestions.length - 1;
 
       renderAssessment();
+      focusMainContent();
+    });
+
+  document
+    .querySelector("#report-new-assessment")
+    ?.addEventListener("click", () => {
+      const shouldReset = window.confirm(
+        "Start a new assessment? This will erase the current profile, answers, and report from this browser."
+      );
+
+      if (!shouldReset) {
+        return;
+      }
+
+      clearState();
+      state = createInitialState();
+      renderWelcomeView();
       focusMainContent();
     });
 }

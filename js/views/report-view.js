@@ -366,6 +366,14 @@ export function renderReportView({
         >
           Back to Assessment
         </button>
+
+        <button
+          class="button button--secondary"
+          type="button"
+          id="report-new-assessment"
+        >
+          New Assessment
+        </button>
       </div>
     </section>
   `;
