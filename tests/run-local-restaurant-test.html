@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local Restaurant Mock Test</title>
+
+  <style>
+    body {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px;
+      font-family: system-ui, sans-serif;
+      line-height: 1.6;
+      background: #111;
+      color: #f5f5f5;
+    }
+
+    pre {
+      padding: 24px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      border: 1px solid #444;
+      border-radius: 12px;
+      background: #1b1b1b;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Local Restaurant Mock Test</h1>
+  <pre id="test-output">Running test…</pre>
+
+  <script type="module">
+    const output = document.querySelector("#test-output");
+    const messages = [];
+
+    const originalLog = console.log;
+
+    console.log = (...values) => {
+      originalLog(...values);
+      messages.push(values.join(" "));
+      output.textContent = messages.join("\n");
+    };
+
+    window.addEventListener("error", (event) => {
+      output.textContent =
+        `TEST ERROR\n\n${event.message}`;
+    });
+
+    import("./run-local-restaurant-test.mjs?mock=6").catch((error) => {
+      console.error(error);
+
+      output.textContent =
+        `TEST ERROR\n\n${error.message}`;
+    });
+  </script>
+</body>
+</html>
