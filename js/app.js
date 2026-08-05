@@ -249,7 +249,13 @@ renderSavedView();
       return;
     }
 
-    state.navigation.currentQuestionIndex = 0;
+    const hasAssessmentProgress =
+      Object.keys(state.assessment.answers).length > 0;
+
+    if (!hasAssessmentProgress) {
+      state.navigation.currentQuestionIndex = 0;
+    }
+
     renderAssessment();
     focusMainContent();
   });
@@ -366,6 +372,12 @@ function renderAssessment(errorMessage = "") {
 
   const form = document.querySelector("#assessment-form");
   const backButton = document.querySelector("#assessment-back");
+  const profileButton = document.querySelector("#assessment-profile");
+
+  profileButton?.addEventListener("click", () => {
+    renderBusinessProfile();
+    focusMainContent();
+  });
 
   backButton?.addEventListener("click", () => {
     if (questionIndex === 0) {

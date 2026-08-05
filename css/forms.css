@@ -167,6 +167,12 @@
   background: var(--color-accent);
 }
 
+.assessment-utility {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--space-5);
+}
+
 .assessment-panel__category {
   margin-bottom: var(--space-3);
   color: var(--color-accent);

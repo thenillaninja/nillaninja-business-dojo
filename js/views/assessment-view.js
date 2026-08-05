@@ -80,6 +80,16 @@ export function renderAssessmentView({
         </progress>
       </div>
 
+      <div class="assessment-utility">
+        <button
+          class="button button--secondary"
+          type="button"
+          id="assessment-profile"
+        >
+          Edit Business Profile
+        </button>
+      </div>
+
       <p class="assessment-panel__category">
         ${formatCategoryName(question.category)}
       </p>
