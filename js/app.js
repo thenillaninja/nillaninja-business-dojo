@@ -466,6 +466,19 @@ function renderAssessment(errorMessage = "") {
         state.assessment.answers
       );
 
+      if (!Number.isFinite(scores.overallScore)) {
+        renderAssessment(
+          "Your report needs at least one answer other than Not applicable. Review the assessment and update any questions that apply to your business."
+        );
+
+        document
+          .querySelector("#assessment-error")
+          ?.scrollIntoView({ block: "center" });
+
+        focusMainContent();
+        return;
+      }
+
       const recommendations = generateRecommendations(
         businessAssessmentQuestions,
         state.assessment.answers,
