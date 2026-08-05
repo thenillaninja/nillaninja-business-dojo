@@ -89,6 +89,14 @@ function updateStepNavigation(currentStep) {
 }
 
 function focusMainContent() {
+  const viewHeading = document.querySelector("#app h1");
+
+  if (viewHeading) {
+    viewHeading.setAttribute("tabindex", "-1");
+    viewHeading.focus();
+    return;
+  }
+
   document.querySelector("#main-content")?.focus();
 }
 
