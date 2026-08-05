@@ -9,7 +9,7 @@ import {
 
 import {
   generateRecommendations
-} from "../js/engines/recommendation-engine.js?mock=5";
+} from "../js/engines/recommendation-engine.js?mock=12";
 
 import {
   generateStrengths
@@ -65,7 +65,9 @@ const strengths = generateStrengths(
 
 const recommendations = generateRecommendations(
   businessAssessmentQuestions,
-  answers
+  answers,
+  6,
+  independentAutoRepairShop.profile.currentPriority
 );
 
 console.log("MOCK BUSINESS");

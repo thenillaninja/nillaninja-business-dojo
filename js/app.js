@@ -408,7 +408,9 @@ function renderAssessment(errorMessage = "") {
 
       const recommendations = generateRecommendations(
         businessAssessmentQuestions,
-        state.assessment.answers
+        state.assessment.answers,
+        6,
+        state.profile.currentPriority
       );
 
       const strengths = generateStrengths(

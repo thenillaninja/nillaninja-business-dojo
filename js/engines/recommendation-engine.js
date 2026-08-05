@@ -7,6 +7,59 @@ const PRIORITY_ORDER = {
   future: 3
 };
 
+const BUSINESS_PRIORITY_CATEGORIES = {
+  "save-time": [
+    "technology-and-workflow",
+    "operations"
+  ],
+  "improve-consistency": [
+    "operations",
+    "team-and-responsibility"
+  ],
+  "increase-sales": [
+    "sales-and-marketing",
+    "customer-experience"
+  ],
+  "improve-customer-experience": [
+    "customer-experience",
+    "accessibility-and-inclusion"
+  ],
+  "reduce-owner-workload": [
+    "team-and-responsibility",
+    "operations",
+    "technology-and-workflow"
+  ],
+  "improve-security": [
+    "security-and-continuity"
+  ],
+  "prepare-for-growth": [
+    "operations",
+    "team-and-responsibility",
+    "technology-and-workflow"
+  ]
+};
+
+export function getPreferredCategories(currentPriority) {
+  return BUSINESS_PRIORITY_CATEGORIES[currentPriority] ?? [];
+}
+
+function isPreferredRecommendation(
+  recommendation,
+  preferredCategories
+) {
+  if (
+    !Array.isArray(preferredCategories) ||
+    preferredCategories.length === 0
+  ) {
+    return false;
+  }
+
+  return recommendation.relatedCategories?.some((category) =>
+    preferredCategories.includes(category)
+  ) ?? false;
+}
+
+
 export function shouldTriggerRecommendation(answer) {
   if (!answer || answer.value === null) {
     return false;
@@ -81,16 +134,26 @@ export function createRecommendationResult(
     )
   ];
 
+  const lowestAnswerValue = relatedTriggers.reduce(
+    (lowest, trigger) =>
+      Math.min(lowest, trigger.answerValue),
+    1
+  );
+
   return {
     ...recommendation,
     relatedFindings: uniqueQuestionIds,
     relatedCategories,
     findingCount: uniqueQuestionIds.length,
-    highestQuestionWeight
+    highestQuestionWeight,
+    lowestAnswerValue
   };
 }
 
-export function sortRecommendations(recommendations) {
+export function sortRecommendations(
+  recommendations,
+  preferredCategories = []
+) {
   if (!Array.isArray(recommendations)) {
     return [];
   }
@@ -104,6 +167,18 @@ export function sortRecommendations(recommendations) {
       return priorityDifference;
     }
 
+    const preferredDifference =
+      Number(
+        isPreferredRecommendation(b, preferredCategories)
+      ) -
+      Number(
+        isPreferredRecommendation(a, preferredCategories)
+      );
+
+    if (preferredDifference !== 0) {
+      return preferredDifference;
+    }
+
     if (b.findingCount !== a.findingCount) {
       return b.findingCount - a.findingCount;
     }
@@ -115,7 +190,8 @@ export function sortRecommendations(recommendations) {
 export function selectBalancedRecommendations(
   recommendations,
   maximumRecommendations = 6,
-  maximumPerCategory = 3
+  maximumPerCategory = 3,
+  preferredCategories = []
 ) {
   if (!Array.isArray(recommendations)) {
     return [];
@@ -146,8 +222,71 @@ export function selectBalancedRecommendations(
     }
 
     if (selected.length === maximumRecommendations) {
-      return selected;
+      break;
     }
+  }
+
+  const primaryPreferredCategory =
+    preferredCategories[0] ?? null;
+
+  const primaryCategoryIsRepresented =
+    primaryPreferredCategory
+      ? selected.some((recommendation) =>
+          recommendation.relatedCategories?.includes(
+            primaryPreferredCategory
+          )
+        )
+      : true;
+
+  const preferredCandidate =
+    primaryPreferredCategory &&
+    !primaryCategoryIsRepresented
+      ? recommendations
+          .filter(
+            (recommendation) =>
+              recommendation.priority !== "immediate" &&
+              !selected.includes(recommendation) &&
+              recommendation.relatedCategories?.includes(
+                primaryPreferredCategory
+              )
+          )
+          .sort((a, b) => {
+            if (a.lowestAnswerValue !== b.lowestAnswerValue) {
+              return a.lowestAnswerValue - b.lowestAnswerValue;
+            }
+
+            return (
+              b.highestQuestionWeight -
+              a.highestQuestionWeight
+            );
+          })[0]
+      : null;
+
+  if (
+    preferredCandidate &&
+    selected.length === maximumRecommendations
+  ) {
+    const replaceableIndex = [...selected]
+      .reverse()
+      .findIndex(
+        (recommendation) =>
+          recommendation.priority !== "immediate" &&
+          !isPreferredRecommendation(
+            recommendation,
+            preferredCategories
+          )
+      );
+
+    if (replaceableIndex !== -1) {
+      const actualIndex =
+        selected.length - 1 - replaceableIndex;
+
+      selected[actualIndex] = preferredCandidate;
+    }
+  }
+
+  if (selected.length === maximumRecommendations) {
+    return selected;
   }
 
   for (const recommendation of deferred) {
@@ -164,7 +303,8 @@ export function selectBalancedRecommendations(
 export function generateRecommendations(
   questions,
   answers,
-  maximumRecommendations = 6
+  maximumRecommendations = 6,
+  currentPriority = ""
 ) {
   const triggers = collectRecommendationTriggers(questions, answers);
   const groupedTriggers = groupRecommendationTriggers(triggers);
@@ -178,10 +318,18 @@ export function generateRecommendations(
     )
     .filter(Boolean);
 
-  const sortedRecommendations = sortRecommendations(recommendations);
+  const preferredCategories =
+    getPreferredCategories(currentPriority);
+
+  const sortedRecommendations = sortRecommendations(
+    recommendations,
+    preferredCategories
+  );
 
   return selectBalancedRecommendations(
     sortedRecommendations,
-    maximumRecommendations
+    maximumRecommendations,
+    3,
+    preferredCategories
   );
 }
