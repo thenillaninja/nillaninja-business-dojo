@@ -9,7 +9,7 @@ import {
 
 import {
   generateRecommendations
-} from "../js/engines/recommendation-engine.js?mock=2";
+} from "../js/engines/recommendation-engine.js?mock=5";
 
 import {
   generateStrengths

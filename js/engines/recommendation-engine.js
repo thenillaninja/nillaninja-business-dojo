@@ -75,9 +75,16 @@ export function createRecommendationResult(
     0
   );
 
+  const relatedCategories = [
+    ...new Set(
+      relatedTriggers.map((trigger) => trigger.category)
+    )
+  ];
+
   return {
     ...recommendation,
     relatedFindings: uniqueQuestionIds,
+    relatedCategories,
     findingCount: uniqueQuestionIds.length,
     highestQuestionWeight
   };
@@ -105,6 +112,55 @@ export function sortRecommendations(recommendations) {
   });
 }
 
+export function selectBalancedRecommendations(
+  recommendations,
+  maximumRecommendations = 6,
+  maximumPerCategory = 3
+) {
+  if (!Array.isArray(recommendations)) {
+    return [];
+  }
+
+  if (
+    !Number.isInteger(maximumRecommendations) ||
+    maximumRecommendations <= 0
+  ) {
+    return [...recommendations];
+  }
+
+  const selected = [];
+  const deferred = [];
+  const categoryCounts = {};
+
+  for (const recommendation of recommendations) {
+    const primaryCategory =
+      recommendation.relatedCategories?.[0] ?? "uncategorized";
+
+    const categoryCount = categoryCounts[primaryCategory] ?? 0;
+
+    if (categoryCount < maximumPerCategory) {
+      selected.push(recommendation);
+      categoryCounts[primaryCategory] = categoryCount + 1;
+    } else {
+      deferred.push(recommendation);
+    }
+
+    if (selected.length === maximumRecommendations) {
+      return selected;
+    }
+  }
+
+  for (const recommendation of deferred) {
+    selected.push(recommendation);
+
+    if (selected.length === maximumRecommendations) {
+      break;
+    }
+  }
+
+  return selected;
+}
+
 export function generateRecommendations(
   questions,
   answers,
@@ -124,8 +180,8 @@ export function generateRecommendations(
 
   const sortedRecommendations = sortRecommendations(recommendations);
 
-  return Number.isInteger(maximumRecommendations) &&
-    maximumRecommendations > 0
-    ? sortedRecommendations.slice(0, maximumRecommendations)
-    : sortedRecommendations;
+  return selectBalancedRecommendations(
+    sortedRecommendations,
+    maximumRecommendations
+  );
 }
