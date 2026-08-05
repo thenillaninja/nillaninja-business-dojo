@@ -1,3 +1,5 @@
+import { businessProfileFields } from "../../data/business-profile.js";
+
 function formatCategoryName(category = "") {
   return category
     .split("-")
@@ -31,21 +33,30 @@ function getScoreSummary(score) {
   return "The business has important opportunities to strengthen consistency, reduce risk, and make daily operations easier.";
 }
 
-function renderProfileSection(profile = {}) {
-  const fields = [
-    ["Business name", profile.businessName],
-    ["Industry", profile.industry],
-    ["Years operating", profile.yearsOperating],
-    ["Employee count", profile.employeeCount],
-    ["Products or services", profile.productsServices],
-    ["Customer type", profile.customerType],
-    ["Current priority", profile.currentPriority],
-    ["Main challenge", profile.mainChallenge]
-  ];
+function getProfileFieldDisplayValue(field, value) {
+  const normalizedValue = String(value ?? "").trim();
 
-  const populatedFields = fields.filter(([, value]) =>
-    String(value ?? "").trim()
+  if (!normalizedValue) {
+    return "";
+  }
+
+  if (!Array.isArray(field.options)) {
+    return normalizedValue;
+  }
+
+  return (
+    field.options.find((option) => option.value === normalizedValue)?.label ??
+    normalizedValue
   );
+}
+
+function renderProfileSection(profile = {}) {
+  const populatedFields = businessProfileFields
+    .map((field) => [
+      field.label,
+      getProfileFieldDisplayValue(field, profile[field.name])
+    ])
+    .filter(([, value]) => value);
 
   if (populatedFields.length === 0) {
     return "";
@@ -55,7 +66,7 @@ function renderProfileSection(profile = {}) {
     "BUSINESS PROFILE",
     "----------------",
     ...populatedFields.map(
-      ([label, value]) => `${label}: ${String(value).trim()}`
+      ([label, value]) => `${label}: ${value}`
     )
   ].join("\n");
 }

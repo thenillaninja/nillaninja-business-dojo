@@ -13,7 +13,7 @@ import { generateStrengths } from "./engines/strengths-engine.js";
 import {
   createReportFilename,
   generateReportText
-} from "./engines/export-engine.js";
+} from "./engines/export-engine.js?v=2";
 import { renderProfileView } from "./views/profile-view.js";
 import { renderAssessmentView } from "./views/assessment-view.js";
 import { renderReportView } from "./views/report-view.js?v=4";
