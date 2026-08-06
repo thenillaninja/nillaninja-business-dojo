@@ -53,6 +53,15 @@ import {
 import {
   renderSnapshotComparisonView
 } from "./views/snapshot-comparison-view.js";
+import {
+  createBackupFilename,
+  createBusinessDojoBackup,
+  parseBusinessDojoBackup,
+  restoreBusinessDojoBackup
+} from "./core/backup.js";
+import {
+  renderBackupView
+} from "./views/backup-view.js";
 
 const app = document.querySelector("#app");
 const stepItems = document.querySelectorAll(".step-navigation__item");
@@ -116,6 +125,8 @@ let recommendationFilters = {
 
 let selectedSnapshotIds = [];
 let snapshotComparisonMessage = "";
+let backupStatusMessage = "";
+let backupStatusType = "";
 
 function persistState() {
   saveState(state);
@@ -297,8 +308,114 @@ function renderSnapshotLibrary() {
     snapshots,
     mostRecentSnapshotId: mostRecentSnapshot?.id || "",
     selectedSnapshotIds,
-    comparisonMessage: snapshotComparisonMessage
+    comparisonMessage: snapshotComparisonMessage,
+    backupMarkup: renderBackupView({
+      statusMessage: backupStatusMessage,
+      statusType: backupStatusType
+    })
   });
+
+  document
+    .querySelector("#backup-download")
+    ?.addEventListener("click", () => {
+      const backup = createBusinessDojoBackup();
+      const file = new Blob(
+        [JSON.stringify(backup, null, 2)],
+        {
+          type: "application/json;charset=utf-8"
+        }
+      );
+
+      const downloadUrl = URL.createObjectURL(file);
+      const downloadLink = document.createElement("a");
+
+      downloadLink.href = downloadUrl;
+      downloadLink.download = createBackupFilename();
+
+      document.body.append(downloadLink);
+      downloadLink.click();
+      downloadLink.remove();
+
+      URL.revokeObjectURL(downloadUrl);
+
+      backupStatusMessage =
+        "Backup downloaded successfully.";
+      backupStatusType = "success";
+      renderSnapshotLibrary();
+    });
+
+  document
+    .querySelector("#backup-restore")
+    ?.addEventListener("click", async () => {
+      const fileInput = document.querySelector(
+        "#backup-file"
+      );
+
+      const file = fileInput?.files?.[0];
+
+      if (!file) {
+        backupStatusMessage =
+          "Choose a Business Dojo JSON backup file first.";
+        backupStatusType = "error";
+        renderSnapshotLibrary();
+        return;
+      }
+
+      let parsedBackup;
+
+      try {
+        parsedBackup = parseBusinessDojoBackup(
+          await file.text()
+        );
+      } catch {
+        parsedBackup = {
+          isValid: false,
+          reason:
+            "The selected backup file could not be read.",
+          backup: null
+        };
+      }
+
+      if (!parsedBackup.isValid) {
+        backupStatusMessage = parsedBackup.reason;
+        backupStatusType = "error";
+        renderSnapshotLibrary();
+        return;
+      }
+
+      const shouldRestore = window.confirm(
+        "Restore this backup? This will replace the current application state, saved snapshots, and action plans in this browser."
+      );
+
+      if (!shouldRestore) {
+        backupStatusMessage =
+          "Backup restore cancelled. No data was changed.";
+        backupStatusType = "";
+        renderSnapshotLibrary();
+        return;
+      }
+
+      const result = restoreBusinessDojoBackup(
+        parsedBackup.backup
+      );
+
+      if (!result.isSuccessful) {
+        backupStatusMessage = result.reason;
+        backupStatusType = "error";
+        renderSnapshotLibrary();
+        return;
+      }
+
+      state = restoreApplicationState();
+      selectedSnapshotIds = [];
+      snapshotComparisonMessage = "";
+      backupStatusMessage =
+        "Backup restored successfully.";
+      backupStatusType = "success";
+
+      renderSnapshotLibrary();
+      focusMainContent();
+    });
 
   document
     .querySelectorAll("[data-snapshot-compare-select]")

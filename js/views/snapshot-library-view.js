@@ -115,7 +115,8 @@ export function renderSnapshotLibraryView({
   snapshots = [],
   mostRecentSnapshotId = "",
   selectedSnapshotIds = [],
-  comparisonMessage = ""
+  comparisonMessage = "",
+  backupMarkup = ""
 } = {}) {
   return `
     <section
@@ -192,6 +193,8 @@ export function renderSnapshotLibraryView({
           selectedSnapshotIds
         )}
       </div>
+
+      ${backupMarkup}
 
       <div class="form-actions">
         <button
