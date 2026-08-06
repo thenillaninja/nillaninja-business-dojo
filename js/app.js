@@ -676,12 +676,75 @@ function renderReport() {
       });
     });
 
-  app.addEventListener("change", (event) => {
-    const completionControl = event.target.closest(
-      "[data-checklist-completion]"
-    );
+  if (app.dataset.checklistEventsBound !== "true") {
+    app.addEventListener("change", (event) => {
+      const completionControl = event.target.closest(
+        "[data-checklist-completion]"
+      );
 
-    if (completionControl) {
+      if (completionControl) {
+        const currentPlan = getCurrentActionPlan();
+
+        if (!currentPlan) {
+          return;
+        }
+
+        const recommendationId =
+          completionControl.dataset.recommendationId;
+
+        const updatedPlan = updateChecklistItemCompletion(
+          currentPlan,
+          recommendationId,
+          completionControl.dataset.checklistItemId,
+          completionControl.checked
+        );
+
+        if (!updatedPlan || !saveActionPlan(updatedPlan)) {
+          return;
+        }
+
+        updateChecklistDisplay(updatedPlan, recommendationId);
+        return;
+      }
+
+      const textControl = event.target.closest(
+        "[data-checklist-text]"
+      );
+
+      if (textControl) {
+        const currentPlan = getCurrentActionPlan();
+
+        if (!currentPlan) {
+          return;
+        }
+
+        const recommendationId =
+          textControl.dataset.recommendationId;
+
+        const updatedPlan = updateChecklistItemText(
+          currentPlan,
+          recommendationId,
+          textControl.dataset.checklistItemId,
+          textControl.value
+        );
+
+        if (!updatedPlan || !saveActionPlan(updatedPlan)) {
+          return;
+        }
+
+        updateChecklistDisplay(updatedPlan, recommendationId);
+      }
+    });
+
+    app.addEventListener("click", (event) => {
+      const removeButton = event.target.closest(
+        "[data-checklist-remove]"
+      );
+
+      if (!removeButton) {
+        return;
+      }
+
       const currentPlan = getCurrentActionPlan();
 
       if (!currentPlan) {
@@ -689,13 +752,12 @@ function renderReport() {
       }
 
       const recommendationId =
-        completionControl.dataset.recommendationId;
+        removeButton.dataset.recommendationId;
 
-      const updatedPlan = updateChecklistItemCompletion(
+      const updatedPlan = deleteChecklistItem(
         currentPlan,
         recommendationId,
-        completionControl.dataset.checklistItemId,
-        completionControl.checked
+        removeButton.dataset.checklistItemId
       );
 
       if (!updatedPlan || !saveActionPlan(updatedPlan)) {
@@ -703,114 +765,56 @@ function renderReport() {
       }
 
       updateChecklistDisplay(updatedPlan, recommendationId);
-      return;
-    }
+    });
 
-    const textControl = event.target.closest(
-      "[data-checklist-text]"
-    );
+    app.addEventListener("submit", (event) => {
+      const checklistForm = event.target.closest(
+        "[data-checklist-add-form]"
+      );
 
-    if (textControl) {
+      if (!checklistForm) {
+        return;
+      }
+
+      event.preventDefault();
+
+      const input = checklistForm.querySelector(
+        "[data-checklist-add-input]"
+      );
+
       const currentPlan = getCurrentActionPlan();
 
-      if (!currentPlan) {
+      if (!input || !currentPlan) {
         return;
       }
 
       const recommendationId =
-        textControl.dataset.recommendationId;
+        checklistForm.dataset.checklistAddForm;
 
-      const updatedPlan = updateChecklistItemText(
+      const updatedPlan = addChecklistItem(
         currentPlan,
         recommendationId,
-        textControl.dataset.checklistItemId,
-        textControl.value
+        input.value
       );
 
       if (!updatedPlan || !saveActionPlan(updatedPlan)) {
+        input.focus();
         return;
       }
 
       updateChecklistDisplay(updatedPlan, recommendationId);
-    }
-  });
 
-  app.addEventListener("click", (event) => {
-    const removeButton = event.target.closest(
-      "[data-checklist-remove]"
-    );
+      document
+        .querySelector(
+          `[data-checklist-add-form="${CSS.escape(
+            recommendationId
+          )}"] [data-checklist-add-input]`
+        )
+        ?.focus();
+    });
 
-    if (!removeButton) {
-      return;
-    }
-
-    const currentPlan = getCurrentActionPlan();
-
-    if (!currentPlan) {
-      return;
-    }
-
-    const recommendationId =
-      removeButton.dataset.recommendationId;
-
-    const updatedPlan = deleteChecklistItem(
-      currentPlan,
-      recommendationId,
-      removeButton.dataset.checklistItemId
-    );
-
-    if (!updatedPlan || !saveActionPlan(updatedPlan)) {
-      return;
-    }
-
-    updateChecklistDisplay(updatedPlan, recommendationId);
-  });
-
-  app.addEventListener("submit", (event) => {
-    const checklistForm = event.target.closest(
-      "[data-checklist-add-form]"
-    );
-
-    if (!checklistForm) {
-      return;
-    }
-
-    event.preventDefault();
-
-    const input = checklistForm.querySelector(
-      "[data-checklist-add-input]"
-    );
-
-    const currentPlan = getCurrentActionPlan();
-
-    if (!input || !currentPlan) {
-      return;
-    }
-
-    const recommendationId =
-      checklistForm.dataset.checklistAddForm;
-
-    const updatedPlan = addChecklistItem(
-      currentPlan,
-      recommendationId,
-      input.value
-    );
-
-    if (!updatedPlan || !saveActionPlan(updatedPlan)) {
-      input.focus();
-      return;
-    }
-
-    updateChecklistDisplay(updatedPlan, recommendationId);
-
-    document
-      .querySelector(
-        `[data-checklist-add-form="${CSS.escape(
-          recommendationId
-        )}"] [data-checklist-add-input]`
-      )
-      ?.focus();
-  });
+    app.dataset.checklistEventsBound = "true";
+  }
 
   const reportText = generateReportText({
     businessProfile: state.businessProfile,
