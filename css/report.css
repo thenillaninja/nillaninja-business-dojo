@@ -1209,3 +1209,45 @@
     width: 100%;
   }
 }
+
+/* Prevent mobile form controls from exceeding action-plan cards. */
+.recommendation-card__action-controls,
+.recommendation-card__action-field,
+.action-checklist,
+.action-checklist__list,
+.action-checklist__item,
+.action-checklist__item-header,
+.action-checklist__item-actions,
+.action-checklist__add {
+  min-width: 0;
+}
+
+.recommendation-card__action-field select,
+.recommendation-card__action-field input,
+.recommendation-card__action-field textarea,
+.action-checklist__text,
+.action-checklist__add input {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+@media (max-width: 44rem) {
+  .action-checklist {
+    padding: var(--space-4);
+  }
+
+  .action-checklist__item {
+    padding: var(--space-4);
+  }
+
+  .action-checklist__item-header {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .action-checklist__item-actions {
+    flex-wrap: wrap;
+  }
+}
