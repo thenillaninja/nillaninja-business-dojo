@@ -156,7 +156,7 @@ function renderWelcomeView() {
       <div class="privacy-notice">
         <h2>Your information stays in this browser</h2>
         <p>
-          Version 0.1 stores assessment progress locally on this device.
+          Version 0.2 stores assessment progress and completed snapshots locally on this device.
           Nothing is uploaded or transmitted.
         </p>
       </div>
