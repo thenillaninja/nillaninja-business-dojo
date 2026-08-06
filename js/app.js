@@ -4,9 +4,13 @@ import { createInitialState } from "./core/state.js";
 import { clearState, loadState, saveState } from "./core/storage.js";
 import { createSnapshotRecord } from "./core/snapshots.js";
 import {
+  addChecklistItem,
   createActionPlanRecord,
+  deleteChecklistItem,
   updateActionItemFields,
-  updateActionItemStatus
+  updateActionItemStatus,
+  updateChecklistItemCompletion,
+  updateChecklistItemText
 } from "./core/action-plans.js";
 import {
   deleteActionPlanBySnapshotId,
@@ -34,7 +38,10 @@ import {
 } from "./engines/export-engine.js?v=2";
 import { renderProfileView } from "./views/profile-view.js";
 import { renderAssessmentView } from "./views/assessment-view.js";
-import { renderReportView } from "./views/report-view.js?v=4";
+import {
+  renderActionChecklist,
+  renderReportView
+} from "./views/report-view.js?v=4";
 import { renderSnapshotLibraryView } from "./views/snapshot-library-view.js";
 
 const app = document.querySelector("#app");
@@ -449,6 +456,30 @@ function renderBusinessProfile(errors = {}, returnView = null) {
   });
 }
 
+function updateChecklistDisplay(
+  actionPlan,
+  recommendationId
+) {
+  const actionItem = actionPlan?.items?.find(
+    (item) => item.recommendationId === recommendationId
+  );
+
+  const checklistContainer = document.querySelector(
+    `[data-action-checklist="${CSS.escape(
+      recommendationId
+    )}"]`
+  );
+
+  if (!checklistContainer || !actionItem) {
+    return;
+  }
+
+  checklistContainer.outerHTML = renderActionChecklist(
+    actionItem,
+    recommendationId
+  );
+}
+
 function updateActionPlanStatusDisplay(
   actionPlan,
   recommendationId
@@ -644,6 +675,142 @@ function renderReport() {
         field.dataset.savedValue = field.value;
       });
     });
+
+  app.addEventListener("change", (event) => {
+    const completionControl = event.target.closest(
+      "[data-checklist-completion]"
+    );
+
+    if (completionControl) {
+      const currentPlan = getCurrentActionPlan();
+
+      if (!currentPlan) {
+        return;
+      }
+
+      const recommendationId =
+        completionControl.dataset.recommendationId;
+
+      const updatedPlan = updateChecklistItemCompletion(
+        currentPlan,
+        recommendationId,
+        completionControl.dataset.checklistItemId,
+        completionControl.checked
+      );
+
+      if (!updatedPlan || !saveActionPlan(updatedPlan)) {
+        return;
+      }
+
+      updateChecklistDisplay(updatedPlan, recommendationId);
+      return;
+    }
+
+    const textControl = event.target.closest(
+      "[data-checklist-text]"
+    );
+
+    if (textControl) {
+      const currentPlan = getCurrentActionPlan();
+
+      if (!currentPlan) {
+        return;
+      }
+
+      const recommendationId =
+        textControl.dataset.recommendationId;
+
+      const updatedPlan = updateChecklistItemText(
+        currentPlan,
+        recommendationId,
+        textControl.dataset.checklistItemId,
+        textControl.value
+      );
+
+      if (!updatedPlan || !saveActionPlan(updatedPlan)) {
+        return;
+      }
+
+      updateChecklistDisplay(updatedPlan, recommendationId);
+    }
+  });
+
+  app.addEventListener("click", (event) => {
+    const removeButton = event.target.closest(
+      "[data-checklist-remove]"
+    );
+
+    if (!removeButton) {
+      return;
+    }
+
+    const currentPlan = getCurrentActionPlan();
+
+    if (!currentPlan) {
+      return;
+    }
+
+    const recommendationId =
+      removeButton.dataset.recommendationId;
+
+    const updatedPlan = deleteChecklistItem(
+      currentPlan,
+      recommendationId,
+      removeButton.dataset.checklistItemId
+    );
+
+    if (!updatedPlan || !saveActionPlan(updatedPlan)) {
+      return;
+    }
+
+    updateChecklistDisplay(updatedPlan, recommendationId);
+  });
+
+  app.addEventListener("submit", (event) => {
+    const checklistForm = event.target.closest(
+      "[data-checklist-add-form]"
+    );
+
+    if (!checklistForm) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const input = checklistForm.querySelector(
+      "[data-checklist-add-input]"
+    );
+
+    const currentPlan = getCurrentActionPlan();
+
+    if (!input || !currentPlan) {
+      return;
+    }
+
+    const recommendationId =
+      checklistForm.dataset.checklistAddForm;
+
+    const updatedPlan = addChecklistItem(
+      currentPlan,
+      recommendationId,
+      input.value
+    );
+
+    if (!updatedPlan || !saveActionPlan(updatedPlan)) {
+      input.focus();
+      return;
+    }
+
+    updateChecklistDisplay(updatedPlan, recommendationId);
+
+    document
+      .querySelector(
+        `[data-checklist-add-form="${CSS.escape(
+          recommendationId
+        )}"] [data-checklist-add-input]`
+      )
+      ?.focus();
+  });
 
   const reportText = generateReportText({
     businessProfile: state.businessProfile,

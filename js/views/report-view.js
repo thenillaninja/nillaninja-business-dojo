@@ -387,6 +387,126 @@ function renderActionPlanIndex(
   `;
 }
 
+export function renderActionChecklist(
+  actionItem,
+  recommendationId
+) {
+  const checklist = Array.isArray(actionItem?.checklist)
+    ? actionItem.checklist
+    : [];
+
+  const itemsMarkup = checklist.length
+    ? checklist
+        .map(
+          (item, index) => `
+            <li
+              class="action-checklist__item ${
+                item.completed
+                  ? "action-checklist__item--complete"
+                  : ""
+              }"
+            >
+              <div class="action-checklist__item-header">
+                <h5>Action ${index + 1}</h5>
+
+                <div class="action-checklist__item-actions">
+                  <label
+                    class="action-checklist__complete-control"
+                    for="checklist-${item.id}"
+                  >
+                    <input
+                      class="action-checklist__checkbox"
+                      id="checklist-${item.id}"
+                      type="checkbox"
+                      ${item.completed ? "checked" : ""}
+                      data-checklist-completion
+                      data-recommendation-id="${recommendationId}"
+                      data-checklist-item-id="${item.id}"
+                    />
+
+                    <span>Complete</span>
+                  </label>
+
+                  <button
+                    class="action-checklist__remove"
+                    type="button"
+                    data-checklist-remove
+                    data-recommendation-id="${recommendationId}"
+                    data-checklist-item-id="${item.id}"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+
+              <label
+                class="action-checklist__details-label"
+                for="checklist-text-${item.id}"
+              >
+                Action ${index + 1} Details
+              </label>
+
+              <textarea
+                class="action-checklist__text"
+                id="checklist-text-${item.id}"
+                rows="3"
+                data-checklist-text
+                data-recommendation-id="${recommendationId}"
+                data-checklist-item-id="${item.id}"
+              >${item.text}</textarea>
+            </li>
+          `
+        )
+        .join("")
+    : `
+        <li class="action-checklist__empty">
+          No checklist items yet.
+        </li>
+      `;
+
+  return `
+    <div
+      class="action-checklist"
+      data-action-checklist="${recommendationId}"
+    >
+      <div class="action-checklist__header">
+        <div>
+          <h4>Action checklist</h4>
+          <p>
+            Break this recommendation into smaller, trackable steps.
+          </p>
+        </div>
+
+        <span class="action-checklist__count">
+          ${checklist.filter((item) => item.completed).length}
+          of ${checklist.length} complete
+        </span>
+      </div>
+
+      <ul class="action-checklist__list">
+        ${itemsMarkup}
+      </ul>
+
+      <form
+        class="action-checklist__add"
+        data-checklist-add-form="${recommendationId}"
+      >
+        <input
+          id="checklist-add-${recommendationId}"
+          type="text"
+          aria-label="Add another action step"
+          placeholder="Add another action step"
+          data-checklist-add-input
+        />
+
+        <button class="button button--secondary" type="submit">
+          Add Action
+        </button>
+      </form>
+    </div>
+  `;
+}
+
 function renderRecommendations(
   recommendations = [],
   actionPlan = null
@@ -543,6 +663,11 @@ function renderRecommendations(
                 data-recommendation-id="${recommendation.id}"
               >${actionItem?.notes || ""}</textarea>
             </div>
+
+            ${renderActionChecklist(
+              actionItem,
+              recommendation.id
+            )}
           </div>
         </article>
       `;
