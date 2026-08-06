@@ -1251,3 +1251,25 @@
     flex-wrap: wrap;
   }
 }
+
+/*
+  iOS Safari can preserve the intrinsic minimum width of form controls
+  inside a plain 1fr grid track. Zero-minimum tracks keep every nested
+  action-plan control contained within its mobile card.
+*/
+@media (max-width: 44rem) {
+  .recommendation-card,
+  .recommendation-card__action-controls,
+  .recommendation-card__action-field,
+  .action-checklist,
+  .action-checklist__list,
+  .action-checklist__item,
+  .action-checklist__add {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .recommendation-card__action-field input[type="date"] {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+}
