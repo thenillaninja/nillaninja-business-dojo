@@ -217,6 +217,7 @@ function renderActionPlanSummary(actionPlan) {
 
         <div
           class="action-plan-summary__percentage"
+          data-action-plan-percentage
           aria-label="${progress.percentage} percent complete"
         >
           ${progress.percentage}%
@@ -225,6 +226,7 @@ function renderActionPlanSummary(actionPlan) {
 
       <progress
         class="action-plan-summary__progress"
+        data-action-plan-progress
         value="${progress.percentage}"
         max="100"
         aria-label="Action plan progress: ${progress.percentage} percent"
@@ -234,17 +236,23 @@ function renderActionPlanSummary(actionPlan) {
 
       <div class="action-plan-summary__counts">
         <p>
-          <strong>${progress.completed}</strong>
+          <strong data-action-plan-count="complete">
+            ${progress.completed}
+          </strong>
           Complete
         </p>
 
         <p>
-          <strong>${progress.inProgress}</strong>
+          <strong data-action-plan-count="in-progress">
+            ${progress.inProgress}
+          </strong>
           In progress
         </p>
 
         <p>
-          <strong>${progress.notStarted}</strong>
+          <strong data-action-plan-count="not-started">
+            ${progress.notStarted}
+          </strong>
           Not started
         </p>
       </div>
@@ -289,6 +297,96 @@ function renderActionPlanJump(actionPlan) {
   `;
 }
 
+function renderActionPlanIndex(
+  recommendations = [],
+  actionPlan = null
+) {
+  if (
+    !Array.isArray(recommendations) ||
+    recommendations.length === 0 ||
+    !Array.isArray(actionPlan?.items)
+  ) {
+    return "";
+  }
+
+  const rows = recommendations
+    .map((recommendation, index) => {
+      const actionItem = actionPlan.items.find(
+        (item) =>
+          item.recommendationId === recommendation.id
+      );
+
+      const status = actionItem?.status || "not-started";
+      const targetDate = actionItem?.targetDate || "No date set";
+      const responsiblePerson =
+        actionItem?.responsiblePerson || "Not assigned";
+
+      return `
+        <li class="action-plan-index__item">
+          <div class="action-plan-index__number">
+            ${index + 1}
+          </div>
+
+          <div class="action-plan-index__content">
+            <h4>${recommendation.title}</h4>
+
+            <div class="action-plan-index__meta">
+              <span>
+                <strong>Status:</strong>
+                <span
+                  data-action-plan-index-status="${recommendation.id}"
+                >
+                  ${formatLabel(status)}
+                </span>
+              </span>
+
+              <span>
+                <strong>Target:</strong>
+                ${targetDate}
+              </span>
+
+              <span>
+                <strong>Owner:</strong>
+                ${responsiblePerson}
+              </span>
+            </div>
+          </div>
+
+          <button
+            class="button button--secondary action-plan-index__button"
+            type="button"
+            data-action-plan-item-jump="${recommendation.id}"
+          >
+            Update Item
+          </button>
+        </li>
+      `;
+    })
+    .join("");
+
+  return `
+    <section
+      class="action-plan-index"
+      aria-labelledby="action-plan-index-heading"
+    >
+      <div class="action-plan-index__header">
+        <p class="eyebrow">Working Action Plan</p>
+        <h2 id="action-plan-index-heading">
+          Your action plan items
+        </h2>
+        <p>
+          Return directly to any recommendation when you are ready to
+          update its progress, ownership, target date, or notes.
+        </p>
+      </div>
+
+      <ol class="action-plan-index__list">
+        ${rows}
+      </ol>
+    </section>
+  `;
+}
+
 function renderRecommendations(
   recommendations = [],
   actionPlan = null
@@ -316,7 +414,10 @@ function renderRecommendations(
         actionItem?.status || "not-started";
 
       return `
-        <article class="recommendation-card">
+        <article
+          class="recommendation-card"
+          id="recommendation-${recommendation.id}"
+        >
           <div class="recommendation-card__header">
             <div>
               <p class="recommendation-card__number">
@@ -425,6 +526,23 @@ function renderRecommendations(
                 data-recommendation-id="${recommendation.id}"
               />
             </div>
+
+            <div
+              class="recommendation-card__action-field
+                recommendation-card__action-field--notes"
+            >
+              <label for="action-notes-${recommendation.id}">
+                Notes
+              </label>
+
+              <textarea
+                id="action-notes-${recommendation.id}"
+                rows="4"
+                placeholder="Add context, decisions, or follow-up details"
+                data-action-field="notes"
+                data-recommendation-id="${recommendation.id}"
+              >${actionItem?.notes || ""}</textarea>
+            </div>
           </div>
         </article>
       `;
@@ -514,6 +632,11 @@ export function renderReportView({
         </div>
 
         ${renderActionPlanSummary(actionPlan)}
+
+        ${renderActionPlanIndex(
+          results?.recommendations,
+          actionPlan
+        )}
       </section>
 
       <section

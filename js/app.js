@@ -449,6 +449,94 @@ function renderBusinessProfile(errors = {}, returnView = null) {
   });
 }
 
+function updateActionPlanStatusDisplay(
+  actionPlan,
+  recommendationId
+) {
+  const items = Array.isArray(actionPlan?.items)
+    ? actionPlan.items
+    : [];
+
+  const completed = items.filter(
+    (item) => item.status === "complete"
+  ).length;
+
+  const inProgress = items.filter(
+    (item) => item.status === "in-progress"
+  ).length;
+
+  const notStarted = items.filter(
+    (item) => item.status === "not-started"
+  ).length;
+
+  const percentage =
+    items.length > 0
+      ? Math.round((completed / items.length) * 100)
+      : 0;
+
+  const percentageElement = document.querySelector(
+    "[data-action-plan-percentage]"
+  );
+
+  if (percentageElement) {
+    percentageElement.textContent = `${percentage}%`;
+    percentageElement.setAttribute(
+      "aria-label",
+      `${percentage} percent complete`
+    );
+  }
+
+  const progressElement = document.querySelector(
+    "[data-action-plan-progress]"
+  );
+
+  if (progressElement) {
+    progressElement.value = percentage;
+    progressElement.textContent = `${percentage}%`;
+    progressElement.setAttribute(
+      "aria-label",
+      `Action plan progress: ${percentage} percent`
+    );
+  }
+
+  const counts = {
+    complete: completed,
+    "in-progress": inProgress,
+    "not-started": notStarted
+  };
+
+  Object.entries(counts).forEach(([status, count]) => {
+    const countElement = document.querySelector(
+      `[data-action-plan-count="${status}"]`
+    );
+
+    if (countElement) {
+      countElement.textContent = count;
+    }
+  });
+
+  const updatedItem = items.find(
+    (item) => item.recommendationId === recommendationId
+  );
+
+  const indexStatus = document.querySelector(
+    `[data-action-plan-index-status="${CSS.escape(
+      recommendationId
+    )}"]`
+  );
+
+  if (indexStatus && updatedItem) {
+    const labels = {
+      "not-started": "Not Started",
+      "in-progress": "In Progress",
+      complete: "Complete"
+    };
+
+    indexStatus.textContent =
+      labels[updatedItem.status] || updatedItem.status;
+  }
+}
+
 function renderReport() {
   if ("scrollRestoration" in history) {
     history.scrollRestoration = "manual";
@@ -484,16 +572,39 @@ function renderReport() {
     });
 
   document
+    .querySelectorAll("[data-action-plan-item-jump]")
+    .forEach((button) => {
+      button.addEventListener("click", () => {
+        const recommendationId =
+          button.dataset.actionPlanItemJump;
+
+        document
+          .querySelector(
+            `#recommendation-${CSS.escape(recommendationId)}`
+          )
+          ?.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+      });
+    });
+
+  document
     .querySelectorAll("[data-action-status]")
     .forEach((select) => {
       select.addEventListener("change", () => {
-        if (!actionPlan) {
+        const recommendationId =
+          select.dataset.actionStatus;
+
+        const currentPlan = getCurrentActionPlan();
+
+        if (!currentPlan) {
           return;
         }
 
         const updatedPlan = updateActionItemStatus(
-          actionPlan,
-          select.dataset.actionStatus,
+          currentPlan,
+          recommendationId,
           select.value
         );
 
@@ -501,14 +612,10 @@ function renderReport() {
           return;
         }
 
-        renderReport();
-
-        requestAnimationFrame(() => {
-          document.querySelector("#action-plan")?.scrollIntoView({
-            behavior: "instant",
-            block: "start"
-          });
-        });
+        updateActionPlanStatusDisplay(
+          updatedPlan,
+          recommendationId
+        );
       });
     });
 
@@ -516,21 +623,25 @@ function renderReport() {
     .querySelectorAll("[data-action-field]")
     .forEach((field) => {
       field.addEventListener("change", () => {
-        if (!actionPlan) {
+        const currentPlan = getCurrentActionPlan();
+
+        if (!currentPlan) {
           return;
         }
 
         const updatedPlan = updateActionItemFields(
-          actionPlan,
+          currentPlan,
           field.dataset.recommendationId,
           {
             [field.dataset.actionField]: field.value.trim()
           }
         );
 
-        if (updatedPlan) {
-          saveActionPlan(updatedPlan);
+        if (!updatedPlan || !saveActionPlan(updatedPlan)) {
+          return;
         }
+
+        field.dataset.savedValue = field.value;
       });
     });
 
