@@ -1,7 +1,11 @@
 import {
+  addChecklistItem,
   createActionPlanRecord,
+  deleteChecklistItem,
   updateActionItemFields,
-  updateActionItemStatus
+  updateActionItemStatus,
+  updateChecklistItemCompletion,
+  updateChecklistItemText
 } from "../js/core/action-plans.js";
 
 import {
@@ -107,6 +111,93 @@ assert(
   "Editable-field update mutated the original action plan."
 );
 
+const checklistOriginalPlan = structuredClone(actionPlan);
+
+const checklistAddedPlan = addChecklistItem(
+  actionPlan,
+  "enable-multi-factor-authentication",
+  "Enable multi-factor authentication on the email account."
+);
+
+assert(Boolean(checklistAddedPlan), "Checklist item was not added.");
+assert(
+  checklistAddedPlan.items[0].checklist.length === 2,
+  "Checklist item count did not increase."
+);
+assert(
+  checklistAddedPlan.items[0].checklist[1].text ===
+    "Enable multi-factor authentication on the email account.",
+  "Added checklist text was incorrect."
+);
+assert(
+  JSON.stringify(actionPlan) ===
+    JSON.stringify(checklistOriginalPlan),
+  "Adding a checklist item mutated the original action plan."
+);
+
+const addedChecklistItemId =
+  checklistAddedPlan.items[0].checklist[1].id;
+
+const checklistRenamedPlan = updateChecklistItemText(
+  checklistAddedPlan,
+  "enable-multi-factor-authentication",
+  addedChecklistItemId,
+  "Enable multi-factor authentication on email."
+);
+
+assert(
+  checklistRenamedPlan.items[0].checklist[1].text ===
+    "Enable multi-factor authentication on email.",
+  "Checklist item text did not update."
+);
+
+const checklistCompletedPlan =
+  updateChecklistItemCompletion(
+    checklistRenamedPlan,
+    "enable-multi-factor-authentication",
+    addedChecklistItemId,
+    true
+  );
+
+assert(
+  checklistCompletedPlan.items[0].checklist[1].completed === true,
+  "Checklist item was not marked complete."
+);
+assert(
+  Boolean(
+    checklistCompletedPlan.items[0].checklist[1].completedAt
+  ),
+  "Completed checklist item did not receive completedAt."
+);
+
+const checklistReopenedPlan =
+  updateChecklistItemCompletion(
+    checklistCompletedPlan,
+    "enable-multi-factor-authentication",
+    addedChecklistItemId,
+    false
+  );
+
+assert(
+  checklistReopenedPlan.items[0].checklist[1].completed === false,
+  "Checklist item was not reopened."
+);
+assert(
+  checklistReopenedPlan.items[0].checklist[1].completedAt === null,
+  "Reopened checklist item retained completedAt."
+);
+
+const checklistDeletedPlan = deleteChecklistItem(
+  checklistReopenedPlan,
+  "enable-multi-factor-authentication",
+  addedChecklistItemId
+);
+
+assert(
+  checklistDeletedPlan.items[0].checklist.length === 1,
+  "Checklist item was not deleted."
+);
+
 const inProgressPlan = updateActionItemStatus(
   actionPlan,
   "enable-multi-factor-authentication",
@@ -198,6 +289,8 @@ assert(
 console.log("ACTION PLAN TESTS");
 console.log("Creation: pass");
 console.log("Editable fields and immutability: pass");
+console.log("Checklist add, edit, completion, and deletion: pass");
+console.log("Checklist immutability: pass");
 console.log("Status transitions and timestamps: pass");
 console.log("Status update immutability: pass");
 console.log("Storage and retrieval: pass");

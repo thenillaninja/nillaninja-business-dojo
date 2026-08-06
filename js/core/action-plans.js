@@ -223,3 +223,192 @@ export function updateActionItemFields(
   });
 }
 
+function updateChecklist(
+  actionPlan,
+  recommendationId,
+  updater
+) {
+  if (
+    !actionPlan ||
+    typeof actionPlan !== "object" ||
+    !recommendationId ||
+    typeof updater !== "function" ||
+    !Array.isArray(actionPlan.items)
+  ) {
+    return null;
+  }
+
+  const itemExists = actionPlan.items.some(
+    (item) => item.recommendationId === recommendationId
+  );
+
+  if (!itemExists) {
+    return null;
+  }
+
+  const timestamp = new Date().toISOString();
+  let checklistChanged = false;
+
+  const updatedItems = actionPlan.items.map((item) => {
+    if (item.recommendationId !== recommendationId) {
+      return structuredClone(item);
+    }
+
+    const currentChecklist = Array.isArray(item.checklist)
+      ? structuredClone(item.checklist)
+      : [];
+
+    const updatedChecklist = updater(
+      currentChecklist,
+      timestamp
+    );
+
+    if (!Array.isArray(updatedChecklist)) {
+      return structuredClone(item);
+    }
+
+    checklistChanged = true;
+
+    return {
+      ...structuredClone(item),
+      checklist: updatedChecklist,
+      updatedAt: timestamp
+    };
+  });
+
+  if (!checklistChanged) {
+    return null;
+  }
+
+  return structuredClone({
+    ...actionPlan,
+    updatedAt: timestamp,
+    items: updatedItems
+  });
+}
+
+export function addChecklistItem(
+  actionPlan,
+  recommendationId,
+  text
+) {
+  const checklistText = String(text || "").trim();
+
+  if (!checklistText) {
+    return null;
+  }
+
+  return updateChecklist(
+    actionPlan,
+    recommendationId,
+    (checklist) => [
+      ...checklist,
+      {
+        id: createRecordId("checklist-item"),
+        text: checklistText,
+        completed: false,
+        completedAt: null
+      }
+    ]
+  );
+}
+
+export function updateChecklistItemText(
+  actionPlan,
+  recommendationId,
+  checklistItemId,
+  text
+) {
+  const checklistText = String(text || "").trim();
+
+  if (!checklistItemId || !checklistText) {
+    return null;
+  }
+
+  return updateChecklist(
+    actionPlan,
+    recommendationId,
+    (checklist) => {
+      const checklistItemExists = checklist.some(
+        (item) => item.id === checklistItemId
+      );
+
+      if (!checklistItemExists) {
+        return null;
+      }
+
+      return checklist.map((item) =>
+        item.id === checklistItemId
+          ? {
+              ...item,
+              text: checklistText
+            }
+          : item
+      );
+    }
+  );
+}
+
+export function updateChecklistItemCompletion(
+  actionPlan,
+  recommendationId,
+  checklistItemId,
+  completed
+) {
+  if (!checklistItemId || typeof completed !== "boolean") {
+    return null;
+  }
+
+  return updateChecklist(
+    actionPlan,
+    recommendationId,
+    (checklist, timestamp) => {
+      const checklistItemExists = checklist.some(
+        (item) => item.id === checklistItemId
+      );
+
+      if (!checklistItemExists) {
+        return null;
+      }
+
+      return checklist.map((item) =>
+        item.id === checklistItemId
+          ? {
+              ...item,
+              completed,
+              completedAt: completed ? timestamp : null
+            }
+          : item
+      );
+    }
+  );
+}
+
+export function deleteChecklistItem(
+  actionPlan,
+  recommendationId,
+  checklistItemId
+) {
+  if (!checklistItemId) {
+    return null;
+  }
+
+  return updateChecklist(
+    actionPlan,
+    recommendationId,
+    (checklist) => {
+      const checklistItemExists = checklist.some(
+        (item) => item.id === checklistItemId
+      );
+
+      if (!checklistItemExists) {
+        return null;
+      }
+
+      return checklist.filter(
+        (item) => item.id !== checklistItemId
+      );
+    }
+  );
+}
+
