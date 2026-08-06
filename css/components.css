@@ -167,3 +167,7 @@
   flex-wrap: wrap;
   gap: var(--space-3);
 }
+
+.snapshot-library > .form-actions {
+  margin-top: var(--space-6);
+}

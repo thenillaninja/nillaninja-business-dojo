@@ -3,7 +3,13 @@ import { businessAssessmentQuestions } from "../data/business-assessment.js";
 import { createInitialState } from "./core/state.js";
 import { clearState, loadState, saveState } from "./core/storage.js";
 import { createSnapshotRecord } from "./core/snapshots.js";
-import { saveSnapshot } from "./core/snapshot-storage.js";
+import {
+  deleteSnapshot,
+  getMostRecentSnapshot,
+  getSnapshotById,
+  loadSnapshotCollection,
+  saveSnapshot
+} from "./core/snapshot-storage.js";
 import { validateBusinessProfile } from "./core/validation.js";
 import {
   getQuestionByIndex,
@@ -19,6 +25,7 @@ import {
 import { renderProfileView } from "./views/profile-view.js";
 import { renderAssessmentView } from "./views/assessment-view.js";
 import { renderReportView } from "./views/report-view.js?v=4";
+import { renderSnapshotLibraryView } from "./views/snapshot-library-view.js";
 
 const app = document.querySelector("#app");
 const stepItems = document.querySelectorAll(".step-navigation__item");
@@ -162,6 +169,14 @@ function renderWelcomeView() {
         >
           Begin Business Snapshot
         </button>
+
+        <button
+          class="button button--secondary"
+          type="button"
+          id="view-snapshot-library"
+        >
+          View Snapshot Library
+        </button>
       </div>
     </div>
   `;
@@ -170,6 +185,13 @@ function renderWelcomeView() {
     .querySelector("#begin-assessment")
     ?.addEventListener("click", () => {
       renderBusinessProfile({}, "welcome");
+      focusMainContent();
+    });
+
+  document
+    .querySelector("#view-snapshot-library")
+    ?.addEventListener("click", () => {
+      renderSnapshotLibrary();
       focusMainContent();
     });
 }
@@ -183,6 +205,121 @@ function getProfileFromForm(form) {
   });
 
   return profile;
+}
+
+function renderSnapshotLibrary() {
+  const collection = loadSnapshotCollection();
+  const mostRecentSnapshot = getMostRecentSnapshot();
+
+  state.navigation.currentView = "snapshot-library";
+  state.navigation.currentStep = 1;
+
+  updateStepNavigation(1);
+  persistState();
+
+  app.innerHTML = renderSnapshotLibraryView({
+    snapshots: [...collection.snapshots].reverse(),
+    mostRecentSnapshotId: mostRecentSnapshot?.id || ""
+  });
+
+  document
+    .querySelector("#snapshot-library-back")
+    ?.addEventListener("click", () => {
+      renderWelcomeView();
+      focusMainContent();
+    });
+
+  document
+    .querySelector("#snapshot-library-new")
+    ?.addEventListener("click", () => {
+      state = createInitialState();
+      persistState();
+      renderBusinessProfile({}, "welcome");
+      focusMainContent();
+    });
+
+  document
+    .querySelectorAll("[data-snapshot-open]")
+    .forEach((button) => {
+      button.addEventListener("click", () => {
+        const snapshot = getSnapshotById(
+          button.dataset.snapshotOpen
+        );
+
+        if (!snapshot) {
+          return;
+        }
+
+        state = {
+          ...createInitialState(),
+          metadata: {
+            ...createInitialState().metadata,
+            appVersion: snapshot.appVersion || "0.2",
+            assessmentVersion:
+              snapshot.assessmentVersion || "0.1",
+            currentSnapshotId: snapshot.id
+          },
+          navigation: {
+            ...createInitialState().navigation,
+            currentView: "report",
+            currentStep: 4
+          },
+          businessProfile: structuredClone(
+            snapshot.businessProfile || {}
+          ),
+          assessment: structuredClone(
+            snapshot.assessment || {}
+          ),
+          results: structuredClone(
+            snapshot.results || {}
+          ),
+          report: structuredClone(
+            snapshot.report || {}
+          )
+        };
+
+        persistState();
+        renderReport();
+        focusMainContent();
+      });
+    });
+
+  document
+    .querySelectorAll("[data-snapshot-delete]")
+    .forEach((button) => {
+      button.addEventListener("click", () => {
+        const snapshot = getSnapshotById(
+          button.dataset.snapshotDelete
+        );
+
+        if (!snapshot) {
+          return;
+        }
+
+        const businessName =
+          snapshot.business?.name ||
+          snapshot.businessProfile?.businessName ||
+          "this business";
+
+        const shouldDelete = window.confirm(
+          `Delete the saved snapshot for ${businessName}? This cannot be undone.`
+        );
+
+        if (!shouldDelete) {
+          return;
+        }
+
+        deleteSnapshot(snapshot.id);
+
+        if (state.metadata.currentSnapshotId === snapshot.id) {
+          state.metadata.currentSnapshotId = null;
+          persistState();
+        }
+
+        renderSnapshotLibrary();
+        focusMainContent();
+      });
+    });
 }
 
 function renderBusinessProfile(errors = {}, returnView = null) {
@@ -521,6 +658,10 @@ function renderAssessment(errorMessage = "") {
 
 function renderSavedView() {
   switch (state.navigation.currentView) {
+    case "snapshot-library":
+      renderSnapshotLibrary();
+      break;
+
     case "profile":
       renderBusinessProfile();
       break;
