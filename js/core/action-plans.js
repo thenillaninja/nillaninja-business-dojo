@@ -162,3 +162,64 @@ export function updateActionItemStatus(
   });
 }
 
+export function updateActionItemFields(
+  actionPlan,
+  recommendationId,
+  updates = {}
+) {
+  if (
+    !actionPlan ||
+    typeof actionPlan !== "object" ||
+    !recommendationId ||
+    !Array.isArray(actionPlan.items) ||
+    !updates ||
+    typeof updates !== "object"
+  ) {
+    return null;
+  }
+
+  const allowedFields = [
+    "targetDate",
+    "responsiblePerson",
+    "notes"
+  ];
+
+  const validUpdates = Object.fromEntries(
+    Object.entries(updates).filter(([field]) =>
+      allowedFields.includes(field)
+    )
+  );
+
+  if (Object.keys(validUpdates).length === 0) {
+    return null;
+  }
+
+  const itemExists = actionPlan.items.some(
+    (item) => item.recommendationId === recommendationId
+  );
+
+  if (!itemExists) {
+    return null;
+  }
+
+  const timestamp = new Date().toISOString();
+
+  const updatedItems = actionPlan.items.map((item) => {
+    if (item.recommendationId !== recommendationId) {
+      return structuredClone(item);
+    }
+
+    return {
+      ...structuredClone(item),
+      ...validUpdates,
+      updatedAt: timestamp
+    };
+  });
+
+  return structuredClone({
+    ...actionPlan,
+    updatedAt: timestamp,
+    items: updatedItems
+  });
+}
+

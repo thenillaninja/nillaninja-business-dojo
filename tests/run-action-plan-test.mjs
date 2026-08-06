@@ -1,5 +1,6 @@
 import {
   createActionPlanRecord,
+  updateActionItemFields,
   updateActionItemStatus
 } from "../js/core/action-plans.js";
 
@@ -71,6 +72,40 @@ assert(
 );
 
 const originalActionPlan = structuredClone(actionPlan);
+
+const fieldUpdatedPlan = updateActionItemFields(
+  actionPlan,
+  "enable-multi-factor-authentication",
+  {
+    targetDate: "2026-09-15",
+    responsiblePerson: "Mark",
+    notes: "Review the most important accounts first.",
+    unsupportedField: "should not be saved"
+  }
+);
+
+assert(Boolean(fieldUpdatedPlan), "Editable-field update failed.");
+assert(
+  fieldUpdatedPlan.items[0].targetDate === "2026-09-15",
+  "Target date did not update."
+);
+assert(
+  fieldUpdatedPlan.items[0].responsiblePerson === "Mark",
+  "Responsible person did not update."
+);
+assert(
+  fieldUpdatedPlan.items[0].notes ===
+    "Review the most important accounts first.",
+  "Notes did not update."
+);
+assert(
+  !("unsupportedField" in fieldUpdatedPlan.items[0]),
+  "Unsupported field was saved."
+);
+assert(
+  JSON.stringify(actionPlan) === JSON.stringify(originalActionPlan),
+  "Editable-field update mutated the original action plan."
+);
 
 const inProgressPlan = updateActionItemStatus(
   actionPlan,
@@ -162,6 +197,7 @@ assert(
 
 console.log("ACTION PLAN TESTS");
 console.log("Creation: pass");
+console.log("Editable fields and immutability: pass");
 console.log("Status transitions and timestamps: pass");
 console.log("Status update immutability: pass");
 console.log("Storage and retrieval: pass");
