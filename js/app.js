@@ -2,6 +2,8 @@ import { businessProfileFields } from "../data/business-profile.js";
 import { businessAssessmentQuestions } from "../data/business-assessment.js";
 import { createInitialState } from "./core/state.js";
 import { clearState, loadState, saveState } from "./core/storage.js";
+import { createSnapshotRecord } from "./core/snapshots.js";
+import { saveSnapshot } from "./core/snapshot-storage.js";
 import { validateBusinessProfile } from "./core/validation.js";
 import {
   getQuestionByIndex,
@@ -71,6 +73,23 @@ let state = restoreApplicationState();
 
 function persistState() {
   saveState(state);
+}
+
+function saveCompletedSnapshot() {
+  if (state.metadata.currentSnapshotId) {
+    return true;
+  }
+
+  const snapshot = createSnapshotRecord(state);
+
+  if (!snapshot || !saveSnapshot(snapshot)) {
+    return false;
+  }
+
+  state.metadata.currentSnapshotId = snapshot.id;
+  persistState();
+
+  return true;
 }
 
 function updateStepNavigation(currentStep) {
@@ -488,6 +507,7 @@ function renderAssessment(errorMessage = "") {
         recommendations
       };
 
+      saveCompletedSnapshot();
       renderReport();
       focusMainContent();
       return;
