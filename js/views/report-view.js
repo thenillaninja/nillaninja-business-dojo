@@ -791,7 +791,19 @@ function renderRecommendations(
             <p>${recommendation.firstAction}</p>
           </div>
 
-          <div class="recommendation-card__action-controls">
+          <aside
+        class="action-plan-mobile-notice"
+        aria-label="Action-plan editing screen-size notice"
+      >
+        <h4>Action-plan editing requires a larger screen</h4>
+        <p>
+          You can review this report and its recommendations on your phone.
+          To update statuses, target dates, responsible people, notes, or
+          checklist steps, open Business Dojo on a tablet, laptop, or desktop.
+        </p>
+      </aside>
+
+      <div class="recommendation-card__action-controls">
             <div class="recommendation-card__action-field">
               <label for="action-status-${recommendation.id}">
                 Action status

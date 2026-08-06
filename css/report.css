@@ -1312,3 +1312,36 @@
     }
   }
 }
+
+.action-plan-mobile-notice {
+  display: none;
+  padding: var(--space-4);
+  border: 1px solid rgba(255, 210, 125, 0.34);
+  border-radius: var(--radius-small);
+  background: rgba(255, 210, 125, 0.08);
+}
+
+.action-plan-mobile-notice h4,
+.action-plan-mobile-notice p {
+  margin: 0;
+}
+
+.action-plan-mobile-notice h4 {
+  color: var(--color-warning);
+}
+
+.action-plan-mobile-notice p {
+  margin-top: var(--space-2);
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 32rem),
+  (max-height: 32rem) and (hover: none) and (pointer: coarse) {
+  .action-plan-mobile-notice {
+    display: block;
+  }
+
+  .recommendation-card__action-controls {
+    display: none;
+  }
+}
