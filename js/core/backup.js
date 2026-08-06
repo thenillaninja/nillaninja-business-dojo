@@ -1,11 +1,15 @@
 import {
-  loadActionPlanCollection
+  loadActionPlanCollection,
+  saveActionPlanCollection
 } from "./action-plan-storage.js";
 import {
-  loadSnapshotCollection
+  loadSnapshotCollection,
+  saveSnapshotCollection
 } from "./snapshot-storage.js";
 import {
-  loadState
+  clearState,
+  loadState,
+  saveState
 } from "./storage.js";
 
 const BACKUP_SCHEMA_VERSION = "0.2";
@@ -173,6 +177,112 @@ export function parseBusinessDojoBackup(jsonText) {
       backup: null
     };
   }
+}
+
+export function restoreBusinessDojoBackup(
+  backup,
+  {
+    readApplicationState = loadState,
+    readSnapshotCollection = loadSnapshotCollection,
+    readActionPlanCollection = loadActionPlanCollection,
+    writeApplicationState = saveState,
+    clearApplicationState = clearState,
+    writeSnapshotCollection = saveSnapshotCollection,
+    writeActionPlanCollection = saveActionPlanCollection
+  } = {}
+) {
+  const validation =
+    validateBusinessDojoBackup(backup);
+
+  if (!validation.isValid) {
+    return {
+      isSuccessful: false,
+      reason: validation.reason
+    };
+  }
+
+  const previousData = {
+    applicationState: readApplicationState(),
+    snapshotCollection: readSnapshotCollection(),
+    actionPlanCollection: readActionPlanCollection()
+  };
+
+  const restorePreviousData = () => {
+    if (previousData.applicationState === null) {
+      clearApplicationState();
+    } else {
+      writeApplicationState(
+        previousData.applicationState
+      );
+    }
+
+    writeSnapshotCollection(
+      previousData.snapshotCollection
+    );
+
+    writeActionPlanCollection(
+      previousData.actionPlanCollection
+    );
+  };
+
+  const nextApplicationState =
+    backup.data.applicationState;
+
+  const applicationStateSaved =
+    nextApplicationState === null
+      ? clearApplicationState()
+      : writeApplicationState(
+          structuredClone(nextApplicationState)
+        );
+
+  if (!applicationStateSaved) {
+    restorePreviousData();
+
+    return {
+      isSuccessful: false,
+      reason:
+        "The current application state could not be replaced."
+    };
+  }
+
+  const snapshotsSaved =
+    writeSnapshotCollection(
+      structuredClone(
+        backup.data.snapshotCollection
+      )
+    );
+
+  if (!snapshotsSaved) {
+    restorePreviousData();
+
+    return {
+      isSuccessful: false,
+      reason:
+        "The saved snapshots could not be restored."
+    };
+  }
+
+  const actionPlansSaved =
+    writeActionPlanCollection(
+      structuredClone(
+        backup.data.actionPlanCollection
+      )
+    );
+
+  if (!actionPlansSaved) {
+    restorePreviousData();
+
+    return {
+      isSuccessful: false,
+      reason:
+        "The action plans could not be restored."
+    };
+  }
+
+  return {
+    isSuccessful: true,
+    reason: ""
+  };
 }
 
 export function createBackupFilename(

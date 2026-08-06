@@ -2,6 +2,7 @@ import {
   createBackupFilename,
   createBusinessDojoBackup,
   parseBusinessDojoBackup,
+  restoreBusinessDojoBackup,
   validateBusinessDojoBackup
 } from "../js/core/backup.js";
 
@@ -150,3 +151,164 @@ console.log("Product and schema rejection: pass");
 console.log("Collection validation: pass");
 console.log("Orphaned action-plan rejection: pass");
 console.log("Backup filename: pass");
+
+const restoredWrites = {
+  applicationState: null,
+  snapshotCollection: null,
+  actionPlanCollection: null
+};
+
+const successfulRestore = restoreBusinessDojoBackup(
+  backup,
+  {
+    readApplicationState: () => ({
+      navigation: {
+        currentView: "report"
+      }
+    }),
+    readSnapshotCollection: () => ({
+      schemaVersion: "0.2",
+      updatedAt: null,
+      snapshots: []
+    }),
+    readActionPlanCollection: () => ({
+      schemaVersion: "0.2",
+      updatedAt: null,
+      actionPlans: []
+    }),
+    writeApplicationState: (value) => {
+      restoredWrites.applicationState =
+        structuredClone(value);
+      return true;
+    },
+    clearApplicationState: () => true,
+    writeSnapshotCollection: (value) => {
+      restoredWrites.snapshotCollection =
+        structuredClone(value);
+      return true;
+    },
+    writeActionPlanCollection: (value) => {
+      restoredWrites.actionPlanCollection =
+        structuredClone(value);
+      return true;
+    }
+  }
+);
+
+assert(
+  successfulRestore.isSuccessful === true,
+  "Valid backup restore failed."
+);
+
+assert(
+  restoredWrites.applicationState.navigation.currentView ===
+    "welcome",
+  "Application state was not restored."
+);
+
+assert(
+  restoredWrites.snapshotCollection.snapshots[0].id ===
+    "snapshot-1",
+  "Snapshot collection was not restored."
+);
+
+assert(
+  restoredWrites.actionPlanCollection.actionPlans[0].id ===
+    "action-plan-1",
+  "Action-plan collection was not restored."
+);
+
+const rollbackWrites = {
+  applicationStates: [],
+  snapshotCollections: [],
+  actionPlanCollections: []
+};
+
+const previousApplicationState = {
+  navigation: {
+    currentView: "snapshot-library"
+  }
+};
+
+const previousSnapshotCollection = {
+  schemaVersion: "0.2",
+  updatedAt: null,
+  snapshots: [
+    {
+      id: "previous-snapshot"
+    }
+  ]
+};
+
+const previousActionPlanCollection = {
+  schemaVersion: "0.2",
+  updatedAt: null,
+  actionPlans: [
+    {
+      id: "previous-action-plan",
+      snapshotId: "previous-snapshot"
+    }
+  ]
+};
+
+let actionPlanWriteCount = 0;
+
+const failedRestore = restoreBusinessDojoBackup(
+  backup,
+  {
+    readApplicationState: () =>
+      structuredClone(previousApplicationState),
+    readSnapshotCollection: () =>
+      structuredClone(previousSnapshotCollection),
+    readActionPlanCollection: () =>
+      structuredClone(previousActionPlanCollection),
+    writeApplicationState: (value) => {
+      rollbackWrites.applicationStates.push(
+        structuredClone(value)
+      );
+      return true;
+    },
+    clearApplicationState: () => true,
+    writeSnapshotCollection: (value) => {
+      rollbackWrites.snapshotCollections.push(
+        structuredClone(value)
+      );
+      return true;
+    },
+    writeActionPlanCollection: (value) => {
+      actionPlanWriteCount += 1;
+
+      rollbackWrites.actionPlanCollections.push(
+        structuredClone(value)
+      );
+
+      return actionPlanWriteCount > 1;
+    }
+  }
+);
+
+assert(
+  failedRestore.isSuccessful === false,
+  "Restore failure was not reported."
+);
+
+assert(
+  rollbackWrites.applicationStates.at(-1).navigation.currentView ===
+    "snapshot-library",
+  "Previous application state was not restored after failure."
+);
+
+assert(
+  rollbackWrites.snapshotCollections.at(-1).snapshots[0].id ===
+    "previous-snapshot",
+  "Previous snapshot collection was not restored after failure."
+);
+
+assert(
+  rollbackWrites.actionPlanCollections.at(-1).actionPlans[0].id ===
+    "previous-action-plan",
+  "Previous action-plan collection was not restored after failure."
+);
+
+console.log("Successful restoration: pass");
+console.log("Rollback protection: pass");
