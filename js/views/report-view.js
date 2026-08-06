@@ -166,6 +166,129 @@ function renderStrengths(strengths = []) {
     .join("");
 }
 
+function getActionPlanProgress(actionPlan) {
+  const items = Array.isArray(actionPlan?.items)
+    ? actionPlan.items
+    : [];
+
+  const total = items.length;
+  const completed = items.filter(
+    (item) => item.status === "complete"
+  ).length;
+  const inProgress = items.filter(
+    (item) => item.status === "in-progress"
+  ).length;
+  const notStarted = items.filter(
+    (item) => item.status === "not-started"
+  ).length;
+
+  const percentage =
+    total > 0
+      ? Math.round((completed / total) * 100)
+      : 0;
+
+  return {
+    total,
+    completed,
+    inProgress,
+    notStarted,
+    percentage
+  };
+}
+
+function renderActionPlanSummary(actionPlan) {
+  const progress = getActionPlanProgress(actionPlan);
+
+  if (progress.total === 0) {
+    return "";
+  }
+
+  return `
+    <div class="action-plan-summary" id="action-plan">
+      <div class="action-plan-summary__header">
+        <div>
+          <p class="eyebrow">Interactive Action Plan</p>
+          <h3>Your improvement progress</h3>
+          <p>
+            Track each recommendation as your business works through
+            the improvement plan.
+          </p>
+        </div>
+
+        <div
+          class="action-plan-summary__percentage"
+          aria-label="${progress.percentage} percent complete"
+        >
+          ${progress.percentage}%
+        </div>
+      </div>
+
+      <progress
+        class="action-plan-summary__progress"
+        value="${progress.percentage}"
+        max="100"
+        aria-label="Action plan progress: ${progress.percentage} percent"
+      >
+        ${progress.percentage}%
+      </progress>
+
+      <div class="action-plan-summary__counts">
+        <p>
+          <strong>${progress.completed}</strong>
+          Complete
+        </p>
+
+        <p>
+          <strong>${progress.inProgress}</strong>
+          In progress
+        </p>
+
+        <p>
+          <strong>${progress.notStarted}</strong>
+          Not started
+        </p>
+      </div>
+    </div>
+  `;
+}
+
+function renderActionPlanJump(actionPlan) {
+  const progress = getActionPlanProgress(actionPlan);
+
+  if (progress.total === 0) {
+    return "";
+  }
+
+  const hasStarted =
+    progress.inProgress > 0 ||
+    progress.completed > 0;
+
+  const label = hasStarted
+    ? "Continue Action Plan"
+    : "View Action Plan";
+
+  return `
+    <div class="report-action-plan-jump">
+      <div class="report-action-plan-jump__content">
+        <h3>Review the report first</h3>
+        <p>
+          The recommendations below explain what to improve and why it
+          matters. This shortcut is for returning users who want to update
+          their Action Plan without scrolling through the full report again.
+        </p>
+      </div>
+
+      <button
+        class="button button--secondary"
+        id="report-action-plan-jump"
+        type="button"
+      >
+        ${label}
+      </button>
+    </div>
+  `;
+}
+
 function renderRecommendations(recommendations = []) {
   if (!Array.isArray(recommendations) || recommendations.length === 0) {
     return `
@@ -237,7 +360,8 @@ function renderRecommendations(recommendations = []) {
 
 export function renderReportView({
   businessProfile,
-  results
+  results,
+  actionPlan
 }) {
   const businessName =
     businessProfile?.businessName?.trim() || "Your Business";
@@ -263,6 +387,8 @@ export function renderReportView({
       </div>
 
       ${renderExecutiveSummary(results)}
+
+      ${renderActionPlanJump(actionPlan)}
 
       <section class="report-section" aria-labelledby="category-scores-heading">
         <div class="report-section__heading">
@@ -309,6 +435,8 @@ export function renderReportView({
         <div class="recommendation-list">
           ${renderRecommendations(results?.recommendations)}
         </div>
+
+        ${renderActionPlanSummary(actionPlan)}
       </section>
 
       <section

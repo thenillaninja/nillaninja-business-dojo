@@ -446,6 +446,16 @@ function renderBusinessProfile(errors = {}, returnView = null) {
 }
 
 function renderReport() {
+  if ("scrollRestoration" in history) {
+    history.scrollRestoration = "manual";
+  }
+
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: "instant"
+  });
+
   state.navigation.currentView = "report";
   state.navigation.currentStep = 4;
 
@@ -459,6 +469,15 @@ function renderReport() {
     results: state.results,
     actionPlan
   });
+
+  document
+    .querySelector("#report-action-plan-jump")
+    ?.addEventListener("click", () => {
+      document.querySelector("#action-plan")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    });
 
   const reportText = generateReportText({
     businessProfile: state.businessProfile,
