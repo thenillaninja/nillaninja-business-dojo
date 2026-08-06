@@ -15,7 +15,11 @@ function formatSnapshotDate(value) {
   }).format(date);
 }
 
-function renderSnapshotCards(snapshots = [], mostRecentSnapshotId = "") {
+function renderSnapshotCards(
+  snapshots = [],
+  mostRecentSnapshotId = "",
+  selectedSnapshotIds = []
+) {
   if (!Array.isArray(snapshots) || snapshots.length === 0) {
     return `
       <div class="snapshot-library__empty">
@@ -39,8 +43,12 @@ function renderSnapshotCards(snapshots = [], mostRecentSnapshotId = "") {
         ? snapshot.results.overallScore
         : 0;
 
+      const isSelected = selectedSnapshotIds.includes(snapshot.id);
+
       return `
-        <article class="snapshot-card">
+        <article
+          class="snapshot-card ${isSelected ? "snapshot-card--selected" : ""}"
+        >
           <div class="snapshot-card__header">
             <div>
               <p class="snapshot-card__date">
@@ -60,6 +68,18 @@ function renderSnapshotCards(snapshots = [], mostRecentSnapshotId = "") {
             Overall score: <strong>${score}/100</strong>
           </p>
 
+          <div class="snapshot-card__selection">
+            <label>
+              <input
+                type="checkbox"
+                value="${snapshot.id}"
+                data-snapshot-compare-select
+                ${isSelected ? "checked" : ""}
+              />
+              <span>Select for comparison</span>
+            </label>
+          </div>
+
           <div class="snapshot-card__actions">
             <button
               class="button button--primary"
@@ -67,6 +87,14 @@ function renderSnapshotCards(snapshots = [], mostRecentSnapshotId = "") {
               data-snapshot-open="${snapshot.id}"
             >
               Open Report
+            </button>
+
+            <button
+              class="button button--secondary"
+              type="button"
+              data-snapshot-edit="${snapshot.id}"
+            >
+              Edit Business Details
             </button>
 
             <button
@@ -85,7 +113,9 @@ function renderSnapshotCards(snapshots = [], mostRecentSnapshotId = "") {
 
 export function renderSnapshotLibraryView({
   snapshots = [],
-  mostRecentSnapshotId = ""
+  mostRecentSnapshotId = "",
+  selectedSnapshotIds = [],
+  comparisonMessage = ""
 } = {}) {
   return `
     <section
@@ -112,8 +142,55 @@ export function renderSnapshotLibraryView({
         </button>
       </div>
 
+      ${
+        snapshots.length >= 2
+          ? `
+            <div class="snapshot-comparison-picker">
+              <div>
+                <h2>Compare saved snapshots</h2>
+                <p>
+                  Select two snapshots for the same business to review score,
+                  strength, and recommendation changes.
+                </p>
+              </div>
+
+              <div class="snapshot-comparison-picker__actions">
+                <span
+                  id="snapshot-comparison-selection-count"
+                  aria-live="polite"
+                >
+                  ${selectedSnapshotIds.length} of 2 selected
+                </span>
+
+                <button
+                  class="button button--primary"
+                  type="button"
+                  id="snapshot-comparison-open"
+                  ${selectedSnapshotIds.length === 2 ? "" : "disabled"}
+                >
+                  Compare Snapshots
+                </button>
+              </div>
+
+              <p
+                class="snapshot-comparison-picker__message"
+                id="snapshot-comparison-message"
+                role="status"
+                aria-live="polite"
+              >
+                ${comparisonMessage}
+              </p>
+            </div>
+          `
+          : ""
+      }
+
       <div class="snapshot-library__list">
-        ${renderSnapshotCards(snapshots, mostRecentSnapshotId)}
+        ${renderSnapshotCards(
+          snapshots,
+          mostRecentSnapshotId,
+          selectedSnapshotIds
+        )}
       </div>
 
       <div class="form-actions">

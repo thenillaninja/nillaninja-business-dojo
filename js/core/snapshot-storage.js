@@ -1,3 +1,5 @@
+import { normalizeBusinessName } from "./snapshots.js";
+
 const SNAPSHOT_STORAGE_KEY =
   "nillaninja-business-dojo-v0.2-snapshots";
 
@@ -92,6 +94,61 @@ export function saveSnapshot(snapshot) {
       ...collection.snapshots,
       structuredClone(snapshot)
     ]
+  });
+}
+
+export function updateSnapshotBusinessProfile(
+  snapshotId,
+  businessProfile
+) {
+  if (
+    !snapshotId ||
+    !businessProfile ||
+    typeof businessProfile !== "object"
+  ) {
+    return false;
+  }
+
+  const collection = loadSnapshotCollection();
+  const snapshotIndex = collection.snapshots.findIndex(
+    (snapshot) => snapshot.id === snapshotId
+  );
+
+  if (snapshotIndex === -1) {
+    return false;
+  }
+
+  const existingSnapshot =
+    collection.snapshots[snapshotIndex];
+
+  const businessName =
+    businessProfile.businessName?.trim() ||
+    existingSnapshot.business?.name ||
+    "Your Business";
+
+  const updatedSnapshot = {
+    ...existingSnapshot,
+    business: {
+      ...(existingSnapshot.business || {}),
+      name: businessName,
+      normalizedName: normalizeBusinessName(businessName),
+      priority:
+        businessProfile.currentPriority ||
+        existingSnapshot.business?.priority ||
+        ""
+    },
+    businessProfile: structuredClone(businessProfile)
+  };
+
+  const updatedSnapshots = [
+    ...collection.snapshots
+  ];
+
+  updatedSnapshots[snapshotIndex] = updatedSnapshot;
+
+  return saveSnapshotCollection({
+    ...collection,
+    snapshots: updatedSnapshots
   });
 }
 

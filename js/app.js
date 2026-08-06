@@ -22,7 +22,8 @@ import {
   getMostRecentSnapshot,
   getSnapshotById,
   loadSnapshotCollection,
-  saveSnapshot
+  saveSnapshot,
+  updateSnapshotBusinessProfile
 } from "./core/snapshot-storage.js";
 import { validateBusinessProfile } from "./core/validation.js";
 import {
@@ -46,6 +47,12 @@ import {
   renderReportView
 } from "./views/report-view.js?v=4";
 import { renderSnapshotLibraryView } from "./views/snapshot-library-view.js";
+import {
+  compareSnapshots
+} from "./core/snapshot-comparison.js";
+import {
+  renderSnapshotComparisonView
+} from "./views/snapshot-comparison-view.js";
 
 const app = document.querySelector("#app");
 const stepItems = document.querySelectorAll(".step-navigation__item");
@@ -106,6 +113,9 @@ let recommendationFilters = {
   quickWinsOnly: false,
   sortBy: "original"
 };
+
+let selectedSnapshotIds = [];
+let snapshotComparisonMessage = "";
 
 function persistState() {
   saveState(state);
@@ -281,10 +291,79 @@ function renderSnapshotLibrary() {
   updateStepNavigation(1);
   persistState();
 
+  const snapshots = [...collection.snapshots].reverse();
+
   app.innerHTML = renderSnapshotLibraryView({
-    snapshots: [...collection.snapshots].reverse(),
-    mostRecentSnapshotId: mostRecentSnapshot?.id || ""
+    snapshots,
+    mostRecentSnapshotId: mostRecentSnapshot?.id || "",
+    selectedSnapshotIds,
+    comparisonMessage: snapshotComparisonMessage
   });
+
+  document
+    .querySelectorAll("[data-snapshot-compare-select]")
+    .forEach((checkbox) => {
+      checkbox.addEventListener("change", () => {
+        const snapshotId = checkbox.value;
+
+        if (checkbox.checked) {
+          if (
+            selectedSnapshotIds.length >= 2 &&
+            !selectedSnapshotIds.includes(snapshotId)
+          ) {
+            checkbox.checked = false;
+            snapshotComparisonMessage =
+              "Choose only two snapshots at a time.";
+            renderSnapshotLibrary();
+            return;
+          }
+
+          selectedSnapshotIds = [
+            ...new Set([...selectedSnapshotIds, snapshotId])
+          ];
+        } else {
+          selectedSnapshotIds = selectedSnapshotIds.filter(
+            (id) => id !== snapshotId
+          );
+        }
+
+        snapshotComparisonMessage = "";
+        renderSnapshotLibrary();
+      });
+    });
+
+  document
+    .querySelector("#snapshot-comparison-open")
+    ?.addEventListener("click", () => {
+      if (selectedSnapshotIds.length !== 2) {
+        snapshotComparisonMessage =
+          "Select exactly two snapshots to compare.";
+        renderSnapshotLibrary();
+        return;
+      }
+
+      const firstSnapshot = getSnapshotById(
+        selectedSnapshotIds[0]
+      );
+
+      const secondSnapshot = getSnapshotById(
+        selectedSnapshotIds[1]
+      );
+
+      const comparison = compareSnapshots(
+        firstSnapshot,
+        secondSnapshot
+      );
+
+      if (!comparison.isValid) {
+        snapshotComparisonMessage = comparison.reason;
+        renderSnapshotLibrary();
+        return;
+      }
+
+      renderSnapshotComparison(comparison);
+      focusMainContent();
+    });
 
   document
     .querySelector("#snapshot-library-back")
@@ -349,6 +428,53 @@ function renderSnapshotLibrary() {
     });
 
   document
+    .querySelectorAll("[data-snapshot-edit]")
+    .forEach((button) => {
+      button.addEventListener("click", () => {
+        const snapshot = getSnapshotById(
+          button.dataset.snapshotEdit
+        );
+
+        if (!snapshot) {
+          return;
+        }
+
+        state = {
+          ...createInitialState(),
+          metadata: {
+            ...createInitialState().metadata,
+            appVersion: snapshot.appVersion || "0.2",
+            assessmentVersion:
+              snapshot.assessmentVersion || "0.1",
+            currentSnapshotId: snapshot.id
+          },
+          navigation: {
+            ...createInitialState().navigation,
+            currentView: "profile",
+            currentStep: 2,
+            profileReturnView: "snapshot-library"
+          },
+          businessProfile: structuredClone(
+            snapshot.businessProfile || {}
+          ),
+          assessment: structuredClone(
+            snapshot.assessment || {}
+          ),
+          results: structuredClone(
+            snapshot.results || {}
+          ),
+          report: structuredClone(
+            snapshot.report || {}
+          )
+        };
+
+        persistState();
+        renderBusinessProfile({}, "snapshot-library");
+        focusMainContent();
+      });
+    });
+
+  document
     .querySelectorAll("[data-snapshot-delete]")
     .forEach((button) => {
       button.addEventListener("click", () => {
@@ -387,6 +513,23 @@ function renderSnapshotLibrary() {
     });
 }
 
+function renderSnapshotComparison(comparison) {
+  state.navigation.currentView = "snapshot-comparison";
+  state.navigation.currentStep = 1;
+
+  updateStepNavigation(1);
+  persistState();
+
+  app.innerHTML = renderSnapshotComparisonView(comparison);
+
+  document
+    .querySelector("#snapshot-comparison-back")
+    ?.addEventListener("click", () => {
+      renderSnapshotLibrary();
+      focusMainContent();
+    });
+}
+
 function renderBusinessProfile(errors = {}, returnView = null) {
   if (returnView) {
     state.navigation.profileReturnView = returnView;
@@ -408,6 +551,10 @@ function renderBusinessProfile(errors = {}, returnView = null) {
   backButton?.addEventListener("click", () => {
     if (state.navigation.profileReturnView === "assessment") {
       renderAssessment();
+    } else if (
+      state.navigation.profileReturnView === "snapshot-library"
+    ) {
+      renderSnapshotLibrary();
     } else {
       renderWelcomeView();
     }
@@ -453,6 +600,25 @@ function renderBusinessProfile(errors = {}, returnView = null) {
         summary.focus();
       }
 
+      return;
+    }
+
+    if (state.metadata.currentSnapshotId) {
+      updateSnapshotBusinessProfile(
+        state.metadata.currentSnapshotId,
+        profile
+      );
+    }
+
+    persistState();
+
+    if (
+      state.navigation.profileReturnView === "snapshot-library"
+    ) {
+      snapshotComparisonMessage =
+        "Business details updated successfully.";
+      renderSnapshotLibrary();
+      focusMainContent();
       return;
     }
 
