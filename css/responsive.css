@@ -52,3 +52,28 @@
     width: 100%;
   }
 }
+
+@media (max-width: 48rem) {
+  .snapshot-library__heading,
+  .snapshot-card__header {
+    flex-direction: column;
+  }
+
+  .snapshot-card__badge {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 32rem) {
+  .snapshot-library {
+    padding: var(--space-5);
+  }
+
+  .snapshot-card {
+    padding: var(--space-4);
+  }
+
+  .snapshot-card__actions {
+    flex-direction: column;
+  }
+}
