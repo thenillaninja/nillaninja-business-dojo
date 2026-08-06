@@ -37,3 +37,23 @@
 - Preserved completed snapshots as immutable records.
 - Added automated tests for action-plan creation, storage, status transitions, editable fields, checklist operations, deletion, and immutability.
 - Confirmed the full assessment regression suite still passes.
+
+
+### Quick Wins and Recommendation Filters
+
+- Added recommendation filtering by action-plan status.
+- Added recommendation filtering by business category.
+- Added recommendation filtering by priority.
+- Added recommendation filtering by implementation difficulty.
+- Added sorting by highest priority.
+- Added sorting by easiest implementation.
+- Added a Quick Wins view for easy recommendations with Immediate or High priority.
+- Added combined filtering and sorting.
+- Added a live visible-recommendation count.
+- Added Reset Filters behavior.
+- Preserved report scroll position while filters change.
+- Kept filter state temporary and separate from saved snapshot data.
+- Added responsive filter controls for desktop, tablet, and mobile.
+- Prevented duplicate checklist event listeners when reopening reports.
+- Added automated tests for Quick Wins, filters, sorting, and combined behavior.
+- Confirmed the full assessment and action-plan regression suite still passes.
