@@ -1273,3 +1273,42 @@
     appearance: none;
   }
 }
+
+/* Strong iOS Safari containment for action-plan controls. */
+@supports (-webkit-touch-callout: none) {
+  @media (max-width: 44rem) {
+    .recommendation-card__action-controls,
+    .recommendation-card__action-field,
+    .action-checklist,
+    .action-checklist__list,
+    .action-checklist__item,
+    .action-checklist__add {
+      width: 100%;
+      max-width: 100%;
+      overflow: hidden;
+    }
+
+    .recommendation-card__action-field select,
+    .recommendation-card__action-field input,
+    .recommendation-card__action-field textarea,
+    .action-checklist__text,
+    .action-checklist__add input {
+      box-sizing: border-box;
+      inline-size: -webkit-fill-available;
+      max-inline-size: 100%;
+      min-inline-size: 0;
+    }
+
+    .recommendation-card__action-field textarea,
+    .action-checklist__text {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .recommendation-card__action-field input[type="date"] {
+      width: -webkit-fill-available;
+      max-width: -webkit-fill-available;
+    }
+  }
+}
