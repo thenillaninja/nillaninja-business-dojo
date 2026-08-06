@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 0.2 — In Progress
+## Version 0.2 — August 6, 2026
 
 ### Snapshot Library
 
@@ -75,3 +75,20 @@
 - Added saved profile corrections without changing scores, answers, recommendations, completion dates, or action plans.
 - Added automated tests for snapshot compatibility, chronology, scores, strengths, and recommendations.
 - Confirmed the full regression suite still passes.
+
+### Backup and Restore
+
+- Added a schema-versioned JSON backup format.
+- Added export of the current application state, saved snapshots, and action plans.
+- Added dated filenames for downloaded backups.
+- Added validation for product identity, schema version, data collections, and snapshot relationships.
+- Added clear handling for empty files, malformed JSON, unsupported backups, and invalid collections.
+- Added orphaned action-plan detection.
+- Added validated restore behavior with rollback protection if any storage write fails.
+- Added a replacement confirmation before imported data changes current browser storage.
+- Added success, cancellation, and validation messages.
+- Added a responsive Backup and Restore interface to the Snapshot Library.
+- Confirmed backup download and restore behavior through browser testing.
+- Added automated tests for backup creation, parsing, validation, restoration, and rollback.
+- Confirmed the complete Version 0.2 regression suite still passes.
+

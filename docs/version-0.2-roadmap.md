@@ -172,6 +172,22 @@ Users should be able to:
 
 The exported format should include a schema version so future releases can migrate older backups safely.
 
+### Completed
+
+- Added a schema-versioned JSON backup format.
+- Added export of application state, saved snapshots, and action plans.
+- Added dated Business Dojo backup filenames.
+- Added strict product, schema, collection, and relationship validation.
+- Added invalid JSON and unsupported-backup error handling.
+- Added orphaned action-plan detection.
+- Added transactional restore behavior with rollback protection.
+- Added a confirmation warning before current browser data is replaced.
+- Added clear backup, cancellation, validation, and restore status messages.
+- Added a responsive Backup and Restore interface to the Snapshot Library.
+- Confirmed backup download and restore behavior in the browser.
+- Added automated tests for backup creation, parsing, validation, restoration, and rollback.
+- Confirmed the complete Version 0.2 regression suite still passes.
+
 ---
 
 ## Version 0.2 Storage Direction
