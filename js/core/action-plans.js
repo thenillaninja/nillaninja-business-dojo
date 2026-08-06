@@ -97,3 +97,68 @@ export function createActionPlanRecord(snapshot) {
       )
   });
 }
+
+export function updateActionItemStatus(
+  actionPlan,
+  recommendationId,
+  nextStatus
+) {
+  if (
+    !actionPlan ||
+    typeof actionPlan !== "object" ||
+    !recommendationId ||
+    !ACTION_PLAN_STATUSES.includes(nextStatus) ||
+    !Array.isArray(actionPlan.items)
+  ) {
+    return null;
+  }
+
+  const itemExists = actionPlan.items.some(
+    (item) => item.recommendationId === recommendationId
+  );
+
+  if (!itemExists) {
+    return null;
+  }
+
+  const timestamp = new Date().toISOString();
+
+  const updatedItems = actionPlan.items.map((item) => {
+    if (item.recommendationId !== recommendationId) {
+      return structuredClone(item);
+    }
+
+    let startedAt = item.startedAt || null;
+    let completedAt = item.completedAt || null;
+
+    if (nextStatus === "not-started") {
+      startedAt = null;
+      completedAt = null;
+    }
+
+    if (nextStatus === "in-progress") {
+      startedAt = startedAt || timestamp;
+      completedAt = null;
+    }
+
+    if (nextStatus === "complete") {
+      startedAt = startedAt || timestamp;
+      completedAt = timestamp;
+    }
+
+    return {
+      ...structuredClone(item),
+      status: nextStatus,
+      startedAt,
+      completedAt,
+      updatedAt: timestamp
+    };
+  });
+
+  return structuredClone({
+    ...actionPlan,
+    updatedAt: timestamp,
+    items: updatedItems
+  });
+}
+

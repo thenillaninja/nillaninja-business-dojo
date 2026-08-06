@@ -1,5 +1,6 @@
 import {
-  createActionPlanRecord
+  createActionPlanRecord,
+  updateActionItemStatus
 } from "../js/core/action-plans.js";
 
 import {
@@ -69,6 +70,64 @@ assert(
   "The snapshot was modified."
 );
 
+const originalActionPlan = structuredClone(actionPlan);
+
+const inProgressPlan = updateActionItemStatus(
+  actionPlan,
+  "enable-multi-factor-authentication",
+  "in-progress"
+);
+
+assert(Boolean(inProgressPlan), "In-progress update failed.");
+assert(
+  inProgressPlan.items[0].status === "in-progress",
+  "Status did not change to in-progress."
+);
+assert(
+  Boolean(inProgressPlan.items[0].startedAt),
+  "In-progress status did not record startedAt."
+);
+assert(
+  inProgressPlan.items[0].completedAt === null,
+  "In-progress status should not have completedAt."
+);
+assert(
+  JSON.stringify(actionPlan) === JSON.stringify(originalActionPlan),
+  "Status update mutated the original action plan."
+);
+
+const completePlan = updateActionItemStatus(
+  inProgressPlan,
+  "enable-multi-factor-authentication",
+  "complete"
+);
+
+assert(
+  completePlan.items[0].status === "complete",
+  "Status did not change to complete."
+);
+assert(
+  completePlan.items[0].startedAt ===
+    inProgressPlan.items[0].startedAt,
+  "Completing the item replaced its original startedAt."
+);
+assert(
+  Boolean(completePlan.items[0].completedAt),
+  "Complete status did not record completedAt."
+);
+
+const resetPlan = updateActionItemStatus(
+  completePlan,
+  "enable-multi-factor-authentication",
+  "not-started"
+);
+
+assert(
+  resetPlan.items[0].startedAt === null &&
+    resetPlan.items[0].completedAt === null,
+  "Resetting the item did not clear its timestamps."
+);
+
 assert(saveActionPlan(actionPlan), "Action plan did not save.");
 
 const retrieved = getActionPlanBySnapshotId(snapshot.id);
@@ -103,6 +162,8 @@ assert(
 
 console.log("ACTION PLAN TESTS");
 console.log("Creation: pass");
+console.log("Status transitions and timestamps: pass");
+console.log("Status update immutability: pass");
 console.log("Storage and retrieval: pass");
 console.log("Update without duplication: pass");
 console.log("Deletion: pass");
