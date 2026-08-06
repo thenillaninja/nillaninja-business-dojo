@@ -57,3 +57,21 @@
 - Prevented duplicate checklist event listeners when reopening reports.
 - Added automated tests for Quick Wins, filters, sorting, and combined behavior.
 - Confirmed the full assessment and action-plan regression suite still passes.
+
+
+### Progress Comparison
+
+- Added comparison validation for snapshots from the same business and assessment version.
+- Added automatic chronological ordering of earlier and later snapshots.
+- Added overall score and category score comparisons.
+- Added improved, declined, unchanged, and unavailable category states.
+- Added newly developed, continuing, and no-longer-listed strength comparisons.
+- Added resolved, continuing, and newly triggered recommendation comparisons.
+- Added plain-English comparison summaries and interpretation guidance.
+- Added two-snapshot selection controls to the Snapshot Library.
+- Added selected snapshot highlighting and compatibility messages.
+- Added a responsive Progress Comparison report.
+- Added direct Edit Business Details controls to saved snapshot cards.
+- Added saved profile corrections without changing scores, answers, recommendations, completion dates, or action plans.
+- Added automated tests for snapshot compatibility, chronology, scores, strengths, and recommendations.
+- Confirmed the full regression suite still passes.

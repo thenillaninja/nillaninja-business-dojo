@@ -119,7 +119,7 @@ Completed functionality:
 
 ---
 
-## Phase 4 — Progress Comparison
+## Phase 4 — Progress Comparison — Complete
 
 Allow users to compare two completed snapshots for the same business.
 
@@ -135,6 +135,25 @@ The comparison should show:
 - Current unresolved priorities
 
 The comparison should explain changes in plain English and avoid presenting normal score variation as guaranteed business improvement.
+
+Completed functionality:
+
+- Added compatibility validation for snapshots from the same business and assessment version.
+- Added automatic chronological ordering of earlier and later snapshots.
+- Added overall score comparison.
+- Added category-by-category score changes.
+- Added improved, declined, unchanged, and unavailable category states.
+- Added newly developed, continuing, and no-longer-listed strength comparisons.
+- Added resolved, continuing, and newly triggered recommendation comparisons.
+- Added plain-English overall change summaries.
+- Added interpretation guidance that avoids presenting score changes as guaranteed business outcomes.
+- Added two-snapshot selection controls in the Snapshot Library.
+- Added selected-card highlighting and comparison validation messages.
+- Added a responsive Progress Comparison report.
+- Added direct editing of saved business details.
+- Added profile corrections without duplicating or changing historical assessment results.
+- Added permanent automated tests for compatibility, ordering, scores, strengths, and recommendations.
+- Confirmed the complete assessment, action-plan, filtering, and snapshot regression suite still passes.
 
 ---
 
