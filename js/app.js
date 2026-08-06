@@ -3,6 +3,12 @@ import { businessAssessmentQuestions } from "../data/business-assessment.js";
 import { createInitialState } from "./core/state.js";
 import { clearState, loadState, saveState } from "./core/storage.js";
 import { createSnapshotRecord } from "./core/snapshots.js";
+import { createActionPlanRecord } from "./core/action-plans.js";
+import {
+  deleteActionPlanBySnapshotId,
+  getActionPlanBySnapshotId,
+  saveActionPlan
+} from "./core/action-plan-storage.js";
 import {
   deleteSnapshot,
   getMostRecentSnapshot,
@@ -82,6 +88,40 @@ function persistState() {
   saveState(state);
 }
 
+function ensureActionPlanForSnapshot(snapshot) {
+  if (!snapshot?.id) {
+    return null;
+  }
+
+  const existingPlan = getActionPlanBySnapshotId(snapshot.id);
+
+  if (existingPlan) {
+    return existingPlan;
+  }
+
+  const actionPlan = createActionPlanRecord(snapshot);
+
+  if (!actionPlan || !saveActionPlan(actionPlan)) {
+    return null;
+  }
+
+  return actionPlan;
+}
+
+function getCurrentActionPlan() {
+  const snapshotId = state.metadata.currentSnapshotId;
+
+  if (!snapshotId) {
+    return null;
+  }
+
+  const snapshot = getSnapshotById(snapshotId);
+
+  return snapshot
+    ? ensureActionPlanForSnapshot(snapshot)
+    : null;
+}
+
 function saveCompletedSnapshot() {
   if (state.metadata.currentSnapshotId) {
     return true;
@@ -94,6 +134,7 @@ function saveCompletedSnapshot() {
   }
 
   state.metadata.currentSnapshotId = snapshot.id;
+  ensureActionPlanForSnapshot(snapshot);
   persistState();
 
   return true;
@@ -309,6 +350,7 @@ function renderSnapshotLibrary() {
           return;
         }
 
+        deleteActionPlanBySnapshotId(snapshot.id);
         deleteSnapshot(snapshot.id);
 
         if (state.metadata.currentSnapshotId === snapshot.id) {
@@ -410,9 +452,12 @@ function renderReport() {
   updateStepNavigation(4);
   persistState();
 
+  const actionPlan = getCurrentActionPlan();
+
   app.innerHTML = renderReportView({
     businessProfile: state.businessProfile,
-    results: state.results
+    results: state.results,
+    actionPlan
   });
 
   const reportText = generateReportText({
