@@ -791,19 +791,7 @@ function renderRecommendations(
             <p>${recommendation.firstAction}</p>
           </div>
 
-          <aside
-        class="action-plan-mobile-notice"
-        aria-label="Action-plan editing screen-size notice"
-      >
-        <h4>Action-plan editing requires a larger screen</h4>
-        <p>
-          You can review this report and its recommendations on your phone.
-          To update statuses, target dates, responsible people, notes, or
-          checklist steps, open Business Dojo on a tablet, laptop, or desktop.
-        </p>
-      </aside>
-
-      <div class="recommendation-card__action-controls">
+          <div class="recommendation-card__action-controls">
             <div class="recommendation-card__action-field">
               <label for="action-status-${recommendation.id}">
                 Action status
@@ -968,6 +956,19 @@ export function renderReportView({
             showed the greatest opportunity or risk.
           </p>
         </div>
+
+        <aside
+          class="action-plan-mobile-notice"
+          aria-label="Phone report mode notice"
+        >
+          <h3>Full action-plan editing requires a larger screen</h3>
+          <p>
+            You can review your complete Business Dojo report and
+            recommendations on this phone. Open the app on a tablet,
+            laptop, or desktop to filter the plan or update progress,
+            target dates, ownership, notes, and checklist steps.
+          </p>
+        </aside>
 
         ${renderRecommendationFilters(
           results?.recommendations || [],
