@@ -289,7 +289,10 @@ function renderActionPlanJump(actionPlan) {
   `;
 }
 
-function renderRecommendations(recommendations = []) {
+function renderRecommendations(
+  recommendations = [],
+  actionPlan = null
+) {
   if (!Array.isArray(recommendations) || recommendations.length === 0) {
     return `
       <div class="report-empty-state">
@@ -303,8 +306,16 @@ function renderRecommendations(recommendations = []) {
   }
 
   return recommendations
-    .map(
-      (recommendation, index) => `
+    .map((recommendation, index) => {
+      const actionItem = actionPlan?.items?.find(
+        (item) =>
+          item.recommendationId === recommendation.id
+      );
+
+      const status =
+        actionItem?.status || "not-started";
+
+      return `
         <article class="recommendation-card">
           <div class="recommendation-card__header">
             <div>
@@ -352,9 +363,41 @@ function renderRecommendations(recommendations = []) {
             <h4>Start here</h4>
             <p>${recommendation.firstAction}</p>
           </div>
+
+          <div class="recommendation-card__action-status">
+            <label for="action-status-${recommendation.id}">
+              Action status
+            </label>
+
+            <select
+              id="action-status-${recommendation.id}"
+              data-action-status="${recommendation.id}"
+            >
+              <option
+                value="not-started"
+                ${status === "not-started" ? "selected" : ""}
+              >
+                Not started
+              </option>
+
+              <option
+                value="in-progress"
+                ${status === "in-progress" ? "selected" : ""}
+              >
+                In progress
+              </option>
+
+              <option
+                value="complete"
+                ${status === "complete" ? "selected" : ""}
+              >
+                Complete
+              </option>
+            </select>
+          </div>
         </article>
-      `
-    )
+      `;
+    })
     .join("");
 }
 
@@ -433,7 +476,10 @@ export function renderReportView({
         </div>
 
         <div class="recommendation-list">
-          ${renderRecommendations(results?.recommendations)}
+          ${renderRecommendations(
+            results?.recommendations,
+            actionPlan
+          )}
         </div>
 
         ${renderActionPlanSummary(actionPlan)}

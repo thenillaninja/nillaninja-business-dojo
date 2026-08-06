@@ -3,7 +3,10 @@ import { businessAssessmentQuestions } from "../data/business-assessment.js";
 import { createInitialState } from "./core/state.js";
 import { clearState, loadState, saveState } from "./core/storage.js";
 import { createSnapshotRecord } from "./core/snapshots.js";
-import { createActionPlanRecord } from "./core/action-plans.js";
+import {
+  createActionPlanRecord,
+  updateActionItemStatus
+} from "./core/action-plans.js";
 import {
   deleteActionPlanBySnapshotId,
   getActionPlanBySnapshotId,
@@ -476,6 +479,35 @@ function renderReport() {
       document.querySelector("#action-plan")?.scrollIntoView({
         behavior: "smooth",
         block: "start"
+      });
+    });
+
+  document
+    .querySelectorAll("[data-action-status]")
+    .forEach((select) => {
+      select.addEventListener("change", () => {
+        if (!actionPlan) {
+          return;
+        }
+
+        const updatedPlan = updateActionItemStatus(
+          actionPlan,
+          select.dataset.actionStatus,
+          select.value
+        );
+
+        if (!updatedPlan || !saveActionPlan(updatedPlan)) {
+          return;
+        }
+
+        renderReport();
+
+        requestAnimationFrame(() => {
+          document.querySelector("#action-plan")?.scrollIntoView({
+            behavior: "instant",
+            block: "start"
+          });
+        });
       });
     });
 
