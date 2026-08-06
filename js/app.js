@@ -5,6 +5,7 @@ import { clearState, loadState, saveState } from "./core/storage.js";
 import { createSnapshotRecord } from "./core/snapshots.js";
 import {
   createActionPlanRecord,
+  updateActionItemFields,
   updateActionItemStatus
 } from "./core/action-plans.js";
 import {
@@ -508,6 +509,28 @@ function renderReport() {
             block: "start"
           });
         });
+      });
+    });
+
+  document
+    .querySelectorAll("[data-action-field]")
+    .forEach((field) => {
+      field.addEventListener("change", () => {
+        if (!actionPlan) {
+          return;
+        }
+
+        const updatedPlan = updateActionItemFields(
+          actionPlan,
+          field.dataset.recommendationId,
+          {
+            [field.dataset.actionField]: field.value.trim()
+          }
+        );
+
+        if (updatedPlan) {
+          saveActionPlan(updatedPlan);
+        }
       });
     });
 

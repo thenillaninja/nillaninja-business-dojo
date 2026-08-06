@@ -364,36 +364,67 @@ function renderRecommendations(
             <p>${recommendation.firstAction}</p>
           </div>
 
-          <div class="recommendation-card__action-status">
-            <label for="action-status-${recommendation.id}">
-              Action status
-            </label>
+          <div class="recommendation-card__action-controls">
+            <div class="recommendation-card__action-field">
+              <label for="action-status-${recommendation.id}">
+                Action status
+              </label>
 
-            <select
-              id="action-status-${recommendation.id}"
-              data-action-status="${recommendation.id}"
-            >
-              <option
-                value="not-started"
-                ${status === "not-started" ? "selected" : ""}
+              <select
+                id="action-status-${recommendation.id}"
+                data-action-status="${recommendation.id}"
               >
-                Not started
-              </option>
+                <option
+                  value="not-started"
+                  ${status === "not-started" ? "selected" : ""}
+                >
+                  Not started
+                </option>
 
-              <option
-                value="in-progress"
-                ${status === "in-progress" ? "selected" : ""}
-              >
-                In progress
-              </option>
+                <option
+                  value="in-progress"
+                  ${status === "in-progress" ? "selected" : ""}
+                >
+                  In progress
+                </option>
 
-              <option
-                value="complete"
-                ${status === "complete" ? "selected" : ""}
-              >
-                Complete
-              </option>
-            </select>
+                <option
+                  value="complete"
+                  ${status === "complete" ? "selected" : ""}
+                >
+                  Complete
+                </option>
+              </select>
+            </div>
+
+            <div class="recommendation-card__action-field">
+              <label for="action-target-date-${recommendation.id}">
+                Target date
+              </label>
+
+              <input
+                id="action-target-date-${recommendation.id}"
+                type="date"
+                value="${actionItem?.targetDate || ""}"
+                data-action-field="targetDate"
+                data-recommendation-id="${recommendation.id}"
+              />
+            </div>
+
+            <div class="recommendation-card__action-field">
+              <label for="action-responsible-person-${recommendation.id}">
+                Responsible person
+              </label>
+
+              <input
+                id="action-responsible-person-${recommendation.id}"
+                type="text"
+                value="${actionItem?.responsiblePerson || ""}"
+                placeholder="Owner, manager, or team member"
+                data-action-field="responsiblePerson"
+                data-recommendation-id="${recommendation.id}"
+              />
+            </div>
           </div>
         </article>
       `;
