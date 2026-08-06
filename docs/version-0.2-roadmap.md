@@ -18,7 +18,7 @@ Transform NillaNinja Business Dojo from a one-time assessment and report into a 
 
 ---
 
-## Phase 1 — Snapshot Library
+## Phase 1 — Snapshot Library — Complete
 
 Allow users to retain multiple completed Business Snapshots rather than replacing the previous report.
 
@@ -46,7 +46,7 @@ The Snapshot Library should allow users to:
 
 ---
 
-## Phase 2 — Interactive Action Plan
+## Phase 2 — Interactive Action Plan — Complete
 
 Turn recommendations into trackable action items.
 
@@ -63,6 +63,24 @@ Each action item may include:
 - Completion date
 
 Action-plan updates should persist in browser storage without changing the original assessment answers or scores.
+
+Completed functionality:
+
+- Created a separate action-plan data model and browser-storage collection.
+- Created one action plan for each completed snapshot.
+- Added persistent Not started, In progress, and Complete statuses.
+- Added automatic started and completed timestamps.
+- Added target dates.
+- Added responsible-person ownership.
+- Added persistent notes.
+- Added a progress percentage, progress bar, and status counts.
+- Added a clickable Action Plan Index for returning users.
+- Added direct navigation to individual recommendations.
+- Added editable action checklists.
+- Added checklist item creation, editing, completion, reopening, and deletion.
+- Added live interface updates without full-page rerendering or scroll jumps.
+- Preserved the original assessment snapshot as an immutable record.
+- Added permanent automated tests for action-plan creation, storage, updates, and checklist behavior.
 
 ---
 
