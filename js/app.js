@@ -31,6 +31,9 @@ import {
 } from "./engines/assessment-engine.js";
 import { calculateAssessmentScores } from "./engines/scoring-engine.js";
 import { generateRecommendations } from "./engines/recommendation-engine.js";
+import {
+  getVisibleRecommendations
+} from "./core/recommendation-filters.js";
 import { generateStrengths } from "./engines/strengths-engine.js";
 import {
   createReportFilename,
@@ -94,6 +97,15 @@ function restoreApplicationState() {
 }
 
 let state = restoreApplicationState();
+
+let recommendationFilters = {
+  status: "all",
+  category: "all",
+  priority: "all",
+  difficulty: "all",
+  quickWinsOnly: false,
+  sortBy: "original"
+};
 
 function persistState() {
   saveState(state);
@@ -568,16 +580,18 @@ function updateActionPlanStatusDisplay(
   }
 }
 
-function renderReport() {
+function renderReport({ preserveScroll = false } = {}) {
   if ("scrollRestoration" in history) {
     history.scrollRestoration = "manual";
   }
 
-  window.scrollTo({
-    top: 0,
-    left: 0,
-    behavior: "instant"
-  });
+  if (!preserveScroll) {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "instant"
+    });
+  }
 
   state.navigation.currentView = "report";
   state.navigation.currentStep = 4;
@@ -587,11 +601,58 @@ function renderReport() {
 
   const actionPlan = getCurrentActionPlan();
 
+  const visibleRecommendations = getVisibleRecommendations(
+    state.results.recommendations,
+    actionPlan,
+    recommendationFilters
+  );
+
   app.innerHTML = renderReportView({
     businessProfile: state.businessProfile,
     results: state.results,
-    actionPlan
+    actionPlan,
+    visibleRecommendations,
+    recommendationFilters
   });
+
+  document
+    .querySelectorAll("[data-recommendation-filter]")
+    .forEach((control) => {
+      control.addEventListener("change", () => {
+        recommendationFilters = {
+          ...recommendationFilters,
+          [control.dataset.recommendationFilter]: control.value
+        };
+
+        renderReport({ preserveScroll: true });
+      });
+    });
+
+  document
+    .querySelector("[data-recommendation-quick-wins]")
+    ?.addEventListener("change", (event) => {
+      recommendationFilters = {
+        ...recommendationFilters,
+        quickWinsOnly: event.currentTarget.checked
+      };
+
+      renderReport({ preserveScroll: true });
+    });
+
+  document
+    .querySelector("#recommendation-filters-reset")
+    ?.addEventListener("click", () => {
+      recommendationFilters = {
+        status: "all",
+        category: "all",
+        priority: "all",
+        difficulty: "all",
+        quickWinsOnly: false,
+        sortBy: "original"
+      };
+
+      renderReport({ preserveScroll: true });
+    });
 
   document
     .querySelector("#report-action-plan-jump")

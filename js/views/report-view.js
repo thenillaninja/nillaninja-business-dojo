@@ -507,6 +507,212 @@ export function renderActionChecklist(
   `;
 }
 
+function renderRecommendationFilters(
+  recommendations = [],
+  visibleRecommendations = [],
+  filters = {}
+) {
+  const categories = [
+    ...new Set(
+      recommendations.flatMap(
+        (recommendation) =>
+          recommendation.relatedCategories || []
+      )
+    )
+  ].sort();
+
+  const categoryOptions = categories
+    .map(
+      (category) => `
+        <option
+          value="${category}"
+          ${filters.category === category ? "selected" : ""}
+        >
+          ${formatLabel(category)}
+        </option>
+      `
+    )
+    .join("");
+
+  return `
+    <div
+      class="recommendation-filters"
+      aria-labelledby="recommendation-filters-heading"
+    >
+      <div class="recommendation-filters__header">
+        <div>
+          <p class="eyebrow">Focus Your Plan</p>
+          <h3 id="recommendation-filters-heading">
+            Filter recommendations
+          </h3>
+          <p>
+            Narrow the action plan by progress, category, priority, or
+            implementation difficulty.
+          </p>
+        </div>
+
+        <p
+          class="recommendation-filters__count"
+          id="recommendation-filter-count"
+          aria-live="polite"
+        >
+          Showing ${visibleRecommendations.length} of
+          ${recommendations.length}
+        </p>
+      </div>
+
+      <div class="recommendation-filters__controls">
+        <div class="recommendation-filters__field">
+          <label for="recommendation-filter-status">Status</label>
+          <select
+            id="recommendation-filter-status"
+            data-recommendation-filter="status"
+          >
+            <option value="all">All statuses</option>
+            <option
+              value="not-started"
+              ${filters.status === "not-started" ? "selected" : ""}
+            >
+              Not started
+            </option>
+            <option
+              value="in-progress"
+              ${filters.status === "in-progress" ? "selected" : ""}
+            >
+              In progress
+            </option>
+            <option
+              value="complete"
+              ${filters.status === "complete" ? "selected" : ""}
+            >
+              Complete
+            </option>
+          </select>
+        </div>
+
+        <div class="recommendation-filters__field">
+          <label for="recommendation-filter-category">Category</label>
+          <select
+            id="recommendation-filter-category"
+            data-recommendation-filter="category"
+          >
+            <option value="all">All categories</option>
+            ${categoryOptions}
+          </select>
+        </div>
+
+        <div class="recommendation-filters__field">
+          <label for="recommendation-filter-priority">Priority</label>
+          <select
+            id="recommendation-filter-priority"
+            data-recommendation-filter="priority"
+          >
+            <option value="all">All priorities</option>
+            <option
+              value="immediate"
+              ${filters.priority === "immediate" ? "selected" : ""}
+            >
+              Immediate
+            </option>
+            <option
+              value="high"
+              ${filters.priority === "high" ? "selected" : ""}
+            >
+              High
+            </option>
+            <option
+              value="medium"
+              ${filters.priority === "medium" ? "selected" : ""}
+            >
+              Medium
+            </option>
+            <option
+              value="future"
+              ${filters.priority === "future" ? "selected" : ""}
+            >
+              Future
+            </option>
+          </select>
+        </div>
+
+        <div class="recommendation-filters__field">
+          <label for="recommendation-filter-difficulty">
+            Difficulty
+          </label>
+          <select
+            id="recommendation-filter-difficulty"
+            data-recommendation-filter="difficulty"
+          >
+            <option value="all">All difficulties</option>
+            <option
+              value="easy"
+              ${filters.difficulty === "easy" ? "selected" : ""}
+            >
+              Easy
+            </option>
+            <option
+              value="moderate"
+              ${filters.difficulty === "moderate" ? "selected" : ""}
+            >
+              Moderate
+            </option>
+            <option
+              value="advanced"
+              ${filters.difficulty === "advanced" ? "selected" : ""}
+            >
+              Advanced
+            </option>
+          </select>
+        </div>
+
+        <div class="recommendation-filters__field">
+          <label for="recommendation-sort">Sort by</label>
+          <select
+            id="recommendation-sort"
+            data-recommendation-filter="sortBy"
+          >
+            <option value="original">Recommended order</option>
+            <option
+              value="priority"
+              ${filters.sortBy === "priority" ? "selected" : ""}
+            >
+              Highest priority
+            </option>
+            <option
+              value="difficulty"
+              ${filters.sortBy === "difficulty" ? "selected" : ""}
+            >
+              Easiest to implement
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="recommendation-filters__actions">
+        <label class="recommendation-filters__quick-win">
+          <input
+            type="checkbox"
+            data-recommendation-quick-wins
+            ${filters.quickWinsOnly ? "checked" : ""}
+          />
+          <span>
+            <strong>Quick Wins Only</strong>
+            Easy actions with immediate or high priority
+          </span>
+        </label>
+
+        <button
+          class="button button--secondary"
+          type="button"
+          id="recommendation-filters-reset"
+        >
+          Reset Filters
+        </button>
+      </div>
+    </div>
+  `;
+}
+
 function renderRecommendations(
   recommendations = [],
   actionPlan = null
@@ -678,7 +884,9 @@ function renderRecommendations(
 export function renderReportView({
   businessProfile,
   results,
-  actionPlan
+  actionPlan,
+  visibleRecommendations = results?.recommendations || [],
+  recommendationFilters = {}
 }) {
   const businessName =
     businessProfile?.businessName?.trim() || "Your Business";
@@ -749,9 +957,18 @@ export function renderReportView({
           </p>
         </div>
 
-        <div class="recommendation-list">
+        ${renderRecommendationFilters(
+          results?.recommendations || [],
+          visibleRecommendations,
+          recommendationFilters
+        )}
+
+        <div
+          class="recommendation-list"
+          id="recommendation-list"
+        >
           ${renderRecommendations(
-            results?.recommendations,
+            visibleRecommendations,
             actionPlan
           )}
         </div>
