@@ -1,3 +1,10 @@
+## Unreleased
+
+### Changed
+- Added a phone report-only experience that keeps assessment results, recommendations, and export tools available while hiding action-plan editing controls on phone-sized screens.
+- Preserved the full interactive action-plan experience on tablets, laptops, desktops, and narrow desktop windows.
+- Validated the responsive behavior locally with ResponsivelyApp and reran the complete automated regression suite successfully.
+
 # Changelog
 
 ## Version 0.2 — August 6, 2026
