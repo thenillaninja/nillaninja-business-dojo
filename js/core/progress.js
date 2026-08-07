@@ -31,7 +31,8 @@ function createEmptySummary() {
     checklist: {
       totalItems: 0,
       completedItems: 0,
-      completionPercentage: 0
+      completionPercentage: 0,
+      byRecommendation: []
     }
   };
 }
@@ -119,6 +120,9 @@ export function summarizeActionPlanProgress(
   }
 
   const currentDate = normalizeToday(today);
+  const currentDayEnd = new Date(currentDate);
+  currentDayEnd.setUTCHours(23, 59, 59, 999);
+
   const upcomingLimit = new Date(currentDate);
   upcomingLimit.setUTCDate(
     upcomingLimit.getUTCDate() +
@@ -194,11 +198,22 @@ export function summarizeActionPlanProgress(
       status === "complete" &&
       completedAt &&
       completedAt >= recentLimit &&
-      completedAt <= currentDate
+      completedAt <= currentDayEnd
     ) {
+      const millisecondsPerDay = 24 * 60 * 60 * 1000;
+      const completedDay = normalizeToday(completedAt);
+      const daysSinceCompleted = Math.max(
+        0,
+        Math.floor(
+          (currentDate - completedDay) /
+            millisecondsPerDay
+        )
+      );
+
       summary.recentlyCompleted.push({
         recommendationId: item.recommendationId,
         completedAt: item.completedAt,
+        daysSinceCompleted,
         title:
           recommendation?.title ||
           item.recommendationId
@@ -209,12 +224,28 @@ export function summarizeActionPlanProgress(
       ? item.checklist
       : [];
 
-    summary.checklist.totalItems += checklist.length;
-    summary.checklist.completedItems +=
+    const completedChecklistItems =
       checklist.filter(
         (checklistItem) =>
           checklistItem?.completed === true
       ).length;
+
+    summary.checklist.totalItems += checklist.length;
+    summary.checklist.completedItems +=
+      completedChecklistItems;
+
+    summary.checklist.byRecommendation.push({
+      recommendationId: item.recommendationId,
+      title:
+        recommendation?.title ||
+        item.recommendationId,
+      totalItems: checklist.length,
+      completedItems: completedChecklistItems,
+      completionPercentage: calculatePercentage(
+        completedChecklistItems,
+        checklist.length
+      )
+    });
   }
 
   summary.completionPercentage =
@@ -242,6 +273,11 @@ export function summarizeActionPlanProgress(
   summary.recentlyCompleted.sort(
     (a, b) =>
       b.completedAt.localeCompare(a.completedAt)
+  );
+
+  summary.checklist.byRecommendation.sort(
+    (a, b) =>
+      a.title.localeCompare(b.title)
   );
 
   return structuredClone(summary);

@@ -157,6 +157,11 @@ assert(
 );
 
 assert(
+  summary.recentlyCompleted[0].daysSinceCompleted === 2,
+  "Days since completion was calculated incorrectly."
+);
+
+assert(
   summary.checklist.totalItems === 4,
   "Checklist total was incorrect."
 );
@@ -169,6 +174,37 @@ assert(
 assert(
   summary.checklist.completionPercentage === 50,
   "Checklist completion percentage was incorrect."
+);
+
+assert(
+  summary.checklist.byRecommendation.length === 4,
+  "Per-recommendation checklist summaries were incomplete."
+);
+
+const urgentChecklist =
+  summary.checklist.byRecommendation.find(
+    (item) =>
+      item.recommendationId === "urgent-security"
+  );
+
+assert(
+  urgentChecklist?.totalItems === 2 &&
+    urgentChecklist.completedItems === 1 &&
+    urgentChecklist.completionPercentage === 50,
+  "Per-recommendation checklist progress was incorrect."
+);
+
+const emptyChecklist =
+  summary.checklist.byRecommendation.find(
+    (item) =>
+      item.recommendationId === "customer-follow-up"
+  );
+
+assert(
+  emptyChecklist?.totalItems === 0 &&
+    emptyChecklist.completedItems === 0 &&
+    emptyChecklist.completionPercentage === 0,
+  "Empty checklist progress was incorrect."
 );
 
 assert(
@@ -197,7 +233,8 @@ console.log("Status totals: pass");
 console.log("Completion percentage: pass");
 console.log("Priority remaining: pass");
 console.log("Overdue and upcoming dates: pass");
-console.log("Recently completed items: pass");
+console.log("Recently completed items and age: pass");
 console.log("Checklist totals: pass");
+console.log("Checklist progress by recommendation: pass");
 console.log("Immutability: pass");
 console.log("Empty-state summary: pass");
