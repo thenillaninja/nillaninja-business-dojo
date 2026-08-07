@@ -1097,16 +1097,37 @@ function renderCompletedSnapshotNavigation() {
       aria-labelledby="snapshot-navigation-heading"
     >
       <div class="snapshot-app-navigation__heading">
-        <p class="eyebrow">Completed Snapshot</p>
-        <div>
-          <h2 id="snapshot-navigation-heading">
-            Snapshot navigation
-          </h2>
-          <p>
-            Jump to any section of this completed report.
-          </p>
+        <div class="snapshot-app-navigation__heading-copy">
+          <p class="eyebrow">Completed Snapshot</p>
+          <div>
+            <h2 id="snapshot-navigation-heading">
+              Snapshot navigation
+            </h2>
+            <p>
+              Jump to any section of this completed report.
+            </p>
+          </div>
         </div>
+
+        <button
+          class="snapshot-app-navigation__toggle"
+          id="snapshot-navigation-toggle"
+          type="button"
+          aria-expanded="true"
+          aria-controls="snapshot-navigation-items"
+          aria-label="Minimize snapshot navigation"
+        >
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M6 9l6 6 6-6"></path>
+          </svg>
+          <span>Minimize navigation</span>
+        </button>
       </div>
+
+      <div
+        class="snapshot-app-navigation__items"
+        id="snapshot-navigation-items"
+      >
       <a
         class="snapshot-app-navigation__item"
         href="#report-overview"
@@ -1201,6 +1222,7 @@ function renderCompletedSnapshotNavigation() {
         </svg>
         <span>Snapshots</span>
       </button>
+      </div>
     </nav>
   `;
 }

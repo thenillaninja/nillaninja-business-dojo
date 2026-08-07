@@ -121,6 +121,118 @@ function renderOverallSummary(comparison) {
   `;
 }
 
+
+function renderImplementationProgress(comparison) {
+  const progress = comparison.implementationProgress;
+
+  if (!progress?.isAvailable) {
+    return `
+      <section
+        class="comparison-section"
+        aria-labelledby="comparison-implementation-heading"
+      >
+        <div class="comparison-section__heading">
+          <p class="eyebrow">Implementation Progress</p>
+          <h2 id="comparison-implementation-heading">
+            Action-plan movement
+          </h2>
+        </div>
+
+        <div class="comparison-empty-state">
+          <p>
+            ${progress?.reason ||
+              "Implementation progress is unavailable for these snapshots."}
+          </p>
+        </div>
+      </section>
+    `;
+  }
+
+  return `
+    <section
+      class="comparison-section"
+      aria-labelledby="comparison-implementation-heading"
+    >
+      <div class="comparison-section__heading">
+        <p class="eyebrow">Implementation Progress</p>
+        <h2 id="comparison-implementation-heading">
+          Action-plan movement
+        </h2>
+        <p class="comparison-section__description">
+          These measures reflect progress recorded in the saved action plans.
+          They are separate from assessment score movement.
+        </p>
+      </div>
+
+      <div class="comparison-progress-grid">
+        <article class="comparison-progress-card">
+          <p>Earlier completion</p>
+          <h3>${progress.earlier.completionPercentage}%</h3>
+          <span>
+            ${progress.earlier.statusTotals.complete}
+            of ${progress.earlier.totalItems} complete
+          </span>
+        </article>
+
+        <article class="comparison-progress-card">
+          <p>Later completion</p>
+          <h3>${progress.later.completionPercentage}%</h3>
+          <span>
+            ${progress.later.statusTotals.complete}
+            of ${progress.later.totalItems} complete
+          </span>
+        </article>
+
+        <article class="comparison-progress-card comparison-progress-card--change">
+          <p>Completion movement</p>
+          <h3>
+            ${formatChange(progress.completionPercentageChange)}%
+          </h3>
+          <span>percentage points</span>
+        </article>
+
+        <article class="comparison-progress-card">
+          <p>Checklist progress</p>
+          <h3>
+            ${progress.earlier.checklist.completionPercentage}%
+            <span aria-hidden="true">→</span>
+            ${progress.later.checklist.completionPercentage}%
+          </h3>
+          <span>
+            ${formatChange(
+              progress.checklistCompletionPercentageChange
+            )}% movement
+          </span>
+        </article>
+
+        <article class="comparison-progress-card">
+          <p>Completed items</p>
+          <h3>
+            ${progress.earlier.statusTotals.complete}
+            <span aria-hidden="true">→</span>
+            ${progress.later.statusTotals.complete}
+          </h3>
+          <span>
+            ${formatChange(progress.completedItemsChange)} change
+          </span>
+        </article>
+
+        <article class="comparison-progress-card">
+          <p>In progress</p>
+          <h3>
+            ${progress.earlier.statusTotals.inProgress}
+            <span aria-hidden="true">→</span>
+            ${progress.later.statusTotals.inProgress}
+          </h3>
+          <span>
+            ${formatChange(progress.inProgressItemsChange)} change
+          </span>
+        </article>
+      </div>
+    </section>
+  `;
+}
+
 export function renderSnapshotComparisonView(comparison) {
   const earlierDate = formatDate(
     comparison.earlierSnapshot?.completedAt ||
@@ -145,13 +257,13 @@ export function renderSnapshotComparisonView(comparison) {
             ${comparison.businessName}
           </h1>
           <p>
-            Compare two completed Business Snapshots and review how the
-            reported systems, strengths, and priorities changed.
+            Compare two completed Business Snapshots and review both
+            assessment changes and action-plan implementation progress.
           </p>
         </div>
 
         <button
-          class="button button--secondary"
+          class="button button--primary"
           type="button"
           id="snapshot-comparison-back"
         >
@@ -180,9 +292,12 @@ export function renderSnapshotComparisonView(comparison) {
       </div>
 
       <div class="comparison-summary">
-        <h2>What changed overall</h2>
+        <p class="eyebrow">Assessment Progress</p>
+        <h2>What changed in the assessment</h2>
         <p>${renderOverallSummary(comparison)}</p>
       </div>
+
+      ${renderImplementationProgress(comparison)}
 
       <section
         class="comparison-section"

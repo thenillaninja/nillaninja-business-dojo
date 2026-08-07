@@ -1229,6 +1229,40 @@ function renderReport({ preserveScroll = false } = {}) {
       window.print();
     });
 
+  const snapshotNavigation =
+    document.querySelector(".snapshot-app-navigation");
+
+  const snapshotNavigationToggle =
+    document.querySelector("#snapshot-navigation-toggle");
+
+  snapshotNavigationToggle?.addEventListener("click", () => {
+    const isCollapsed =
+      snapshotNavigation?.classList.toggle(
+        "snapshot-app-navigation--collapsed"
+      ) ?? false;
+
+    snapshotNavigationToggle.setAttribute(
+      "aria-expanded",
+      String(!isCollapsed)
+    );
+
+    snapshotNavigationToggle.setAttribute(
+      "aria-label",
+      isCollapsed
+        ? "Show snapshot navigation"
+        : "Minimize snapshot navigation"
+    );
+
+    const label =
+      snapshotNavigationToggle.querySelector("span");
+
+    if (label) {
+      label.textContent = isCollapsed
+        ? "Show navigation"
+        : "Minimize navigation";
+    }
+  });
+
   document
     .querySelector("#snapshot-app-library")
     ?.addEventListener("click", () => {

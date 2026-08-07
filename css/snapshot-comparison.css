@@ -90,6 +90,47 @@
   margin-top: var(--space-1);
 }
 
+
+.comparison-section__description {
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-muted);
+}
+
+.comparison-progress-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.comparison-progress-card {
+  padding: var(--space-5);
+  border: 1px solid rgba(121, 215, 255, 0.16);
+  border-radius: var(--radius-large);
+  background: rgba(8, 17, 27, 0.42);
+}
+
+.comparison-progress-card p,
+.comparison-progress-card h3,
+.comparison-progress-card span {
+  margin: 0;
+}
+
+.comparison-progress-card h3 {
+  margin-top: var(--space-2);
+  font-size: clamp(1.7rem, 4vw, 2.6rem);
+}
+
+.comparison-progress-card > span {
+  display: block;
+  margin-top: var(--space-2);
+  color: var(--color-text-muted);
+}
+
+.comparison-progress-card--change {
+  border-color: rgba(121, 215, 255, 0.34);
+  background: rgba(121, 215, 255, 0.08);
+}
+
 .comparison-category-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -178,6 +219,7 @@
 
 @media (max-width: 64rem) {
   .comparison-score-grid,
+  .comparison-progress-grid,
   .comparison-category-grid,
   .comparison-three-column {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -194,6 +236,7 @@
   }
 
   .comparison-score-grid,
+  .comparison-progress-grid,
   .comparison-category-grid,
   .comparison-three-column {
     grid-template-columns: 1fr;
