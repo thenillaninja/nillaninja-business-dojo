@@ -438,6 +438,7 @@ function renderActionPlanIndex(
   return `
     <section
       class="action-plan-index"
+      id="working-action-plan"
       aria-labelledby="action-plan-index-heading"
     >
       <div class="action-plan-index__header">
@@ -952,6 +953,121 @@ function renderRecommendations(
     .join("");
 }
 
+function renderCompletedSnapshotNavigation() {
+  return `
+    <nav
+      class="snapshot-app-navigation"
+      aria-labelledby="snapshot-navigation-heading"
+    >
+      <div class="snapshot-app-navigation__heading">
+        <p class="eyebrow">Completed Snapshot</p>
+        <div>
+          <h2 id="snapshot-navigation-heading">
+            Snapshot navigation
+          </h2>
+          <p>
+            Jump to any section of this completed report.
+          </p>
+        </div>
+      </div>
+      <a
+        class="snapshot-app-navigation__item"
+        href="#report-overview"
+        aria-label="Go to report overview"
+      >
+        <svg aria-hidden="true" viewBox="0 0 24 24">
+          <path d="M4 5h16v14H4z"></path>
+          <path d="M8 9h8M8 13h5"></path>
+        </svg>
+        <span>Overview</span>
+      </a>
+
+      <a
+        class="snapshot-app-navigation__item"
+        href="#category-scores"
+        aria-label="Go to category scores"
+      >
+        <svg aria-hidden="true" viewBox="0 0 24 24">
+          <path d="M5 19V9M12 19V5M19 19v-7"></path>
+        </svg>
+        <span>Scores</span>
+      </a>
+
+      <a
+        class="snapshot-app-navigation__item"
+        href="#business-strengths"
+        aria-label="Go to business strengths"
+      >
+        <svg aria-hidden="true" viewBox="0 0 24 24">
+          <path d="m12 3 2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"></path>
+        </svg>
+        <span>Strengths</span>
+      </a>
+
+      <a
+        class="snapshot-app-navigation__item"
+        href="#action-plan"
+        aria-label="Go to progress dashboard"
+      >
+        <svg aria-hidden="true" viewBox="0 0 24 24">
+          <path d="M4 12a8 8 0 1 0 8-8"></path>
+          <path d="M12 4v8h8"></path>
+        </svg>
+        <span>Progress</span>
+      </a>
+
+      <a
+        class="snapshot-app-navigation__item"
+        href="#recommendations"
+        aria-label="Go to recommendations"
+      >
+        <svg aria-hidden="true" viewBox="0 0 24 24">
+          <path d="M9 18h6M10 22h4"></path>
+          <path d="M8 14a6 6 0 1 1 8 0c-1 .8-1.5 1.7-1.5 3h-5c0-1.3-.5-2.2-1.5-3z"></path>
+        </svg>
+        <span>Recommendations</span>
+      </a>
+
+      <a
+        class="snapshot-app-navigation__item"
+        href="#working-action-plan"
+        aria-label="Go to working action plan"
+      >
+        <svg aria-hidden="true" viewBox="0 0 24 24">
+          <path d="M9 6h11M9 12h11M9 18h11"></path>
+          <path d="m4 6 1 1 2-2M4 12h3M4 18h3"></path>
+        </svg>
+        <span>Action Plan</span>
+      </a>
+
+      <a
+        class="snapshot-app-navigation__item"
+        href="#report-export"
+        aria-label="Go to report export tools"
+      >
+        <svg aria-hidden="true" viewBox="0 0 24 24">
+          <path d="M12 3v12"></path>
+          <path d="m7 10 5 5 5-5"></path>
+          <path d="M5 21h14"></path>
+        </svg>
+        <span>Export</span>
+      </a>
+
+      <button
+        class="snapshot-app-navigation__item"
+        id="snapshot-app-library"
+        type="button"
+        aria-label="Open Snapshot Library"
+      >
+        <svg aria-hidden="true" viewBox="0 0 24 24">
+          <path d="M4 5h6l2 2h8v12H4z"></path>
+        </svg>
+        <span>Snapshots</span>
+      </button>
+    </nav>
+  `;
+}
+
 export function renderReportView({
   businessProfile,
   results,
@@ -967,7 +1083,11 @@ export function renderReportView({
     : 0;
 
   return `
-    <section class="report-panel" aria-labelledby="report-heading">
+    <section
+      class="report-panel"
+      id="report-overview"
+      aria-labelledby="report-heading"
+    >
       <p class="eyebrow">Step 4 of 5</p>
 
       <div class="report-panel__header">
@@ -984,9 +1104,15 @@ export function renderReportView({
 
       ${renderExecutiveSummary(results)}
 
+      ${renderCompletedSnapshotNavigation()}
+
       ${renderActionPlanJump(actionPlan)}
 
-      <section class="report-section" aria-labelledby="category-scores-heading">
+      <section
+        class="report-section"
+        id="category-scores"
+        aria-labelledby="category-scores-heading"
+      >
         <div class="report-section__heading">
           <p class="eyebrow">Assessment Breakdown</p>
           <h2 id="category-scores-heading">Category scores</h2>
@@ -999,6 +1125,7 @@ export function renderReportView({
 
       <section
         class="report-section"
+        id="business-strengths"
         aria-labelledby="strengths-heading"
       >
         <div class="report-section__heading">
@@ -1017,6 +1144,7 @@ export function renderReportView({
 
       <section
         class="report-section"
+        id="recommendations"
         aria-labelledby="recommendations-heading"
       >
         <div class="report-section__heading">
@@ -1067,6 +1195,7 @@ export function renderReportView({
 
       <section
         class="report-section report-export"
+        id="report-export"
         aria-labelledby="export-heading"
       >
         <div class="report-section__heading">

@@ -1402,3 +1402,277 @@
     display: none;
   }
 }
+
+.snapshot-app-navigation {
+  position: sticky;
+  top: 1rem;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin: var(--space-5) 0;
+  padding: var(--space-3);
+  border: 1px solid rgba(121, 215, 255, 0.26);
+  border-radius: var(--radius-large);
+  background: rgba(15, 18, 24, 0.94);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.24);
+}
+
+.snapshot-app-navigation__item {
+  display: grid;
+  place-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+  min-height: 4.75rem;
+  padding: var(--space-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius-small);
+  background: transparent;
+  color: var(--color-text-muted);
+  font: inherit;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.snapshot-app-navigation__item svg {
+  width: 1.55rem;
+  height: 1.55rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.snapshot-app-navigation__item span {
+  overflow-wrap: anywhere;
+  font-size: var(--font-size-small);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.snapshot-app-navigation__item:hover {
+  transform: translateY(-2px);
+  border-color: rgba(121, 215, 255, 0.38);
+  background: rgba(121, 215, 255, 0.08);
+  color: var(--color-accent);
+}
+
+.snapshot-app-navigation__item:focus-visible {
+  outline: 3px solid rgba(121, 215, 255, 0.4);
+  outline-offset: 2px;
+}
+
+#report-overview,
+#category-scores,
+#business-strengths,
+#action-plan,
+#recommendations,
+#working-action-plan,
+#report-export {
+  scroll-margin-top: 8.5rem;
+}
+
+@media (max-width: 64rem) {
+  .snapshot-app-navigation {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 40rem) {
+  .snapshot-app-navigation {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 32rem),
+  (max-height: 32rem) and (hover: none) and (pointer: coarse) {
+  .snapshot-app-navigation {
+    display: none;
+  }
+}
+
+/* Icon-only completed snapshot navigation */
+
+.snapshot-app-navigation {
+  overflow: visible;
+  padding: var(--space-2);
+}
+
+.snapshot-app-navigation__item {
+  position: relative;
+  min-height: 3.75rem;
+  padding: var(--space-2);
+}
+
+.snapshot-app-navigation__item svg {
+  width: 1.7rem;
+  height: 1.7rem;
+}
+
+.snapshot-app-navigation__item span {
+  display: none;
+}
+
+.snapshot-app-navigation__item::after {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 0.65rem);
+  z-index: 30;
+  width: max-content;
+  max-width: 13rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid rgba(121, 215, 255, 0.38);
+  border-radius: var(--radius-small);
+  background: var(--color-background);
+  color: var(--color-text);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+  content: attr(aria-label);
+  font-size: var(--font-size-small);
+  font-weight: 800;
+  line-height: 1.25;
+  text-align: center;
+  white-space: normal;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 0.35rem);
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease;
+}
+
+.snapshot-app-navigation__item::before {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 0.35rem);
+  z-index: 31;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-right: 1px solid rgba(121, 215, 255, 0.38);
+  border-bottom: 1px solid rgba(121, 215, 255, 0.38);
+  background: var(--color-background);
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) rotate(45deg);
+  transition: opacity 140ms ease;
+}
+
+.snapshot-app-navigation__item:hover::after,
+.snapshot-app-navigation__item:focus-visible::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.snapshot-app-navigation__item:hover::before,
+.snapshot-app-navigation__item:focus-visible::before {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .snapshot-app-navigation__item::after,
+  .snapshot-app-navigation__item::before {
+    transition: none;
+  }
+}
+
+/* Refine the icon dock and keep tooltips off report content */
+
+.snapshot-app-navigation {
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  padding: var(--space-2) var(--space-2) 3.25rem;
+  background: rgba(15, 18, 24, 0.78);
+}
+
+.snapshot-app-navigation__item {
+  min-height: 3.5rem;
+}
+
+/*
+  Tooltips occupy the reserved lower portion of the dock rather
+  than floating over report headings and content.
+*/
+.snapshot-app-navigation__item::after {
+  top: calc(100% + 0.55rem);
+  bottom: auto;
+  max-width: 11rem;
+  background: rgba(15, 18, 24, 0.96);
+  transform: translate(-50%, -0.25rem);
+}
+
+.snapshot-app-navigation__item::before {
+  top: calc(100% + 0.25rem);
+  bottom: auto;
+  border: 0;
+  border-top: 1px solid rgba(121, 215, 255, 0.38);
+  border-left: 1px solid rgba(121, 215, 255, 0.38);
+  background: rgba(15, 18, 24, 0.96);
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.snapshot-app-navigation__item:hover::after,
+.snapshot-app-navigation__item:focus-visible::after {
+  transform: translate(-50%, 0);
+}
+
+@media (max-width: 64rem) {
+  .snapshot-app-navigation {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 40rem) {
+  .snapshot-app-navigation {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+}
+
+.snapshot-app-navigation__heading {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-2) var(--space-2) var(--space-3);
+  border-bottom: 1px solid rgba(121, 215, 255, 0.18);
+}
+
+.snapshot-app-navigation__heading h2,
+.snapshot-app-navigation__heading p {
+  margin: 0;
+}
+
+.snapshot-app-navigation__heading h2 {
+  font-size: var(--font-size-large);
+}
+
+.snapshot-app-navigation__heading div > p {
+  margin-top: var(--space-1);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+@media (max-width: 56rem) {
+  .snapshot-app-navigation__heading {
+    display: grid;
+  }
+}
+
+/* Reserve space for the taller sticky snapshot navigation dock */
+
+#report-overview,
+#category-scores,
+#business-strengths,
+#action-plan,
+#recommendations,
+#working-action-plan,
+#report-export {
+  scroll-margin-top: 17rem;
+}

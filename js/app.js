@@ -1220,6 +1220,13 @@ function renderReport({ preserveScroll = false } = {}) {
     });
 
   document
+    .querySelector("#snapshot-app-library")
+    ?.addEventListener("click", () => {
+      renderSnapshotLibrary();
+      focusMainContent();
+    });
+
+  document
     .querySelector("#report-back")
     ?.addEventListener("click", () => {
       state.navigation.currentQuestionIndex =
