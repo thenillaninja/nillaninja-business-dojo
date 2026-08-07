@@ -1,4 +1,5 @@
 import { summarizeActionPlanProgress } from "../core/progress.js";
+import { selectNextBestActions } from "../core/next-actions.js";
 
 function formatCategoryName(category) {
   return category
@@ -323,6 +324,142 @@ function renderActionPlanSummary(actionPlan, results = {}) {
             Improvements completed within the last 30 days.
           </p>
         </article>
+      </div>
+    </section>
+  `;
+}
+
+function renderNextBestActions(
+  recommendations = [],
+  actionPlan = null
+) {
+  const nextActions = selectNextBestActions(
+    recommendations,
+    actionPlan
+  );
+
+  if (nextActions.length === 0) {
+    return `
+      <section
+        class="next-best-actions"
+        aria-labelledby="next-best-actions-heading"
+      >
+        <div class="next-best-actions__heading">
+          <p class="eyebrow">Guided Follow-Through</p>
+          <h3 id="next-best-actions-heading">
+            Next best actions
+          </h3>
+          <p>
+            Your current action plan does not have any incomplete
+            recommendations requiring attention.
+          </p>
+        </div>
+      </section>
+    `;
+  }
+
+  const cards = nextActions
+    .map((action, index) => {
+      const reasons = action.reasons
+        .map(
+          (reason) => `
+            <li>${reason}</li>
+          `
+        )
+        .join("");
+
+      const targetDate = action.targetDate
+        ? `
+          <p>
+            <strong>Target date:</strong>
+            ${action.targetDate}
+          </p>
+        `
+        : "";
+
+      return `
+        <article class="next-best-actions__card">
+          <div class="next-best-actions__rank">
+            ${index + 1}
+          </div>
+
+          <div class="next-best-actions__content">
+            <div class="next-best-actions__card-header">
+              <h4>${action.title}</h4>
+
+              <span
+                class="recommendation-card__priority
+                  recommendation-card__priority--${action.priority}"
+              >
+                ${formatLabel(action.priority)}
+              </span>
+            </div>
+
+            <div class="next-best-actions__meta">
+              <p>
+                <strong>Status:</strong>
+                ${formatLabel(
+                  action.status.replace("-", " ")
+                )}
+              </p>
+
+              <p>
+                <strong>Difficulty:</strong>
+                ${formatLabel(action.difficulty)}
+              </p>
+
+              ${
+                action.estimatedEffort
+                  ? `
+                    <p>
+                      <strong>Estimated effort:</strong>
+                      ${action.estimatedEffort}
+                    </p>
+                  `
+                  : ""
+              }
+
+              ${targetDate}
+            </div>
+
+            <div class="next-best-actions__reason">
+              <h5>Why this is next</h5>
+              <ul>
+                ${reasons}
+              </ul>
+            </div>
+
+            <a
+              class="button button--secondary"
+              href="#recommendation-${action.recommendationId}"
+            >
+              Open recommendation
+            </a>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+
+  return `
+    <section
+      class="next-best-actions"
+      aria-labelledby="next-best-actions-heading"
+    >
+      <div class="next-best-actions__heading">
+        <p class="eyebrow">Guided Follow-Through</p>
+        <h3 id="next-best-actions-heading">
+          Next best actions
+        </h3>
+        <p>
+          Business Dojo ranked these incomplete recommendations
+          using priority, timing, current progress, difficulty,
+          Quick Win potential, and checklist momentum.
+        </p>
+      </div>
+
+      <div class="next-best-actions__list">
+        ${cards}
       </div>
     </section>
   `;
@@ -1186,6 +1323,11 @@ export function renderReportView({
         </div>
 
         ${renderActionPlanSummary(actionPlan, results)}
+
+        ${renderNextBestActions(
+          results?.recommendations || [],
+          actionPlan
+        )}
 
         ${renderActionPlanIndex(
           results?.recommendations,
