@@ -1,3 +1,5 @@
+import { summarizeActionPlanProgress } from "../core/progress.js";
+
 function formatCategoryName(category) {
   return category
     .split("-")
@@ -166,40 +168,13 @@ function renderStrengths(strengths = []) {
     .join("");
 }
 
-function getActionPlanProgress(actionPlan) {
-  const items = Array.isArray(actionPlan?.items)
-    ? actionPlan.items
-    : [];
+function renderActionPlanSummary(actionPlan, results = {}) {
+  const progress = summarizeActionPlanProgress(
+    actionPlan,
+    { results }
+  );
 
-  const total = items.length;
-  const completed = items.filter(
-    (item) => item.status === "complete"
-  ).length;
-  const inProgress = items.filter(
-    (item) => item.status === "in-progress"
-  ).length;
-  const notStarted = items.filter(
-    (item) => item.status === "not-started"
-  ).length;
-
-  const percentage =
-    total > 0
-      ? Math.round((completed / total) * 100)
-      : 0;
-
-  return {
-    total,
-    completed,
-    inProgress,
-    notStarted,
-    percentage
-  };
-}
-
-function renderActionPlanSummary(actionPlan) {
-  const progress = getActionPlanProgress(actionPlan);
-
-  if (progress.total === 0) {
+  if (progress.totalItems === 0) {
     return "";
   }
 
@@ -218,40 +193,40 @@ function renderActionPlanSummary(actionPlan) {
         <div
           class="action-plan-summary__percentage"
           data-action-plan-percentage
-          aria-label="${progress.percentage} percent complete"
+          aria-label="${progress.completionPercentage} percent complete"
         >
-          ${progress.percentage}%
+          ${progress.completionPercentage}%
         </div>
       </div>
 
       <progress
         class="action-plan-summary__progress"
         data-action-plan-progress
-        value="${progress.percentage}"
+        value="${progress.completionPercentage}"
         max="100"
-        aria-label="Action plan progress: ${progress.percentage} percent"
+        aria-label="Action plan progress: ${progress.completionPercentage} percent"
       >
-        ${progress.percentage}%
+        ${progress.completionPercentage}%
       </progress>
 
       <div class="action-plan-summary__counts">
         <p>
           <strong data-action-plan-count="complete">
-            ${progress.completed}
+            ${progress.statusTotals.complete}
           </strong>
           Complete
         </p>
 
         <p>
           <strong data-action-plan-count="in-progress">
-            ${progress.inProgress}
+            ${progress.statusTotals.inProgress}
           </strong>
           In progress
         </p>
 
         <p>
           <strong data-action-plan-count="not-started">
-            ${progress.notStarted}
+            ${progress.statusTotals.notStarted}
           </strong>
           Not started
         </p>
@@ -261,15 +236,18 @@ function renderActionPlanSummary(actionPlan) {
 }
 
 function renderActionPlanJump(actionPlan) {
-  const progress = getActionPlanProgress(actionPlan);
+  const progress = summarizeActionPlanProgress(
+    actionPlan,
+    null
+  );
 
-  if (progress.total === 0) {
+  if (progress.totalItems === 0) {
     return "";
   }
 
   const hasStarted =
-    progress.inProgress > 0 ||
-    progress.completed > 0;
+    progress.statusTotals.inProgress > 0 ||
+    progress.statusTotals.complete > 0;
 
   const label = hasStarted
     ? "Continue Action Plan"
@@ -986,7 +964,7 @@ export function renderReportView({
           )}
         </div>
 
-        ${renderActionPlanSummary(actionPlan)}
+        ${renderActionPlanSummary(actionPlan, results)}
 
         ${renderActionPlanIndex(
           results?.recommendations,
