@@ -1981,6 +1981,13 @@
 
 /* Clean report-only print presentation */
 
+
+@media print {
+  .skip-link {
+    display: none !important;
+  }
+}
+
 @media print {
   .snapshot-app-navigation,
   .report-action-plan-jump,
