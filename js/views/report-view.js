@@ -1373,7 +1373,7 @@ export function renderReportView({
 
         <div class="report-export__actions">
           <button
-            class="button button--primary"
+            class="button button--secondary"
             type="button"
             id="report-copy"
           >
@@ -1389,7 +1389,7 @@ export function renderReportView({
           </button>
 
           <button
-            class="button button--secondary"
+            class="button button--primary"
             type="button"
             id="report-print"
           >
@@ -1412,6 +1412,14 @@ export function renderReportView({
           id="report-back"
         >
           Back to Assessment
+        </button>
+
+        <button
+          class="button button--secondary"
+          type="button"
+          id="report-snapshot-library"
+        >
+          Snapshot Library
         </button>
 
         <button

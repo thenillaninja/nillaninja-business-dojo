@@ -1414,6 +1414,13 @@ function renderReport({ preserveScroll = false } = {}) {
     });
 
   document
+    .querySelector("#report-snapshot-library")
+    ?.addEventListener("click", () => {
+      renderSnapshotLibrary();
+      focusMainContent();
+    });
+
+  document
     .querySelector("#report-new-assessment")
     ?.addEventListener("click", () => {
       const shouldReset = window.confirm(
