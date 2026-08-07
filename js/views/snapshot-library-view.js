@@ -112,6 +112,104 @@ function renderSnapshotCards(
 }
 
 
+
+function formatHistoryDate(value) {
+  if (!value) {
+    return "Date unavailable";
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Date unavailable";
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric"
+  }).format(date);
+}
+
+function renderProgressHistory(history = null) {
+  if (!history || history.snapshotCount < 2) {
+    return "";
+  }
+
+  const movement =
+    history.overallChange > 0
+      ? `+${history.overallChange}`
+      : `${history.overallChange}`;
+
+  const movementClass =
+    history.overallChange > 0
+      ? "is-positive"
+      : history.overallChange < 0
+        ? "is-negative"
+        : "is-neutral";
+
+  return `
+    <section
+      class="snapshot-progress-history"
+      aria-labelledby="snapshot-progress-history-heading"
+    >
+      <div class="snapshot-progress-history__heading">
+        <div>
+          <p class="eyebrow">Progress History</p>
+          <h2 id="snapshot-progress-history-heading">
+            ${history.businessName}
+          </h2>
+          <p>
+            A simple view of how this business has scored across completed
+            snapshots.
+          </p>
+        </div>
+
+        <div class="snapshot-progress-history__change">
+          <span>Overall movement</span>
+          <strong class="${movementClass}">
+            ${movement} points
+          </strong>
+        </div>
+      </div>
+
+      <div
+        class="snapshot-progress-history__track"
+        aria-label="Snapshot score history"
+      >
+        ${history.entries
+          .map(
+            (entry, index) => `
+              <div class="snapshot-progress-history__entry">
+                <div class="snapshot-progress-history__score">
+                  ${entry.score}
+                </div>
+
+                <span class="snapshot-progress-history__date">
+                  ${formatHistoryDate(entry.completedAt)}
+                </span>
+
+                ${
+                  index < history.entries.length - 1
+                    ? `
+                      <span
+                        class="snapshot-progress-history__arrow"
+                        aria-hidden="true"
+                      >
+                        →
+                      </span>
+                    `
+                    : ""
+                }
+              </div>
+            `
+          )
+          .join("")}
+      </div>
+    </section>
+  `;
+}
+
 function formatReassessmentDate(value) {
   if (!value) {
     return "Date unavailable";
@@ -245,7 +343,8 @@ export function renderSnapshotLibraryView({
   comparisonMessage = "",
   backupMarkup = "",
   reassessmentPlan = null,
-  reassessmentStatus = null
+  reassessmentStatus = null,
+  progressHistory = null
 } = {}) {
   return `
     <section
@@ -276,6 +375,8 @@ export function renderSnapshotLibraryView({
         plan: reassessmentPlan,
         status: reassessmentStatus
       })}
+
+      ${renderProgressHistory(progressHistory)}
 
       ${
         snapshots.length >= 2

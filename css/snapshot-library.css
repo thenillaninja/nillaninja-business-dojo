@@ -170,3 +170,123 @@
     display: none !important;
   }
 }
+
+.snapshot-progress-history {
+  display: grid;
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
+  padding: var(--space-5);
+  border: 1px solid rgba(121, 215, 255, 0.24);
+  border-radius: var(--radius-large);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(121, 215, 255, 0.06),
+      rgba(8, 17, 27, 0.42)
+    );
+}
+
+.snapshot-progress-history__heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+
+.snapshot-progress-history__heading h2,
+.snapshot-progress-history__heading p {
+  margin: 0;
+}
+
+.snapshot-progress-history__heading > div:first-child > p:last-child {
+  margin-top: var(--space-2);
+  color: var(--color-text-muted);
+}
+
+.snapshot-progress-history__change {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 10rem;
+  text-align: right;
+}
+
+.snapshot-progress-history__change span {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-small);
+  font-weight: 700;
+}
+
+.snapshot-progress-history__change strong {
+  color: var(--color-accent);
+  font-size: var(--font-size-large);
+}
+
+.snapshot-progress-history__track {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+}
+
+.snapshot-progress-history__entry {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex: 0 0 auto;
+}
+
+.snapshot-progress-history__score {
+  display: grid;
+  place-items: center;
+  width: 4rem;
+  height: 4rem;
+  border: 1px solid rgba(121, 215, 255, 0.3);
+  border-radius: 999px;
+  background: rgba(121, 215, 255, 0.08);
+  color: var(--color-accent);
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.snapshot-progress-history__date {
+  max-width: 7rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-small);
+  line-height: 1.35;
+}
+
+.snapshot-progress-history__arrow {
+  color: var(--color-text-muted);
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+@media (max-width: 44rem) {
+  .snapshot-progress-history__heading {
+    display: grid;
+  }
+
+  .snapshot-progress-history__change {
+    min-width: 0;
+    text-align: left;
+  }
+}
+
+@media print {
+  .snapshot-progress-history {
+    display: none !important;
+  }
+}
+
+.snapshot-progress-history__change strong.is-positive {
+  color: var(--color-accent);
+}
+
+.snapshot-progress-history__change strong.is-negative {
+  color: var(--color-danger, #f87171);
+}
+
+.snapshot-progress-history__change strong.is-neutral {
+  color: var(--color-text-muted);
+}

@@ -51,6 +51,9 @@ import {
   compareSnapshots
 } from "./core/snapshot-comparison.js";
 import {
+  buildProgressHistory
+} from "./core/progress-history.js";
+import {
   createReassessmentPlan,
   getReassessmentStatus
 } from "./core/reassessment.js";
@@ -320,6 +323,16 @@ function renderSnapshotLibrary() {
     ? getReassessmentStatus(reassessmentPlan)
     : null;
 
+  const progressHistory = mostRecentSnapshot
+    ? buildProgressHistory(
+        collection.snapshots,
+        mostRecentSnapshot.business?.normalizedName ||
+          mostRecentSnapshot.business?.name ||
+          mostRecentSnapshot.businessProfile?.businessName ||
+          ""
+      )
+    : null;
+
   app.innerHTML = renderSnapshotLibraryView({
     snapshots,
     mostRecentSnapshotId: mostRecentSnapshot?.id || "",
@@ -330,7 +343,8 @@ function renderSnapshotLibrary() {
       statusType: backupStatusType
     }),
     reassessmentPlan,
-    reassessmentStatus
+    reassessmentStatus,
+    progressHistory
   });
 
   document
