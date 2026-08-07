@@ -29,6 +29,18 @@ const actionPlan = {
   items: []
 };
 
+const reassessmentPlan = {
+  sourceSnapshotId: "snapshot-1",
+  business: {
+    name: "Test Business",
+    normalizedName: "test business"
+  },
+  intervalDays: 60,
+  scheduledFor: "2026-10-06",
+  createdAt: "2026-08-07T05:00:00.000Z",
+  updatedAt: "2026-08-07T05:00:00.000Z"
+};
+
 const backup = createBusinessDojoBackup({
   applicationState: {
     navigation: {
@@ -44,6 +56,11 @@ const backup = createBusinessDojoBackup({
     schemaVersion: "0.2",
     updatedAt: null,
     actionPlans: [actionPlan]
+  },
+  reassessmentCollection: {
+    schemaVersion: "0.3",
+    updatedAt: null,
+    plans: [reassessmentPlan]
   },
   exportedAt: "2026-08-06T06:45:00.000Z"
 });
@@ -66,6 +83,11 @@ assert(
 assert(
   backup.data.actionPlanCollection.actionPlans.length === 1,
   "Action-plan collection was not included."
+);
+
+assert(
+  backup.data.reassessmentCollection.plans.length === 1,
+  "Reassessment collection was not included."
 );
 
 assert(
@@ -155,7 +177,8 @@ console.log("Backup filename: pass");
 const restoredWrites = {
   applicationState: null,
   snapshotCollection: null,
-  actionPlanCollection: null
+  actionPlanCollection: null,
+  reassessmentCollection: null
 };
 
 const successfulRestore = restoreBusinessDojoBackup(
@@ -176,6 +199,11 @@ const successfulRestore = restoreBusinessDojoBackup(
       updatedAt: null,
       actionPlans: []
     }),
+    readReassessmentCollection: () => ({
+      schemaVersion: "0.3",
+      updatedAt: null,
+      plans: []
+    }),
     writeApplicationState: (value) => {
       restoredWrites.applicationState =
         structuredClone(value);
@@ -189,6 +217,11 @@ const successfulRestore = restoreBusinessDojoBackup(
     },
     writeActionPlanCollection: (value) => {
       restoredWrites.actionPlanCollection =
+        structuredClone(value);
+      return true;
+    },
+    writeReassessmentCollection: (value) => {
+      restoredWrites.reassessmentCollection =
         structuredClone(value);
       return true;
     }
@@ -218,10 +251,17 @@ assert(
   "Action-plan collection was not restored."
 );
 
+assert(
+  restoredWrites.reassessmentCollection.plans[0]
+    .sourceSnapshotId === "snapshot-1",
+  "Reassessment collection was not restored."
+);
+
 const rollbackWrites = {
   applicationStates: [],
   snapshotCollections: [],
-  actionPlanCollections: []
+  actionPlanCollections: [],
+  reassessmentCollections: []
 };
 
 const previousApplicationState = {
@@ -251,6 +291,18 @@ const previousActionPlanCollection = {
   ]
 };
 
+const previousReassessmentCollection = {
+  schemaVersion: "0.3",
+  updatedAt: null,
+  plans: [
+    {
+      sourceSnapshotId: "previous-snapshot",
+      intervalDays: 30,
+      scheduledFor: "2026-09-06"
+    }
+  ]
+};
+
 let actionPlanWriteCount = 0;
 
 const failedRestore = restoreBusinessDojoBackup(
@@ -262,6 +314,8 @@ const failedRestore = restoreBusinessDojoBackup(
       structuredClone(previousSnapshotCollection),
     readActionPlanCollection: () =>
       structuredClone(previousActionPlanCollection),
+    readReassessmentCollection: () =>
+      structuredClone(previousReassessmentCollection),
     writeApplicationState: (value) => {
       rollbackWrites.applicationStates.push(
         structuredClone(value)
@@ -283,6 +337,13 @@ const failedRestore = restoreBusinessDojoBackup(
       );
 
       return actionPlanWriteCount > 1;
+    },
+    writeReassessmentCollection: (value) => {
+      rollbackWrites.reassessmentCollections.push(
+        structuredClone(value)
+      );
+
+      return true;
     }
   }
 );
@@ -308,6 +369,12 @@ assert(
   rollbackWrites.actionPlanCollections.at(-1).actionPlans[0].id ===
     "previous-action-plan",
   "Previous action-plan collection was not restored after failure."
+);
+
+assert(
+  rollbackWrites.reassessmentCollections.at(-1).plans[0]
+    .sourceSnapshotId === "previous-snapshot",
+  "Previous reassessment collection was not restored after failure."
 );
 
 console.log("Successful restoration: pass");

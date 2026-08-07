@@ -7,6 +7,10 @@ import {
   saveSnapshotCollection
 } from "./snapshot-storage.js";
 import {
+  loadReassessmentCollection,
+  saveReassessmentCollection
+} from "./reassessment-storage.js";
+import {
   clearState,
   loadState,
   saveState
@@ -38,10 +42,26 @@ function validateActionPlanCollection(collection) {
   );
 }
 
+function validateReassessmentCollection(collection) {
+  return Boolean(
+    isPlainObject(collection) &&
+    Array.isArray(collection.plans)
+  );
+}
+
+function createEmptyReassessmentCollection() {
+  return {
+    schemaVersion: "0.3",
+    updatedAt: null,
+    plans: []
+  };
+}
+
 export function createBusinessDojoBackup({
   applicationState = loadState(),
   snapshotCollection = loadSnapshotCollection(),
   actionPlanCollection = loadActionPlanCollection(),
+  reassessmentCollection = loadReassessmentCollection(),
   exportedAt = new Date().toISOString()
 } = {}) {
   return structuredClone({
@@ -51,7 +71,8 @@ export function createBusinessDojoBackup({
     data: {
       applicationState,
       snapshotCollection,
-      actionPlanCollection
+      actionPlanCollection,
+      reassessmentCollection
     }
   });
 }
@@ -92,7 +113,8 @@ export function validateBusinessDojoBackup(value) {
   const {
     applicationState,
     snapshotCollection,
-    actionPlanCollection
+    actionPlanCollection,
+    reassessmentCollection
   } = value.data;
 
   if (
@@ -119,6 +141,17 @@ export function validateBusinessDojoBackup(value) {
       isValid: false,
       reason:
         "The backup contains an invalid action-plan collection."
+    };
+  }
+
+  if (
+    reassessmentCollection !== undefined &&
+    !validateReassessmentCollection(reassessmentCollection)
+  ) {
+    return {
+      isValid: false,
+      reason:
+        "The backup contains an invalid reassessment collection."
     };
   }
 
@@ -185,10 +218,12 @@ export function restoreBusinessDojoBackup(
     readApplicationState = loadState,
     readSnapshotCollection = loadSnapshotCollection,
     readActionPlanCollection = loadActionPlanCollection,
+    readReassessmentCollection = loadReassessmentCollection,
     writeApplicationState = saveState,
     clearApplicationState = clearState,
     writeSnapshotCollection = saveSnapshotCollection,
-    writeActionPlanCollection = saveActionPlanCollection
+    writeActionPlanCollection = saveActionPlanCollection,
+    writeReassessmentCollection = saveReassessmentCollection
   } = {}
 ) {
   const validation =
@@ -204,7 +239,8 @@ export function restoreBusinessDojoBackup(
   const previousData = {
     applicationState: readApplicationState(),
     snapshotCollection: readSnapshotCollection(),
-    actionPlanCollection: readActionPlanCollection()
+    actionPlanCollection: readActionPlanCollection(),
+    reassessmentCollection: readReassessmentCollection()
   };
 
   const restorePreviousData = () => {
@@ -222,6 +258,10 @@ export function restoreBusinessDojoBackup(
 
     writeActionPlanCollection(
       previousData.actionPlanCollection
+    );
+
+    writeReassessmentCollection(
+      previousData.reassessmentCollection
     );
   };
 
@@ -276,6 +316,25 @@ export function restoreBusinessDojoBackup(
       isSuccessful: false,
       reason:
         "The action plans could not be restored."
+    };
+  }
+
+  const reassessmentCollection =
+    backup.data.reassessmentCollection ??
+    createEmptyReassessmentCollection();
+
+  const reassessmentsSaved =
+    writeReassessmentCollection(
+      structuredClone(reassessmentCollection)
+    );
+
+  if (!reassessmentsSaved) {
+    restorePreviousData();
+
+    return {
+      isSuccessful: false,
+      reason:
+        "The reassessment plans could not be restored."
     };
   }
 
