@@ -467,9 +467,19 @@ function renderSnapshotLibrary() {
         selectedSnapshotIds[1]
       );
 
+      const firstActionPlan = getActionPlanBySnapshotId(
+        firstSnapshot?.id
+      );
+
+      const secondActionPlan = getActionPlanBySnapshotId(
+        secondSnapshot?.id
+      );
+
       const comparison = compareSnapshots(
         firstSnapshot,
-        secondSnapshot
+        secondSnapshot,
+        firstActionPlan,
+        secondActionPlan
       );
 
       if (!comparison.isValid) {

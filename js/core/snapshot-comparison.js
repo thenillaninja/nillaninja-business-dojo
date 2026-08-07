@@ -1,3 +1,5 @@
+import { summarizeActionPlanProgress } from "./progress.js";
+
 function getSnapshotDate(snapshot) {
   const value =
     snapshot?.completedAt ||
@@ -218,9 +220,87 @@ function compareCollections(
   };
 }
 
+
+function getActionPlanForSnapshot(
+  snapshot,
+  actionPlans = []
+) {
+  if (!snapshot?.id) {
+    return null;
+  }
+
+  const matchingPlan = actionPlans.find(
+    (actionPlan) =>
+      actionPlan?.snapshotId === snapshot.id
+  );
+
+  return matchingPlan || null;
+}
+
+function compareImplementationProgress(
+  earlierSnapshot,
+  laterSnapshot,
+  actionPlans = []
+) {
+  const earlierActionPlan = getActionPlanForSnapshot(
+    earlierSnapshot,
+    actionPlans
+  );
+
+  const laterActionPlan = getActionPlanForSnapshot(
+    laterSnapshot,
+    actionPlans
+  );
+
+  if (!earlierActionPlan || !laterActionPlan) {
+    return {
+      isAvailable: false,
+      reason:
+        "Implementation progress is unavailable because one or both snapshots do not have a saved action plan.",
+      earlier: null,
+      later: null,
+      completionPercentageChange: null,
+      completedItemsChange: null,
+      inProgressItemsChange: null,
+      checklistCompletionPercentageChange: null
+    };
+  }
+
+  const earlier = summarizeActionPlanProgress(
+    earlierActionPlan,
+    earlierSnapshot
+  );
+
+  const later = summarizeActionPlanProgress(
+    laterActionPlan,
+    laterSnapshot
+  );
+
+  return {
+    isAvailable: true,
+    reason: "",
+    earlier,
+    later,
+    completionPercentageChange:
+      later.completionPercentage -
+      earlier.completionPercentage,
+    completedItemsChange:
+      later.statusTotals.complete -
+      earlier.statusTotals.complete,
+    inProgressItemsChange:
+      later.statusTotals.inProgress -
+      earlier.statusTotals.inProgress,
+    checklistCompletionPercentageChange:
+      later.checklist.completionPercentage -
+      earlier.checklist.completionPercentage
+  };
+}
+
 export function compareSnapshots(
   firstSnapshot,
-  secondSnapshot
+  secondSnapshot,
+  firstActionPlan = null,
+  secondActionPlan = null
 ) {
   const validation = validateSnapshotComparison(
     firstSnapshot,
@@ -296,6 +376,15 @@ export function compareSnapshots(
         recommendationChanges.removed,
       continuing:
         recommendationChanges.continuing
-    }
+    },
+    implementationProgress:
+      compareImplementationProgress(
+        earlierSnapshot,
+        laterSnapshot,
+        [
+          firstActionPlan,
+          secondActionPlan
+        ].filter(Boolean)
+      )
   };
 }

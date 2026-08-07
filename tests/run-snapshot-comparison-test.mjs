@@ -137,9 +137,100 @@ assert(
   "Snapshots were not ordered by completion date."
 );
 
+const earlierActionPlan = {
+  id: "action-plan-earlier",
+  snapshotId: earlierSnapshot.id,
+  items: [
+    {
+      recommendationId: "shared-passwords",
+      status: "complete",
+      targetDate: null,
+      checklist: [
+        {
+          id: "earlier-check-1",
+          completed: true
+        }
+      ],
+      completedAt: "2026-02-01T12:00:00.000Z"
+    },
+    {
+      recommendationId: "document-processes",
+      status: "in-progress",
+      targetDate: null,
+      checklist: [
+        {
+          id: "earlier-check-2",
+          completed: true
+        },
+        {
+          id: "earlier-check-3",
+          completed: false
+        }
+      ],
+      completedAt: null
+    },
+    {
+      recommendationId: "clarify-responsibility",
+      status: "not-started",
+      targetDate: null,
+      checklist: [],
+      completedAt: null
+    }
+  ]
+};
+
+const laterActionPlan = {
+  id: "action-plan-later",
+  snapshotId: laterSnapshot.id,
+  items: [
+    {
+      recommendationId: "document-processes",
+      status: "complete",
+      targetDate: null,
+      checklist: [
+        {
+          id: "later-check-1",
+          completed: true
+        }
+      ],
+      completedAt: "2026-04-15T12:00:00.000Z"
+    },
+    {
+      recommendationId: "backup-plan",
+      status: "in-progress",
+      targetDate: null,
+      checklist: [
+        {
+          id: "later-check-2",
+          completed: true
+        },
+        {
+          id: "later-check-3",
+          completed: true
+        }
+      ],
+      completedAt: null
+    }
+  ]
+};
+
+const originalEarlierSnapshot =
+  structuredClone(earlierSnapshot);
+
+const originalLaterSnapshot =
+  structuredClone(laterSnapshot);
+
+const originalEarlierActionPlan =
+  structuredClone(earlierActionPlan);
+
+const originalLaterActionPlan =
+  structuredClone(laterActionPlan);
+
 const comparison = compareSnapshots(
   laterSnapshot,
-  earlierSnapshot
+  earlierSnapshot,
+  laterActionPlan,
+  earlierActionPlan
 );
 
 assert(
@@ -214,6 +305,69 @@ assert(
   "Newly triggered recommendations were identified incorrectly."
 );
 
+
+assert(
+  comparison.implementationProgress?.isAvailable === true,
+  "Action-plan implementation progress was not available."
+);
+
+assert(
+  comparison.implementationProgress.earlier.completionPercentage === 33 &&
+    comparison.implementationProgress.later.completionPercentage === 50 &&
+    comparison.implementationProgress.completionPercentageChange === 17,
+  "Action-plan completion movement was calculated incorrectly."
+);
+
+assert(
+  comparison.implementationProgress.earlier.statusTotals.complete === 1 &&
+    comparison.implementationProgress.later.statusTotals.complete === 1 &&
+    comparison.implementationProgress.completedItemsChange === 0,
+  "Completed action-item movement was calculated incorrectly."
+);
+
+assert(
+  comparison.implementationProgress.earlier.statusTotals.inProgress === 1 &&
+    comparison.implementationProgress.later.statusTotals.inProgress === 1 &&
+    comparison.implementationProgress.inProgressItemsChange === 0,
+  "In-progress action-item movement was calculated incorrectly."
+);
+
+assert(
+  comparison.implementationProgress.earlier.checklist.completionPercentage === 67 &&
+    comparison.implementationProgress.later.checklist.completionPercentage === 100 &&
+    comparison.implementationProgress.checklistCompletionPercentageChange === 33,
+  "Checklist implementation movement was calculated incorrectly."
+);
+
+assert(
+  JSON.stringify(earlierSnapshot) ===
+    JSON.stringify(originalEarlierSnapshot) &&
+    JSON.stringify(laterSnapshot) ===
+      JSON.stringify(originalLaterSnapshot),
+  "Snapshot comparison mutated snapshot data."
+);
+
+assert(
+  JSON.stringify(earlierActionPlan) ===
+    JSON.stringify(originalEarlierActionPlan) &&
+    JSON.stringify(laterActionPlan) ===
+      JSON.stringify(originalLaterActionPlan),
+  "Snapshot comparison mutated action-plan data."
+);
+
+const missingPlanComparison = compareSnapshots(
+  earlierSnapshot,
+  laterSnapshot,
+  earlierActionPlan,
+  null
+);
+
+assert(
+  missingPlanComparison.isValid === true &&
+    missingPlanComparison.implementationProgress?.isAvailable === false,
+  "Missing action-plan data should not invalidate snapshot comparison."
+);
+
 const differentBusiness = createSnapshot({
   id: "different-business",
   businessName: "Another Business",
@@ -260,3 +414,6 @@ console.log("Overall score comparison: pass");
 console.log("Category score comparison: pass");
 console.log("Strength comparison: pass");
 console.log("Recommendation comparison: pass");
+console.log("Implementation progress comparison: pass");
+console.log("Missing action-plan compatibility: pass");
+console.log("Comparison immutability: pass");
