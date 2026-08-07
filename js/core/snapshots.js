@@ -37,7 +37,8 @@ export function createSnapshotRecord(state) {
     id: createSnapshotId(),
 
     schemaVersion: SNAPSHOT_SCHEMA_VERSION,
-    appVersion: "0.2",
+    appVersion:
+      state.metadata?.appVersion || "0.3",
     assessmentVersion:
       state.metadata?.assessmentVersion || "0.1",
 

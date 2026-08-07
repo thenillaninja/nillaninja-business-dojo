@@ -1,11 +1,37 @@
+# Changelog
+
 ## Unreleased
+
+
+## Version 0.3 — August 7, 2026
+
+### Added
+- Added progress tracking for action plans, including completion percentage, checklist progress, overdue items, upcoming dates, and recently completed work.
+- Added Next Best Actions to surface the highest-value unfinished recommendations.
+- Added snapshot comparison for overall scores, category scores, strengths, recommendations, and implementation progress.
+- Added Significant Business Improvements summaries to distinguish assessment improvement from action-plan implementation progress.
+- Added collapsible completed-snapshot navigation for easier report reading.
+- Added reassessment planning with 30, 60, and 90 day intervals.
+- Added scheduled, approaching, due, and overdue reassessment status handling.
+- Added Snapshot Library reassessment reminders and return actions.
+- Added lightweight Progress History showing chronological snapshot scores and overall movement.
+
+### Improved
+- Improved report print behavior and removed the skip-link from printed output.
+- Refined Snapshot Library action alignment.
+- Added Snapshot Library navigation to the report footer.
+- Made Print Report the primary export action.
+- Updated visible product labeling and current app metadata to Version 0.3.
+- Preserved Version 0.2 storage and legacy snapshot compatibility.
+
+### Validation
+- Confirmed the complete regression suite passes after Version 0.3 development.
+- Verified the Version 0.3 workflow in Safari and Chrome, including report printing and Snapshot Library behavior.
 
 ### Changed
 - Added a phone report-only experience that keeps assessment results, recommendations, and export tools available while hiding action-plan editing controls on phone-sized screens.
 - Preserved the full interactive action-plan experience on tablets, laptops, desktops, and narrow desktop windows.
 - Validated the responsive behavior locally with ResponsivelyApp and reran the complete automated regression suite successfully.
-
-# Changelog
 
 ## Version 0.2 — August 6, 2026
 

@@ -76,7 +76,7 @@ export function createActionPlanRecord(snapshot) {
   return structuredClone({
     id: createRecordId("action-plan"),
     schemaVersion: ACTION_PLAN_SCHEMA_VERSION,
-    appVersion: "0.2",
+    appVersion: snapshot.appVersion || "0.3",
 
     snapshotId: snapshot.id,
 

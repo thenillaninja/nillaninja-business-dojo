@@ -1,6 +1,6 @@
 export const initialState = {
   metadata: {
-    appVersion: "0.2",
+    appVersion: "0.3",
     assessmentVersion: "0.1",
     createdAt: null,
     lastSavedAt: null,
