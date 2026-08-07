@@ -233,6 +233,180 @@ function renderImplementationProgress(comparison) {
   `;
 }
 
+
+function renderSignificantImprovements(comparison) {
+  const improvements =
+    comparison.significantImprovements || {};
+
+  const assessment = Array.isArray(improvements.assessment)
+    ? improvements.assessment
+    : [];
+
+  const implementation =
+    Array.isArray(improvements.implementation)
+      ? improvements.implementation
+      : [];
+
+  const categoryImprovements = assessment.filter(
+    (item) => item.type === "category-score"
+  );
+
+  const newStrengths = assessment.filter(
+    (item) => item.type === "new-strength"
+  );
+
+  const resolvedRecommendations = assessment.filter(
+    (item) => item.type === "resolved-recommendation"
+  );
+
+  if (
+    assessment.length === 0 &&
+    implementation.length === 0
+  ) {
+    return `
+      <section
+        class="comparison-section"
+        aria-labelledby="comparison-improvements-heading"
+      >
+        <div class="comparison-section__heading">
+          <p class="eyebrow">Business Progress</p>
+          <h2 id="comparison-improvements-heading">
+            Significant improvements
+          </h2>
+        </div>
+
+        <div class="comparison-empty-state">
+          <p>
+            No major improvements crossed the current comparison
+            thresholds between these snapshots.
+          </p>
+        </div>
+      </section>
+    `;
+  }
+
+  const assessmentSummary = [
+    ...categoryImprovements.map(
+      (item) => `
+        <li>
+          <strong>${formatLabel(item.categoryId)}</strong>
+          improved by ${item.change} points
+          (${item.earlierScore} → ${item.laterScore}).
+        </li>
+      `
+    ),
+    newStrengths.length > 0
+      ? `
+        <li>
+          <strong>${newStrengths.length}</strong>
+          new ${newStrengths.length === 1 ? "strength" : "strengths"}
+          appeared in the later assessment.
+        </li>
+      `
+      : "",
+    resolvedRecommendations.length > 0
+      ? `
+        <li>
+          <strong>${resolvedRecommendations.length}</strong>
+          earlier
+          ${
+            resolvedRecommendations.length === 1
+              ? "recommendation is"
+              : "recommendations are"
+          }
+          no longer triggered.
+        </li>
+      `
+      : ""
+  ]
+    .filter(Boolean)
+    .join("");
+
+  const implementationSummary = implementation
+    .map((item) => {
+      if (item.type === "action-plan-completion") {
+        return `
+          <li>
+            Action-plan completion increased by
+            <strong>${item.change} percentage points</strong>.
+          </li>
+        `;
+      }
+
+      if (item.type === "checklist-completion") {
+        return `
+          <li>
+            Checklist completion increased by
+            <strong>${item.change} percentage points</strong>.
+          </li>
+        `;
+      }
+
+      return "";
+    })
+    .filter(Boolean)
+    .join("");
+
+  return `
+    <section
+      class="comparison-section comparison-improvements"
+      aria-labelledby="comparison-improvements-heading"
+    >
+      <div class="comparison-section__heading">
+        <p class="eyebrow">Business Progress</p>
+        <h2 id="comparison-improvements-heading">
+          Significant improvements
+        </h2>
+        <p class="comparison-section__description">
+          This summary separates improvements reflected in the assessment
+          from progress recorded while implementing the action plan.
+        </p>
+      </div>
+
+      <div class="comparison-improvement-grid">
+        <article class="comparison-improvement-card">
+          <p class="eyebrow">Assessment Improvement</p>
+          <h3>What changed in the business snapshot</h3>
+
+          ${
+            assessmentSummary
+              ? `
+                <ul class="comparison-improvement-list">
+                  ${assessmentSummary}
+                </ul>
+              `
+              : `
+                <p class="comparison-list__empty">
+                  No major assessment improvements were identified.
+                </p>
+              `
+          }
+        </article>
+
+        <article class="comparison-improvement-card">
+          <p class="eyebrow">Implementation Progress</p>
+          <h3>What moved forward in the action plan</h3>
+
+          ${
+            implementationSummary
+              ? `
+                <ul class="comparison-improvement-list">
+                  ${implementationSummary}
+                </ul>
+              `
+              : `
+                <p class="comparison-list__empty">
+                  No significant action-plan implementation movement
+                  was recorded between these saved plans.
+                </p>
+              `
+          }
+        </article>
+      </div>
+    </section>
+  `;
+}
+
 export function renderSnapshotComparisonView(comparison) {
   const earlierDate = formatDate(
     comparison.earlierSnapshot?.completedAt ||
@@ -298,6 +472,8 @@ export function renderSnapshotComparisonView(comparison) {
       </div>
 
       ${renderImplementationProgress(comparison)}
+
+      ${renderSignificantImprovements(comparison)}
 
       <section
         class="comparison-section"

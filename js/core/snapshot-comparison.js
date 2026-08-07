@@ -296,6 +296,83 @@ function compareImplementationProgress(
   };
 }
 
+
+function buildSignificantImprovements({
+  categoryScores = [],
+  strengths = {},
+  recommendations = {},
+  implementationProgress = null
+} = {}) {
+  const assessment = [];
+
+  for (const category of categoryScores) {
+    if (
+      Number.isFinite(category?.change) &&
+      category.change >= 10
+    ) {
+      assessment.push({
+        type: "category-score",
+        categoryId: category.categoryId,
+        change: category.change,
+        earlierScore: category.earlierScore,
+        laterScore: category.laterScore
+      });
+    }
+  }
+
+  for (const item of strengths.newlyDeveloped || []) {
+    assessment.push({
+      type: "new-strength",
+      item: structuredClone(item)
+    });
+  }
+
+  for (const item of recommendations.resolved || []) {
+    assessment.push({
+      type: "resolved-recommendation",
+      item: structuredClone(item)
+    });
+  }
+
+  const implementation = [];
+
+  if (implementationProgress?.isAvailable) {
+    if (
+      Number.isFinite(
+        implementationProgress.completionPercentageChange
+      ) &&
+      implementationProgress.completionPercentageChange > 0
+    ) {
+      implementation.push({
+        type: "action-plan-completion",
+        change:
+          implementationProgress.completionPercentageChange
+      });
+    }
+
+    if (
+      Number.isFinite(
+        implementationProgress
+          .checklistCompletionPercentageChange
+      ) &&
+      implementationProgress
+        .checklistCompletionPercentageChange > 0
+    ) {
+      implementation.push({
+        type: "checklist-completion",
+        change:
+          implementationProgress
+            .checklistCompletionPercentageChange
+      });
+    }
+  }
+
+  return {
+    assessment,
+    implementation
+  };
+}
+
 export function compareSnapshots(
   firstSnapshot,
   secondSnapshot,
@@ -349,6 +426,36 @@ export function compareSnapshots(
       laterSnapshot.results?.recommendations
     );
 
+  const categoryScores = compareCategoryScores(
+    earlierSnapshot.results?.categoryScores,
+    laterSnapshot.results?.categoryScores
+  );
+
+  const strengths = {
+    newlyDeveloped: strengthChanges.added,
+    noLongerListed: strengthChanges.removed,
+    continuing: strengthChanges.continuing
+  };
+
+  const recommendations = {
+    newlyTriggered:
+      recommendationChanges.added,
+    resolved:
+      recommendationChanges.removed,
+    continuing:
+      recommendationChanges.continuing
+  };
+
+  const implementationProgress =
+    compareImplementationProgress(
+      earlierSnapshot,
+      laterSnapshot,
+      [
+        firstActionPlan,
+        secondActionPlan
+      ].filter(Boolean)
+    );
+
   return {
     isValid: true,
     reason: "",
@@ -360,31 +467,16 @@ export function compareSnapshots(
       later: laterScore,
       change: laterScore - earlierScore
     },
-    categoryScores: compareCategoryScores(
-      earlierSnapshot.results?.categoryScores,
-      laterSnapshot.results?.categoryScores
-    ),
-    strengths: {
-      newlyDeveloped: strengthChanges.added,
-      noLongerListed: strengthChanges.removed,
-      continuing: strengthChanges.continuing
-    },
-    recommendations: {
-      newlyTriggered:
-        recommendationChanges.added,
-      resolved:
-        recommendationChanges.removed,
-      continuing:
-        recommendationChanges.continuing
-    },
-    implementationProgress:
-      compareImplementationProgress(
-        earlierSnapshot,
-        laterSnapshot,
-        [
-          firstActionPlan,
-          secondActionPlan
-        ].filter(Boolean)
-      )
+    categoryScores,
+    strengths,
+    recommendations,
+    implementationProgress,
+    significantImprovements:
+      buildSignificantImprovements({
+        categoryScores,
+        strengths,
+        recommendations,
+        implementationProgress
+      })
   };
 }

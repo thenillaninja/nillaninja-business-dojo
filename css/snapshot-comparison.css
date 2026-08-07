@@ -131,6 +131,40 @@
   background: rgba(121, 215, 255, 0.08);
 }
 
+
+.comparison-improvement-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.comparison-improvement-card {
+  padding: var(--space-5);
+  border: 1px solid rgba(121, 215, 255, 0.18);
+  border-radius: var(--radius-large);
+  background: rgba(8, 17, 27, 0.42);
+}
+
+.comparison-improvement-card h3,
+.comparison-improvement-card p {
+  margin: 0;
+}
+
+.comparison-improvement-card h3 {
+  margin-top: var(--space-2);
+}
+
+.comparison-improvement-list {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-4) 0 0;
+  padding-left: 1.25rem;
+}
+
+.comparison-improvement-list li {
+  line-height: 1.6;
+}
+
 .comparison-category-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -220,6 +254,7 @@
 @media (max-width: 64rem) {
   .comparison-score-grid,
   .comparison-progress-grid,
+  .comparison-improvement-grid,
   .comparison-category-grid,
   .comparison-three-column {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -237,6 +272,7 @@
 
   .comparison-score-grid,
   .comparison-progress-grid,
+  .comparison-improvement-grid,
   .comparison-category-grid,
   .comparison-three-column {
     grid-template-columns: 1fr;

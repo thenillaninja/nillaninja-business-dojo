@@ -368,6 +368,66 @@ assert(
   "Missing action-plan data should not invalidate snapshot comparison."
 );
 
+
+assert(
+  Array.isArray(comparison.significantImprovements?.assessment) &&
+    comparison.significantImprovements.assessment.some(
+      (improvement) =>
+        improvement.type === "category-score" &&
+        improvement.categoryId === "operations" &&
+        improvement.change === 16
+    ) &&
+    comparison.significantImprovements.assessment.some(
+      (improvement) =>
+        improvement.type === "category-score" &&
+        improvement.categoryId ===
+          "security-and-continuity" &&
+        improvement.change === 22
+    ),
+  "Significant category improvements were not identified."
+);
+
+assert(
+  comparison.significantImprovements.assessment.some(
+    (improvement) =>
+      improvement.type === "new-strength" &&
+      improvement.item?.id === "individual-access"
+  ),
+  "Newly developed strengths were not surfaced as significant improvements."
+);
+
+assert(
+  comparison.significantImprovements.assessment.some(
+    (improvement) =>
+      improvement.type === "resolved-recommendation" &&
+      improvement.item?.id === "shared-passwords"
+  ),
+  "Resolved recommendations were not surfaced as significant improvements."
+);
+
+assert(
+  Array.isArray(
+    comparison.significantImprovements?.implementation
+  ) &&
+    comparison.significantImprovements.implementation.some(
+      (improvement) =>
+        improvement.type === "action-plan-completion" &&
+        improvement.change === 17
+    ) &&
+    comparison.significantImprovements.implementation.some(
+      (improvement) =>
+        improvement.type === "checklist-completion" &&
+        improvement.change === 33
+    ),
+  "Significant implementation improvements were not identified."
+);
+
+assert(
+  missingPlanComparison.significantImprovements
+    ?.implementation?.length === 0,
+  "Missing action-plan data should not create implementation improvements."
+);
+
 const differentBusiness = createSnapshot({
   id: "different-business",
   businessName: "Another Business",
@@ -415,5 +475,6 @@ console.log("Category score comparison: pass");
 console.log("Strength comparison: pass");
 console.log("Recommendation comparison: pass");
 console.log("Implementation progress comparison: pass");
+console.log("Significant business improvements: pass");
 console.log("Missing action-plan compatibility: pass");
 console.log("Comparison immutability: pass");
