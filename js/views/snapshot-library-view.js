@@ -111,12 +111,141 @@ function renderSnapshotCards(
     .join("");
 }
 
+
+function formatReassessmentDate(value) {
+  if (!value) {
+    return "Date unavailable";
+  }
+
+  const date = new Date(`${value}T00:00:00`);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Date unavailable";
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric"
+  }).format(date);
+}
+
+function renderReassessmentReminder({
+  plan = null,
+  status = null
+} = {}) {
+  if (!plan || !status || status.status === "unavailable") {
+    return "";
+  }
+
+  const scheduledDate = formatReassessmentDate(
+    plan.scheduledFor
+  );
+
+  const content = {
+    scheduled: {
+      eyebrow: "Reassessment Planned",
+      heading: "Keep working your current action plan",
+      message: `Your next Business Snapshot is planned for ${scheduledDate}.`
+    },
+    approaching: {
+      eyebrow: "Reassessment Coming Up",
+      heading: "Your next Business Snapshot is approaching",
+      message: `You planned to reassess in ${status.daysUntil} day${
+        status.daysUntil === 1 ? "" : "s"
+      }, on ${scheduledDate}.`
+    },
+    due: {
+      eyebrow: "Reassessment Due",
+      heading: "It’s time for your next Business Snapshot",
+      message: `Your ${plan.intervalDays}-day reassessment is due today.`
+    },
+    overdue: {
+      eyebrow: "Reassessment Due",
+      heading: "Your planned reassessment date has passed",
+      message: `Your reassessment was planned for ${scheduledDate}, ${
+        status.daysOverdue
+      } day${status.daysOverdue === 1 ? "" : "s"} ago.`
+    }
+  };
+
+  const copy = content[status.status];
+
+  if (!copy) {
+    return "";
+  }
+
+  const showNewSnapshot =
+    status.status === "due" ||
+    status.status === "overdue";
+
+  return `
+    <section
+      class="snapshot-reassessment snapshot-reassessment--${status.status}"
+      aria-labelledby="snapshot-reassessment-heading"
+    >
+      <div>
+        <p class="eyebrow">${copy.eyebrow}</p>
+        <h2 id="snapshot-reassessment-heading">
+          ${copy.heading}
+        </h2>
+        <p>${copy.message}</p>
+      </div>
+
+      <div class="snapshot-reassessment__actions">
+        ${
+          showNewSnapshot
+            ? `
+              <button
+                class="button button--primary"
+                type="button"
+                id="snapshot-reassessment-new"
+              >
+                Run New Snapshot
+              </button>
+            `
+            : ""
+        }
+
+        <button
+          class="button ${
+            showNewSnapshot
+              ? "button--secondary"
+              : "button--primary"
+          }"
+          type="button"
+          id="snapshot-reassessment-continue"
+          data-snapshot-id="${plan.sourceSnapshotId}"
+        >
+          Continue Action Plan
+        </button>
+
+        ${
+          showNewSnapshot
+            ? `
+              <button
+                class="button button--secondary"
+                type="button"
+                id="snapshot-reassessment-not-yet"
+              >
+                Not Yet
+              </button>
+            `
+            : ""
+        }
+      </div>
+    </section>
+  `;
+}
+
 export function renderSnapshotLibraryView({
   snapshots = [],
   mostRecentSnapshotId = "",
   selectedSnapshotIds = [],
   comparisonMessage = "",
-  backupMarkup = ""
+  backupMarkup = "",
+  reassessmentPlan = null,
+  reassessmentStatus = null
 } = {}) {
   return `
     <section
@@ -142,6 +271,11 @@ export function renderSnapshotLibraryView({
           New Assessment
         </button>
       </div>
+
+      ${renderReassessmentReminder({
+        plan: reassessmentPlan,
+        status: reassessmentStatus
+      })}
 
       ${
         snapshots.length >= 2

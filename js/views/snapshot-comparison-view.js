@@ -407,7 +407,120 @@ function renderSignificantImprovements(comparison) {
   `;
 }
 
-export function renderSnapshotComparisonView(comparison) {
+
+function formatReassessmentDate(value) {
+  if (!value) {
+    return "";
+  }
+
+  const date = new Date(`${value}T00:00:00`);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric"
+  }).format(date);
+}
+
+function renderMomentumPanel(comparison, reassessmentPlan = null) {
+  const latestSnapshot = comparison.laterSnapshot;
+
+  if (!latestSnapshot?.id) {
+    return "";
+  }
+
+  const selectedInterval = reassessmentPlan?.intervalDays || "";
+
+  return `
+    <section
+      class="comparison-section comparison-momentum"
+      aria-labelledby="comparison-momentum-heading"
+    >
+      <div class="comparison-section__heading">
+        <p class="eyebrow">Keep the Momentum Going</p>
+        <h2 id="comparison-momentum-heading">
+          Make this snapshot your new benchmark
+        </h2>
+        <p class="comparison-section__description">
+          Continue working the current action plan, then reassess after
+          enough time has passed to see whether those changes are showing
+          up in the business.
+        </p>
+      </div>
+
+      <div class="comparison-momentum__actions">
+        <button
+          class="button button--primary"
+          type="button"
+          id="comparison-continue-action-plan"
+          data-snapshot-id="${latestSnapshot.id}"
+        >
+          Continue Your Action Plan
+        </button>
+
+        <button
+          class="button button--secondary"
+          type="button"
+          id="comparison-view-latest-snapshot"
+          data-snapshot-id="${latestSnapshot.id}"
+        >
+          View Latest Snapshot
+        </button>
+      </div>
+
+      <div class="comparison-momentum__reassessment">
+        <h3>Plan your next reassessment</h3>
+        <p>
+          Choose a simple 30, 60, or 90 day check-in. This is guidance,
+          not a requirement, and the reminder stays in this browser.
+        </p>
+
+        <div class="comparison-momentum__intervals">
+          ${[30, 60, 90]
+            .map(
+              (days) => `
+                <button
+                  class="button ${
+                    Number(selectedInterval) === days
+                      ? "button--primary"
+                      : "button--secondary"
+                  }"
+                  type="button"
+                  data-reassessment-interval="${days}"
+                  data-snapshot-id="${latestSnapshot.id}"
+                >
+                  ${days} Days
+                </button>
+              `
+            )
+            .join("")}
+        </div>
+
+        ${
+          reassessmentPlan
+            ? `
+              <p class="comparison-momentum__status">
+                Next reassessment planned for
+                <strong>${formatReassessmentDate(
+                  reassessmentPlan.scheduledFor
+                )}</strong>.
+              </p>
+            `
+            : ""
+        }
+      </div>
+    </section>
+  `;
+}
+
+export function renderSnapshotComparisonView(
+  comparison,
+  reassessmentPlan = null
+) {
   const earlierDate = formatDate(
     comparison.earlierSnapshot?.completedAt ||
       comparison.earlierSnapshot?.createdAt
@@ -566,6 +679,8 @@ export function renderSnapshotComparisonView(comparison) {
           </article>
         </div>
       </section>
+
+      ${renderMomentumPanel(comparison, reassessmentPlan)}
 
       <div class="comparison-notice">
         <h2>How to interpret this comparison</h2>

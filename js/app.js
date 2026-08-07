@@ -51,6 +51,14 @@ import {
   compareSnapshots
 } from "./core/snapshot-comparison.js";
 import {
+  createReassessmentPlan,
+  getReassessmentStatus
+} from "./core/reassessment.js";
+import {
+  getReassessmentPlanBySnapshotId,
+  saveReassessmentPlan
+} from "./core/reassessment-storage.js";
+import {
   renderSnapshotComparisonView
 } from "./views/snapshot-comparison-view.js";
 import {
@@ -304,6 +312,14 @@ function renderSnapshotLibrary() {
 
   const snapshots = [...collection.snapshots].reverse();
 
+  const reassessmentPlan = mostRecentSnapshot?.id
+    ? getReassessmentPlanBySnapshotId(mostRecentSnapshot.id)
+    : null;
+
+  const reassessmentStatus = reassessmentPlan
+    ? getReassessmentStatus(reassessmentPlan)
+    : null;
+
   app.innerHTML = renderSnapshotLibraryView({
     snapshots,
     mostRecentSnapshotId: mostRecentSnapshot?.id || "",
@@ -312,8 +328,45 @@ function renderSnapshotLibrary() {
     backupMarkup: renderBackupView({
       statusMessage: backupStatusMessage,
       statusType: backupStatusType
-    })
+    }),
+    reassessmentPlan,
+    reassessmentStatus
   });
+
+  document
+    .querySelector("#snapshot-reassessment-continue")
+    ?.addEventListener("click", (event) => {
+      const snapshot = getSnapshotById(
+        event.currentTarget.dataset.snapshotId
+      );
+
+      openCompletedSnapshot(snapshot);
+
+      document.querySelector("#action-plan")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    });
+
+  document
+    .querySelector("#snapshot-reassessment-new")
+    ?.addEventListener("click", () => {
+      state = createInitialState();
+      persistState();
+      renderBusinessProfile({}, "snapshot-library");
+      focusMainContent();
+    });
+
+  document
+    .querySelector("#snapshot-reassessment-not-yet")
+    ?.addEventListener("click", () => {
+      document
+        .querySelector(".snapshot-library__list")
+        ?.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+    });
 
   document
     .querySelector("#backup-download")
@@ -520,37 +573,7 @@ function renderSnapshotLibrary() {
           return;
         }
 
-        state = {
-          ...createInitialState(),
-          metadata: {
-            ...createInitialState().metadata,
-            appVersion: snapshot.appVersion || "0.2",
-            assessmentVersion:
-              snapshot.assessmentVersion || "0.1",
-            currentSnapshotId: snapshot.id
-          },
-          navigation: {
-            ...createInitialState().navigation,
-            currentView: "report",
-            currentStep: 4
-          },
-          businessProfile: structuredClone(
-            snapshot.businessProfile || {}
-          ),
-          assessment: structuredClone(
-            snapshot.assessment || {}
-          ),
-          results: structuredClone(
-            snapshot.results || {}
-          ),
-          report: structuredClone(
-            snapshot.report || {}
-          )
-        };
-
-        persistState();
-        renderReport();
-        focusMainContent();
+        openCompletedSnapshot(snapshot);
       });
     });
 
@@ -640,6 +663,44 @@ function renderSnapshotLibrary() {
     });
 }
 
+function openCompletedSnapshot(snapshot) {
+  if (!snapshot) {
+    return;
+  }
+
+  state = {
+    ...createInitialState(),
+    metadata: {
+      ...createInitialState().metadata,
+      appVersion: snapshot.appVersion || "0.2",
+      assessmentVersion:
+        snapshot.assessmentVersion || "0.1",
+      currentSnapshotId: snapshot.id
+    },
+    navigation: {
+      ...createInitialState().navigation,
+      currentView: "report",
+      currentStep: 4
+    },
+    businessProfile: structuredClone(
+      snapshot.businessProfile || {}
+    ),
+    assessment: structuredClone(
+      snapshot.assessment || {}
+    ),
+    results: structuredClone(
+      snapshot.results || {}
+    ),
+    report: structuredClone(
+      snapshot.report || {}
+    )
+  };
+
+  persistState();
+  renderReport();
+  focusMainContent();
+}
+
 function renderSnapshotComparison(comparison) {
   state.navigation.currentView = "snapshot-comparison";
   state.navigation.currentStep = 1;
@@ -647,13 +708,71 @@ function renderSnapshotComparison(comparison) {
   updateStepNavigation(1);
   persistState();
 
-  app.innerHTML = renderSnapshotComparisonView(comparison);
+  const latestSnapshot = comparison.laterSnapshot;
+
+  const reassessmentPlan = latestSnapshot?.id
+    ? getReassessmentPlanBySnapshotId(latestSnapshot.id)
+    : null;
+
+  app.innerHTML = renderSnapshotComparisonView(
+    comparison,
+    reassessmentPlan
+  );
 
   document
     .querySelector("#snapshot-comparison-back")
     ?.addEventListener("click", () => {
       renderSnapshotLibrary();
       focusMainContent();
+    });
+
+  document
+    .querySelector("#comparison-continue-action-plan")
+    ?.addEventListener("click", () => {
+      openCompletedSnapshot(latestSnapshot);
+
+      document.querySelector("#action-plan")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    });
+
+  document
+    .querySelector("#comparison-view-latest-snapshot")
+    ?.addEventListener("click", () => {
+      openCompletedSnapshot(latestSnapshot);
+    });
+
+  document
+    .querySelectorAll("[data-reassessment-interval]")
+    .forEach((button) => {
+      button.addEventListener("click", () => {
+        if (!latestSnapshot?.id) {
+          return;
+        }
+
+        const intervalDays = Number(
+          button.dataset.reassessmentInterval
+        );
+
+        const plan = createReassessmentPlan(
+          latestSnapshot,
+          intervalDays
+        );
+
+        if (!plan || !saveReassessmentPlan(plan)) {
+          return;
+        }
+
+        renderSnapshotComparison(comparison);
+
+        document
+          .querySelector("#comparison-momentum-heading")
+          ?.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+      });
     });
 }
 
