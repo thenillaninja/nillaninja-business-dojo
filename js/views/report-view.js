@@ -178,15 +178,30 @@ function renderActionPlanSummary(actionPlan, results = {}) {
     return "";
   }
 
+  const recentlyCompletedCount =
+    progress.recentlyCompleted.length;
+
+  const overdueCount =
+    progress.dates.overdue.length;
+
+  const upcomingCount =
+    progress.dates.upcoming.length;
+
   return `
-    <div class="action-plan-summary" id="action-plan">
+    <section
+      class="action-plan-summary"
+      id="action-plan"
+      aria-labelledby="progress-dashboard-heading"
+    >
       <div class="action-plan-summary__header">
         <div>
-          <p class="eyebrow">Interactive Action Plan</p>
-          <h3>Your improvement progress</h3>
+          <p class="eyebrow">Progress Dashboard</p>
+          <h3 id="progress-dashboard-heading">
+            Your improvement progress
+          </h3>
           <p>
-            Track each recommendation as your business works through
-            the improvement plan.
+            See what has been completed, what needs attention, and
+            where your action plan stands today.
           </p>
         </div>
 
@@ -209,7 +224,10 @@ function renderActionPlanSummary(actionPlan, results = {}) {
         ${progress.completionPercentage}%
       </progress>
 
-      <div class="action-plan-summary__counts">
+      <div
+        class="action-plan-summary__counts"
+        aria-label="Action-plan status totals"
+      >
         <p>
           <strong data-action-plan-count="complete">
             ${progress.statusTotals.complete}
@@ -231,7 +249,82 @@ function renderActionPlanSummary(actionPlan, results = {}) {
           Not started
         </p>
       </div>
-    </div>
+
+      <div class="progress-dashboard__details">
+        <article class="progress-dashboard__metric">
+          <p class="progress-dashboard__label">
+            Immediate priorities remaining
+          </p>
+          <p class="progress-dashboard__value">
+            ${progress.priorityRemaining.immediate}
+          </p>
+          <p class="progress-dashboard__context">
+            Urgent recommendations that are not yet complete.
+          </p>
+        </article>
+
+        <article class="progress-dashboard__metric">
+          <p class="progress-dashboard__label">
+            High priorities remaining
+          </p>
+          <p class="progress-dashboard__value">
+            ${progress.priorityRemaining.high}
+          </p>
+          <p class="progress-dashboard__context">
+            Important improvements still requiring attention.
+          </p>
+        </article>
+
+        <article class="progress-dashboard__metric">
+          <p class="progress-dashboard__label">
+            Overdue target dates
+          </p>
+          <p class="progress-dashboard__value">
+            ${overdueCount}
+          </p>
+          <p class="progress-dashboard__context">
+            Incomplete items whose target dates have passed.
+          </p>
+        </article>
+
+        <article class="progress-dashboard__metric">
+          <p class="progress-dashboard__label">
+            Upcoming target dates
+          </p>
+          <p class="progress-dashboard__value">
+            ${upcomingCount}
+          </p>
+          <p class="progress-dashboard__context">
+            Incomplete items due within the next 30 days.
+          </p>
+        </article>
+
+        <article class="progress-dashboard__metric">
+          <p class="progress-dashboard__label">
+            Checklist progress
+          </p>
+          <p class="progress-dashboard__value">
+            ${progress.checklist.completionPercentage}%
+          </p>
+          <p class="progress-dashboard__context">
+            ${progress.checklist.completedItems} of
+            ${progress.checklist.totalItems} checklist steps complete.
+          </p>
+        </article>
+
+        <article class="progress-dashboard__metric">
+          <p class="progress-dashboard__label">
+            Recently completed
+          </p>
+          <p class="progress-dashboard__value">
+            ${recentlyCompletedCount}
+          </p>
+          <p class="progress-dashboard__context">
+            Improvements completed within the last 30 days.
+          </p>
+        </article>
+      </div>
+    </section>
   `;
 }
 

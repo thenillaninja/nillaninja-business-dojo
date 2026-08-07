@@ -593,6 +593,59 @@
   font-size: var(--font-size-large);
 }
 
+
+.progress-dashboard__details {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid rgba(121, 215, 255, 0.2);
+}
+
+.progress-dashboard__metric {
+  min-width: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-small);
+  background: var(--color-background);
+}
+
+.progress-dashboard__metric p {
+  margin: 0;
+}
+
+.progress-dashboard__label {
+  color: var(--color-text);
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.progress-dashboard__value {
+  margin-top: var(--space-2) !important;
+  color: var(--color-accent);
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.progress-dashboard__context {
+  margin-top: var(--space-2) !important;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+@media (max-width: 56rem) {
+  .progress-dashboard__details {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 44rem) {
+  .progress-dashboard__details {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 44rem) {
   .action-plan-summary__header {
     flex-direction: column;
