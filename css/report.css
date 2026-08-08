@@ -2198,3 +2198,45 @@
   min-height: 3.25rem;
   padding: 0.8rem 2.5rem 0.8rem 1rem;
 }
+
+/* Cross-browser refinement for Business Memory controls. */
+.recommendation-card__outcome
+  .recommendation-card__action-field {
+  align-content: start;
+}
+
+.recommendation-card__outcome select {
+  align-self: start;
+  min-height: 3rem;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  line-height: 1.25;
+}
+
+/* Keep completed-snapshot navigation copy from being squeezed by the toggle. */
+.snapshot-app-navigation__heading-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.snapshot-app-navigation__toggle {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: max-content;
+}
+
+@media (max-width: 56rem) {
+  .snapshot-app-navigation__toggle {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/* Keep Business Memory outcome fields stacked for readability. */
+.recommendation-card__outcome-fields {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+.recommendation-card__outcome
+  .recommendation-card__action-field {
+  grid-column: 1;
+}
