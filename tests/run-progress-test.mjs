@@ -1,5 +1,6 @@
 import {
-  summarizeActionPlanProgress
+  summarizeActionPlanProgress,
+  summarizeBusinessMemoryProgress
 } from "../js/core/progress.js";
 
 function assert(condition, message) {
@@ -228,6 +229,153 @@ assert(
   "Empty progress summary was incorrect."
 );
 
+
+
+const businessMemoryRecords = [
+  {
+    id: "memory-1",
+    source: {
+      snapshotId: "snapshot-progress-001",
+      recommendationId: "document-processes"
+    },
+    change: {
+      summary: "Created a weekly process review."
+    },
+    outcome: {
+      status: "helped"
+    },
+    adoption: {
+      status: "adopted",
+      operationalType: "recurring-process"
+    },
+    recurringWork: {
+      isRecurring: true
+    },
+    automation: {
+      readiness: "worth-reviewing"
+    },
+    ownerNotes: "The weekly review reduced missed follow-ups.",
+    updatedAt: "2026-08-05T12:00:00.000Z"
+  },
+  {
+    id: "memory-2",
+    source: {
+      snapshotId: "snapshot-progress-001",
+      recommendationId: "customer-follow-up"
+    },
+    change: {
+      summary: "Tested a follow-up checklist."
+    },
+    outcome: {
+      status: "mixed"
+    },
+    adoption: {
+      status: "needs-revision",
+      operationalType: "checklist"
+    },
+    recurringWork: {
+      isRecurring: false
+    },
+    automation: {
+      readiness: "needs-process-improvement"
+    },
+    ownerNotes: "The checklist helped, but the timing needs work.",
+    updatedAt: "2026-08-06T12:00:00.000Z"
+  },
+  {
+    id: "memory-3",
+    source: {
+      snapshotId: "snapshot-progress-001",
+      recommendationId: "future-improvement"
+    },
+    change: {
+      summary: "Retired an old review routine."
+    },
+    outcome: {
+      status: "did-not-help"
+    },
+    adoption: {
+      status: "no-longer-used",
+      operationalType: "business-standard"
+    },
+    recurringWork: {
+      isRecurring: true
+    },
+    automation: {
+      readiness: "strong-candidate"
+    },
+    ownerNotes: "",
+    updatedAt: "2026-08-07T12:00:00.000Z"
+  }
+];
+
+const originalBusinessMemoryRecords =
+  structuredClone(businessMemoryRecords);
+
+const memoryProgress =
+  summarizeBusinessMemoryProgress(
+    businessMemoryRecords
+  );
+
+assert(
+  memoryProgress.totalRecords === 3,
+  "Business Memory total record count was incorrect."
+);
+
+assert(
+  memoryProgress.positiveOutcomeCount === 1 &&
+    memoryProgress.outcomes.helped === 1 &&
+    memoryProgress.outcomes.mixed === 1 &&
+    memoryProgress.outcomes.didNotHelp === 1,
+  "Business Memory outcome totals were incorrect."
+);
+
+assert(
+  memoryProgress.adoptedImprovementCount === 1 &&
+    memoryProgress.adoption.adopted === 1 &&
+    memoryProgress.adoption.needsRevision === 1 &&
+    memoryProgress.adoption.noLongerUsed === 1,
+  "Business Memory adoption totals were incorrect."
+);
+
+assert(
+  memoryProgress.operationalPracticeCount === 2,
+  "Operational-practice count was incorrect."
+);
+
+assert(
+  memoryProgress.recurringWorkCount === 2,
+  "Recurring-work count was incorrect."
+);
+
+assert(
+  memoryProgress.automationCandidateCount === 2,
+  "Automation-candidate count was incorrect."
+);
+
+assert(
+  memoryProgress.learnedItems.length === 3 &&
+    memoryProgress.learnedItems[0].recommendationId ===
+      "document-processes",
+  "Learned Business Memory items were incomplete."
+);
+
+assert(
+  JSON.stringify(businessMemoryRecords) ===
+    JSON.stringify(originalBusinessMemoryRecords),
+  "Business Memory progress calculation mutated records."
+);
+
+const emptyMemoryProgress =
+  summarizeBusinessMemoryProgress(null);
+
+assert(
+  emptyMemoryProgress.totalRecords === 0 &&
+    emptyMemoryProgress.adoptedImprovementCount === 0 &&
+    emptyMemoryProgress.operationalPracticeCount === 0,
+  "Empty Business Memory progress summary was incorrect."
+);
+
 console.log("PROGRESS TESTS");
 console.log("Status totals: pass");
 console.log("Completion percentage: pass");
@@ -238,3 +386,8 @@ console.log("Checklist totals: pass");
 console.log("Checklist progress by recommendation: pass");
 console.log("Immutability: pass");
 console.log("Empty-state summary: pass");
+console.log("Business Memory outcome totals: pass");
+console.log("Business Memory adoption totals: pass");
+console.log("Business Memory operational learning: pass");
+console.log("Business Memory immutability: pass");
+console.log("Business Memory empty state: pass");

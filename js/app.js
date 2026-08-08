@@ -55,18 +55,18 @@ import {
   createReportFilename,
   generateBusinessMemoryText,
   generateReportText
-} from "./engines/export-engine.js?v=3";
+} from "./engines/export-engine.js?v=4";
 import { renderProfileView } from "./views/profile-view.js";
 import { renderAssessmentView } from "./views/assessment-view.js";
 import {
   renderActionChecklist,
   renderReportView
-} from "./views/report-view.js?v=4";
+} from "./views/report-view.js?v=5";
 import { renderSnapshotLibraryView } from "./views/snapshot-library-view.js";
 import { renderBusinessMemoryView } from "./views/business-memory-view.js";
 import {
   compareSnapshots
-} from "./core/snapshot-comparison.js";
+} from "./core/snapshot-comparison.js?v=2";
 import {
   buildProgressHistory
 } from "./core/progress-history.js";
@@ -80,7 +80,7 @@ import {
 } from "./core/reassessment-storage.js";
 import {
   renderSnapshotComparisonView
-} from "./views/snapshot-comparison-view.js";
+} from "./views/snapshot-comparison-view.js?v=2";
 import {
   createBackupFilename,
   createBusinessDojoBackup,
@@ -870,11 +870,15 @@ function renderSnapshotLibrary() {
         secondSnapshot?.id
       );
 
+      const businessMemoryRecords =
+        loadBusinessMemoryCollection().records;
+
       const comparison = compareSnapshots(
         firstSnapshot,
         secondSnapshot,
         firstActionPlan,
-        secondActionPlan
+        secondActionPlan,
+        businessMemoryRecords
       );
 
       if (!comparison.isValid) {
@@ -1869,7 +1873,8 @@ function renderReport({ preserveScroll = false } = {}) {
 
   const reportText = generateReportText({
     businessProfile: state.businessProfile,
-    results: state.results
+    results: state.results,
+    businessMemoryRecords
   });
 
   const exportStatus = document.querySelector(

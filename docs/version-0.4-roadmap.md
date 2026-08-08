@@ -237,6 +237,8 @@ The user can understand what the platform remembers about the business without s
 
 ## Phase 8 — Snapshot and Progress Integration
 
+**Status: Complete**
+
 Connect business-memory records to existing progress and comparison experiences where useful.
 
 Potential uses:

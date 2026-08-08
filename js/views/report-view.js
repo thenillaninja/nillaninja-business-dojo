@@ -1,4 +1,7 @@
-import { summarizeActionPlanProgress } from "../core/progress.js";
+import {
+  summarizeActionPlanProgress,
+  summarizeBusinessMemoryProgress
+} from "../core/progress.js?v=2";
 import { selectNextBestActions } from "../core/next-actions.js";
 import { explainBusinessMemoryAutomation } from "../core/business-memory.js";
 
@@ -170,13 +173,25 @@ function renderStrengths(strengths = []) {
     .join("");
 }
 
-function renderActionPlanSummary(actionPlan, results = {}) {
+function renderActionPlanSummary(
+  actionPlan,
+  results = {},
+  businessMemoryRecords = []
+) {
   const progress = summarizeActionPlanProgress(
     actionPlan,
     { results }
   );
 
-  if (progress.totalItems === 0) {
+  const memoryProgress =
+    summarizeBusinessMemoryProgress(
+      businessMemoryRecords
+    );
+
+  if (
+    progress.totalItems === 0 &&
+    memoryProgress.totalRecords === 0
+  ) {
     return "";
   }
 
@@ -326,6 +341,101 @@ function renderActionPlanSummary(actionPlan, results = {}) {
           </p>
         </article>
       </div>
+
+      ${
+        memoryProgress.totalRecords > 0
+          ? `
+            <div class="progress-dashboard__learning">
+              <div class="progress-dashboard__learning-heading">
+                <p class="eyebrow">Operational Learning</p>
+                <h3>What became part of the business</h3>
+                <p>
+                  Action-plan completion shows work that was finished.
+                  Business Memory shows what was learned, adopted, or
+                  turned into an ongoing way of working.
+                </p>
+              </div>
+
+              <div class="progress-dashboard__details">
+                <article class="progress-dashboard__metric">
+                  <p class="progress-dashboard__label">
+                    Positive outcomes
+                  </p>
+                  <p class="progress-dashboard__value">
+                    ${memoryProgress.positiveOutcomeCount}
+                  </p>
+                  <p class="progress-dashboard__context">
+                    Improvements recorded as having helped.
+                  </p>
+                </article>
+
+                <article class="progress-dashboard__metric">
+                  <p class="progress-dashboard__label">
+                    Adopted improvements
+                  </p>
+                  <p class="progress-dashboard__value">
+                    ${memoryProgress.adoptedImprovementCount}
+                  </p>
+                  <p class="progress-dashboard__context">
+                    Changes now marked as adopted business practices.
+                  </p>
+                </article>
+
+                <article class="progress-dashboard__metric">
+                  <p class="progress-dashboard__label">
+                    Practices now in place
+                  </p>
+                  <p class="progress-dashboard__value">
+                    ${memoryProgress.operationalPracticeCount}
+                  </p>
+                  <p class="progress-dashboard__context">
+                    Active processes, checklists, responsibilities,
+                    rules, or standards created from improvements.
+                  </p>
+                </article>
+
+                <article class="progress-dashboard__metric">
+                  <p class="progress-dashboard__label">
+                    Recurring work identified
+                  </p>
+                  <p class="progress-dashboard__value">
+                    ${memoryProgress.recurringWorkCount}
+                  </p>
+                  <p class="progress-dashboard__context">
+                    Repeating work Business Dojo now remembers.
+                  </p>
+                </article>
+
+                <article class="progress-dashboard__metric">
+                  <p class="progress-dashboard__label">
+                    Needs revision
+                  </p>
+                  <p class="progress-dashboard__value">
+                    ${memoryProgress.adoption.needsRevision}
+                  </p>
+                  <p class="progress-dashboard__context">
+                    Improvements that produced useful learning but
+                    still need adjustment.
+                  </p>
+                </article>
+
+                <article class="progress-dashboard__metric">
+                  <p class="progress-dashboard__label">
+                    Future automation candidates
+                  </p>
+                  <p class="progress-dashboard__value">
+                    ${memoryProgress.automationCandidateCount}
+                  </p>
+                  <p class="progress-dashboard__context">
+                    Processes marked worth reviewing or as strong
+                    future candidates.
+                  </p>
+                </article>
+              </div>
+            </div>
+          `
+          : ""
+      }
     </section>
   `;
 }
@@ -1809,7 +1919,11 @@ export function renderReportView({
           )}
         </div>
 
-        ${renderActionPlanSummary(actionPlan, results)}
+        ${renderActionPlanSummary(
+          actionPlan,
+          results,
+          businessMemoryRecords
+        )}
 
         ${renderNextBestActions(
           results?.recommendations || [],

@@ -102,6 +102,130 @@ function getRecommendationMap(snapshot) {
   );
 }
 
+export function summarizeBusinessMemoryProgress(
+  records = []
+) {
+  const summary = {
+    totalRecords: 0,
+
+    outcomes: {
+      helped: 0,
+      mixed: 0,
+      didNotHelp: 0,
+      unknown: 0,
+      notEvaluated: 0
+    },
+
+    adoption: {
+      tested: 0,
+      working: 0,
+      adopted: 0,
+      needsRevision: 0,
+      noLongerUsed: 0
+    },
+
+    positiveOutcomeCount: 0,
+    adoptedImprovementCount: 0,
+    operationalPracticeCount: 0,
+    recurringWorkCount: 0,
+    automationCandidateCount: 0,
+
+    learnedItems: []
+  };
+
+  if (!Array.isArray(records)) {
+    return structuredClone(summary);
+  }
+
+  for (const originalRecord of records) {
+    if (
+      !originalRecord ||
+      typeof originalRecord !== "object"
+    ) {
+      continue;
+    }
+
+    const record = structuredClone(originalRecord);
+
+    summary.totalRecords += 1;
+
+    const outcomeStatus =
+      record.outcome?.status || "not-evaluated";
+
+    if (outcomeStatus === "helped") {
+      summary.outcomes.helped += 1;
+      summary.positiveOutcomeCount += 1;
+    } else if (outcomeStatus === "mixed") {
+      summary.outcomes.mixed += 1;
+    } else if (outcomeStatus === "did-not-help") {
+      summary.outcomes.didNotHelp += 1;
+    } else if (outcomeStatus === "unknown") {
+      summary.outcomes.unknown += 1;
+    } else {
+      summary.outcomes.notEvaluated += 1;
+    }
+
+    const adoptionStatus =
+      record.adoption?.status || "tested";
+
+    if (adoptionStatus === "working") {
+      summary.adoption.working += 1;
+    } else if (adoptionStatus === "adopted") {
+      summary.adoption.adopted += 1;
+      summary.adoptedImprovementCount += 1;
+    } else if (adoptionStatus === "needs-revision") {
+      summary.adoption.needsRevision += 1;
+    } else if (adoptionStatus === "no-longer-used") {
+      summary.adoption.noLongerUsed += 1;
+    } else {
+      summary.adoption.tested += 1;
+    }
+
+    const operationalType =
+      record.adoption?.operationalType || "none";
+
+    if (
+      operationalType !== "none" &&
+      adoptionStatus !== "no-longer-used"
+    ) {
+      summary.operationalPracticeCount += 1;
+    }
+
+    if (record.recurringWork?.isRecurring === true) {
+      summary.recurringWorkCount += 1;
+    }
+
+    const automationReadiness =
+      record.automation?.readiness || "not-reviewed";
+
+    if (
+      automationReadiness === "worth-reviewing" ||
+      automationReadiness === "strong-candidate"
+    ) {
+      summary.automationCandidateCount += 1;
+    }
+
+    summary.learnedItems.push({
+      id: record.id || "",
+      snapshotId: record.source?.snapshotId || "",
+      recommendationId:
+        record.source?.recommendationId || "",
+      changeSummary: record.change?.summary || "",
+      outcomeStatus,
+      adoptionStatus,
+      operationalType,
+      isRecurring:
+        record.recurringWork?.isRecurring === true,
+      automationReadiness,
+      ownerNotes: record.ownerNotes || "",
+      updatedAt: record.updatedAt || ""
+    });
+  }
+
+  return structuredClone(summary);
+}
+
+
 export function summarizeActionPlanProgress(
   actionPlan,
   snapshot,

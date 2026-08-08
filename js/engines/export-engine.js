@@ -135,9 +135,144 @@ function renderRecommendationsSection(recommendations = []) {
   ].join("\n").trimEnd();
 }
 
+function renderBusinessMemorySection(records = []) {
+  const meaningfulRecords = Array.isArray(records)
+    ? records.filter((record) =>
+        Boolean(
+          record?.change?.summary ||
+          record?.outcome?.summary ||
+          record?.ownerNotes ||
+          record?.adoption?.operationalType !== "none" ||
+          record?.recurringWork?.isRecurring ||
+          (
+            record?.automation?.readiness &&
+            record.automation.readiness !== "not-reviewed"
+          )
+        )
+      )
+    : [];
+
+  if (meaningfulRecords.length === 0) {
+    return [
+      "BUSINESS MEMORY",
+      "---------------",
+      "No Business Memory has been recorded for this snapshot."
+    ].join("\n");
+  }
+
+  const lines = meaningfulRecords.flatMap(
+    (record, index) => {
+      const itemLines = [
+        `${index + 1}. ${
+          record?.change?.summary ||
+          "Improvement memory"
+        }`,
+        `   Outcome: ${formatLabel(
+          record?.outcome?.status || "not-evaluated"
+        )}`
+      ];
+
+      if (record?.outcome?.summary) {
+        itemLines.push(
+          `   What happened: ${record.outcome.summary}`
+        );
+      }
+
+      if (
+        record?.adoption?.operationalType &&
+        record.adoption.operationalType !== "none"
+      ) {
+        itemLines.push(
+          `   What this became: ${formatLabel(
+            record.adoption.operationalType
+          )} · ${formatLabel(
+            record.adoption.status || "tested"
+          )}`
+        );
+      }
+
+      if (record?.recurringWork?.isRecurring) {
+        itemLines.push(
+          `   Recurring work: ${
+            record.recurringWork.frequency ||
+            "Frequency not recorded"
+          }`
+        );
+
+        if (record.recurringWork.trigger) {
+          itemLines.push(
+            `   Trigger: ${record.recurringWork.trigger}`
+          );
+        }
+
+        if (record.recurringWork.responsiblePerson) {
+          itemLines.push(
+            `   Responsible: ${
+              record.recurringWork.responsiblePerson
+            }`
+          );
+        }
+
+        if (record.recurringWork.expectedResult) {
+          itemLines.push(
+            `   Expected result: ${
+              record.recurringWork.expectedResult
+            }`
+          );
+        }
+      }
+
+      if (record?.ownerNotes) {
+        itemLines.push(
+          `   Lessons learned: ${record.ownerNotes}`
+        );
+      }
+
+      if (
+        record?.automation?.readiness &&
+        record.automation.readiness !== "not-reviewed"
+      ) {
+        itemLines.push(
+          `   Future automation readiness: ${formatLabel(
+            record.automation.readiness
+          )}`
+        );
+
+        if (record.automation.notes) {
+          itemLines.push(
+            `   Automation notes: ${record.automation.notes}`
+          );
+        }
+      }
+
+      if (record?.sourceRecommendationTitle) {
+        itemLines.push(
+          `   Source recommendation: ${
+            record.sourceRecommendationTitle
+          }`
+        );
+      }
+
+      itemLines.push("");
+
+      return itemLines;
+    }
+  );
+
+  return [
+    "BUSINESS MEMORY",
+    "---------------",
+    ...lines
+  ]
+    .join("\n")
+    .trimEnd();
+}
+
+
 export function generateReportText({
   businessProfile = {},
-  results = {}
+  results = {},
+  businessMemoryRecords = []
 } = {}) {
   const businessName =
     businessProfile.businessName?.trim() || "Your Business";
@@ -170,6 +305,8 @@ export function generateReportText({
     renderStrengthsSection(results.strengths),
     "",
     renderRecommendationsSection(results.recommendations),
+    "",
+    renderBusinessMemorySection(businessMemoryRecords),
     "",
     "This report is an educational business-improvement snapshot based on the answers provided. It is not legal, financial, cybersecurity, or professional certification advice."
   ];
@@ -341,7 +478,10 @@ export function generateBusinessMemoryText({
     "LEARNED BUSINESS KNOWLEDGE",
     "--------------------------",
     meaningfulRecords.length > 0
-      ? memorySections.join("\n").trimEnd()
+      ? renderBusinessMemorySection(meaningfulRecords)
+          .split("\n")
+          .slice(2)
+          .join("\n")
       : "No Business Memory has been recorded yet."
   ]
     .join("\n")

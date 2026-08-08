@@ -226,17 +226,104 @@ const originalEarlierActionPlan =
 const originalLaterActionPlan =
   structuredClone(laterActionPlan);
 
+const businessMemoryRecords = [
+  {
+    id: "memory-earlier-1",
+    source: {
+      snapshotId: earlierSnapshot.id,
+      recommendationId: "document-processes"
+    },
+    change: {
+      summary: "Created a weekly process review."
+    },
+    outcome: {
+      status: "helped"
+    },
+    adoption: {
+      status: "working",
+      operationalType: "recurring-process"
+    },
+    recurringWork: {
+      isRecurring: true
+    },
+    automation: {
+      readiness: "worth-reviewing"
+    },
+    ownerNotes: "The review reduced missed follow-ups.",
+    updatedAt: "2026-03-01T12:00:00.000Z"
+  },
+  {
+    id: "memory-later-1",
+    source: {
+      snapshotId: laterSnapshot.id,
+      recommendationId: "backup-plan"
+    },
+    change: {
+      summary: "Standardized the backup routine."
+    },
+    outcome: {
+      status: "helped"
+    },
+    adoption: {
+      status: "adopted",
+      operationalType: "business-standard"
+    },
+    recurringWork: {
+      isRecurring: true
+    },
+    automation: {
+      readiness: "strong-candidate"
+    },
+    ownerNotes: "The routine is now part of normal operations.",
+    updatedAt: "2026-05-01T12:00:00.000Z"
+  }
+];
+
+const originalBusinessMemoryRecords =
+  structuredClone(businessMemoryRecords);
+
+
 const comparison = compareSnapshots(
   laterSnapshot,
   earlierSnapshot,
   laterActionPlan,
-  earlierActionPlan
+  earlierActionPlan,
+  businessMemoryRecords
 );
 
 assert(
   comparison.isValid === true,
   "Valid snapshot comparison failed."
 );
+
+assert(
+  comparison.operationalLearning?.isAvailable === true,
+  "Operational learning should be available when Business Memory records exist."
+);
+
+assert(
+  comparison.operationalLearning.earlier.totalRecords === 1 &&
+    comparison.operationalLearning.later.totalRecords === 1,
+  "Operational learning records were not grouped by snapshot correctly."
+);
+
+assert(
+  comparison.operationalLearning.earlier.positiveOutcomeCount === 1 &&
+    comparison.operationalLearning.later.positiveOutcomeCount === 1,
+  "Operational learning outcome summaries were incorrect."
+);
+
+assert(
+  comparison.operationalLearning.earlier.adoptedImprovementCount === 0 &&
+    comparison.operationalLearning.later.adoptedImprovementCount === 1,
+  "Operational learning adoption summaries were incorrect."
+);
+
+assert(
+  comparison.operationalLearning.linkedRecordCount === 2,
+  "Operational learning linked-record count was incorrect."
+);
+
 
 assert(
   comparison.overallScore.earlier === 44 &&
@@ -346,6 +433,13 @@ assert(
       JSON.stringify(originalLaterSnapshot),
   "Snapshot comparison mutated snapshot data."
 );
+
+assert(
+  JSON.stringify(businessMemoryRecords) ===
+    JSON.stringify(originalBusinessMemoryRecords),
+  "Snapshot comparison mutated Business Memory data."
+);
+
 
 assert(
   JSON.stringify(earlierActionPlan) ===
@@ -475,6 +569,25 @@ console.log("Category score comparison: pass");
 console.log("Strength comparison: pass");
 console.log("Recommendation comparison: pass");
 console.log("Implementation progress comparison: pass");
+assert(
+  Array.isArray(
+    comparison.significantImprovements.operationalLearning
+  ),
+  "Operational learning significant improvements were not returned."
+);
+
+assert(
+  comparison.significantImprovements.operationalLearning.length === 1,
+  "Later-snapshot operational learning was not identified correctly."
+);
+
+assert(
+  comparison.significantImprovements.operationalLearning[0]
+    .recommendationId === "backup-plan",
+  "Significant operational learning was linked to the wrong recommendation."
+);
+
+
 console.log("Significant business improvements: pass");
 console.log("Missing action-plan compatibility: pass");
 console.log("Comparison immutability: pass");

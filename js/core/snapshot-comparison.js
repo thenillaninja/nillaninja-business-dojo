@@ -1,4 +1,7 @@
-import { summarizeActionPlanProgress } from "./progress.js";
+import {
+  summarizeActionPlanProgress,
+  summarizeBusinessMemoryProgress
+} from "./progress.js?v=2";
 
 function getSnapshotDate(snapshot) {
   const value =
@@ -297,11 +300,51 @@ function compareImplementationProgress(
 }
 
 
+function compareOperationalLearning(
+  earlierSnapshot,
+  laterSnapshot,
+  businessMemoryRecords = []
+) {
+  const records = Array.isArray(businessMemoryRecords)
+    ? businessMemoryRecords
+    : [];
+
+  const earlierRecords = records.filter(
+    (record) =>
+      record?.source?.snapshotId === earlierSnapshot?.id
+  );
+
+  const laterRecords = records.filter(
+    (record) =>
+      record?.source?.snapshotId === laterSnapshot?.id
+  );
+
+  const earlier =
+    summarizeBusinessMemoryProgress(earlierRecords);
+
+  const later =
+    summarizeBusinessMemoryProgress(laterRecords);
+
+  return {
+    isAvailable:
+      earlier.totalRecords > 0 ||
+      later.totalRecords > 0,
+    earlier,
+    later,
+    linkedRecordCount:
+      earlier.totalRecords + later.totalRecords,
+    note:
+      "Business Memory reflects the current learned status of improvements linked to each snapshot; it does not rewrite historical snapshot data."
+  };
+}
+
+
 function buildSignificantImprovements({
   categoryScores = [],
   strengths = {},
   recommendations = {},
-  implementationProgress = null
+  implementationProgress = null,
+  operationalLearning = null
 } = {}) {
   const assessment = [];
 
@@ -367,9 +410,26 @@ function buildSignificantImprovements({
     }
   }
 
+  const learnedOperations =
+    operationalLearning?.isAvailable
+      ? (operationalLearning.later?.learnedItems || [])
+          .filter((item) =>
+            item.outcomeStatus === "helped" ||
+            item.adoptionStatus === "adopted" ||
+            (
+              item.operationalType &&
+              item.operationalType !== "none" &&
+              item.adoptionStatus !== "no-longer-used"
+            ) ||
+            item.isRecurring === true
+          )
+          .map((item) => structuredClone(item))
+      : [];
+
   return {
     assessment,
-    implementation
+    implementation,
+    operationalLearning: learnedOperations
   };
 }
 
@@ -377,7 +437,8 @@ export function compareSnapshots(
   firstSnapshot,
   secondSnapshot,
   firstActionPlan = null,
-  secondActionPlan = null
+  secondActionPlan = null,
+  businessMemoryRecords = []
 ) {
   const validation = validateSnapshotComparison(
     firstSnapshot,
@@ -456,6 +517,13 @@ export function compareSnapshots(
       ].filter(Boolean)
     );
 
+  const operationalLearning =
+    compareOperationalLearning(
+      earlierSnapshot,
+      laterSnapshot,
+      businessMemoryRecords
+    );
+
   return {
     isValid: true,
     reason: "",
@@ -471,12 +539,14 @@ export function compareSnapshots(
     strengths,
     recommendations,
     implementationProgress,
+    operationalLearning,
     significantImprovements:
       buildSignificantImprovements({
         categoryScores,
         strengths,
         recommendations,
-        implementationProgress
+        implementationProgress,
+        operationalLearning
       })
   };
 }

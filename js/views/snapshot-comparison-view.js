@@ -234,6 +234,133 @@ function renderImplementationProgress(comparison) {
 }
 
 
+function renderOperationalLearning(comparison) {
+  const learning = comparison.operationalLearning;
+
+  if (!learning?.isAvailable) {
+    return `
+      <section
+        class="comparison-section"
+        aria-labelledby="comparison-operational-learning-heading"
+      >
+        <div class="comparison-section__heading">
+          <p class="eyebrow">Operational Learning</p>
+          <h2 id="comparison-operational-learning-heading">
+            What became part of the business
+          </h2>
+        </div>
+
+        <div class="comparison-empty-state">
+          <p>
+            No Business Memory records are currently linked to these
+            snapshots.
+          </p>
+        </div>
+      </section>
+    `;
+  }
+
+  const earlier = learning.earlier;
+  const later = learning.later;
+
+  return `
+    <section
+      class="comparison-section"
+      aria-labelledby="comparison-operational-learning-heading"
+    >
+      <div class="comparison-section__heading">
+        <p class="eyebrow">Operational Learning</p>
+        <h2 id="comparison-operational-learning-heading">
+          What became part of the business
+        </h2>
+
+        <p>
+          Business Memory shows what was learned, adopted, or turned
+          into an ongoing way of working. These are the current learned
+          outcomes linked back to each snapshot; the historical snapshots
+          themselves remain unchanged.
+        </p>
+      </div>
+
+      <div class="comparison-progress-grid">
+        <article class="comparison-progress-card">
+          <span class="eyebrow">
+            Positive outcomes
+          </span>
+          <strong >
+            ${earlier.positiveOutcomeCount}
+            →
+            ${later.positiveOutcomeCount}
+          </strong>
+        </article>
+
+        <article class="comparison-progress-card">
+          <span class="eyebrow">
+            Adopted improvements
+          </span>
+          <strong >
+            ${earlier.adoptedImprovementCount}
+            →
+            ${later.adoptedImprovementCount}
+          </strong>
+        </article>
+
+        <article class="comparison-progress-card">
+          <span class="eyebrow">
+            Practices now in place
+          </span>
+          <strong >
+            ${earlier.operationalPracticeCount}
+            →
+            ${later.operationalPracticeCount}
+          </strong>
+        </article>
+
+        <article class="comparison-progress-card">
+          <span class="eyebrow">
+            Recurring work identified
+          </span>
+          <strong >
+            ${earlier.recurringWorkCount}
+            →
+            ${later.recurringWorkCount}
+          </strong>
+        </article>
+
+        <article class="comparison-progress-card">
+          <span class="eyebrow">
+            Needs revision
+          </span>
+          <strong >
+            ${earlier.adoption.needsRevision}
+            →
+            ${later.adoption.needsRevision}
+          </strong>
+        </article>
+
+        <article class="comparison-progress-card">
+          <span class="eyebrow">
+            Future automation candidates
+          </span>
+          <strong >
+            ${earlier.automationCandidateCount}
+            →
+            ${later.automationCandidateCount}
+          </strong>
+        </article>
+      </div>
+
+      <p class="comparison-section__description">
+        ${learning.linkedRecordCount}
+        Business Memory
+        ${learning.linkedRecordCount === 1 ? "record is" : "records are"}
+        linked to this comparison.
+      </p>
+    </section>
+  `;
+}
+
+
 function renderSignificantImprovements(comparison) {
   const improvements =
     comparison.significantImprovements || {};
@@ -245,6 +372,11 @@ function renderSignificantImprovements(comparison) {
   const implementation =
     Array.isArray(improvements.implementation)
       ? improvements.implementation
+      : [];
+
+  const operationalLearning =
+    Array.isArray(improvements.operationalLearning)
+      ? improvements.operationalLearning
       : [];
 
   const categoryImprovements = assessment.filter(
@@ -261,11 +393,12 @@ function renderSignificantImprovements(comparison) {
 
   if (
     assessment.length === 0 &&
-    implementation.length === 0
+    implementation.length === 0 &&
+    operationalLearning.length === 0
   ) {
     return `
       <section
-        class="comparison-section"
+        class="comparison-section comparison-improvements"
         aria-labelledby="comparison-improvements-heading"
       >
         <div class="comparison-section__heading">
@@ -347,6 +480,47 @@ function renderSignificantImprovements(comparison) {
     .filter(Boolean)
     .join("");
 
+  const operationalLearningSummary =
+    operationalLearning
+      .map((item) => {
+        const summary =
+          item.changeSummary ||
+          "An improvement was recorded in Business Memory.";
+
+        const details = [];
+
+        if (item.outcomeStatus === "helped") {
+          details.push("helped");
+        }
+
+        if (item.adoptionStatus === "adopted") {
+          details.push("adopted");
+        }
+
+        if (
+          item.operationalType &&
+          item.operationalType !== "none"
+        ) {
+          details.push(formatLabel(item.operationalType));
+        }
+
+        if (item.isRecurring) {
+          details.push("recurring work");
+        }
+
+        return `
+          <li>
+            <strong>${summary}</strong>
+            ${
+              details.length > 0
+                ? ` — ${details.join(", ")}.`
+                : ""
+            }
+          </li>
+        `;
+      })
+      .join("");
+
   return `
     <section
       class="comparison-section comparison-improvements"
@@ -354,12 +528,15 @@ function renderSignificantImprovements(comparison) {
     >
       <div class="comparison-section__heading">
         <p class="eyebrow">Business Progress</p>
+
         <h2 id="comparison-improvements-heading">
           Significant improvements
         </h2>
-        <p class="comparison-section__description">
-          This summary separates improvements reflected in the assessment
-          from progress recorded while implementing the action plan.
+
+        <p>
+          This summary separates improvements reflected in the assessment,
+          progress recorded while implementing the action plan, and changes
+          that became meaningful operational learning.
         </p>
       </div>
 
@@ -402,6 +579,26 @@ function renderSignificantImprovements(comparison) {
               `
           }
         </article>
+
+        <article class="comparison-improvement-card">
+          <p class="eyebrow">Operational Learning</p>
+          <h3>What became meaningful in normal operations</h3>
+
+          ${
+            operationalLearningSummary
+              ? `
+                <ul class="comparison-improvement-list">
+                  ${operationalLearningSummary}
+                </ul>
+              `
+              : `
+                <p class="comparison-list__empty">
+                  No significant operational learning is currently linked
+                  to the later snapshot.
+                </p>
+              `
+          }
+        </article>
       </div>
     </section>
   `;
@@ -434,6 +631,42 @@ function renderMomentumPanel(comparison, reassessmentPlan = null) {
   }
 
   const selectedInterval = reassessmentPlan?.intervalDays || "";
+
+const reassessmentLessons =
+  comparison.operationalLearning?.later?.learnedItems || [];
+
+const relevantLessons = reassessmentLessons.filter(
+  (item) =>
+    item.outcomeStatus === "helped" ||
+    item.outcomeStatus === "mixed" ||
+    item.outcomeStatus === "did-not-help" ||
+    item.adoptionStatus === "adopted" ||
+    item.adoptionStatus === "needs-revision" ||
+    (
+      item.operationalType &&
+      item.operationalType !== "none"
+    ) ||
+    item.isRecurring === true
+);
+
+const lessonMarkup = relevantLessons
+  .map((item) => {
+    const summary =
+      item.changeSummary ||
+      "A previous improvement was recorded in Business Memory.";
+
+    const notes = item.ownerNotes
+      ? `<span>${item.ownerNotes}</span>`
+      : "";
+
+    return `
+      <li>
+        <strong>${summary}</strong>
+        ${notes}
+      </li>
+    `;
+  })
+  .join("");
 
   return `
     <section
@@ -479,7 +712,27 @@ function renderMomentumPanel(comparison, reassessmentPlan = null) {
           not a requirement, and the reminder stays in this browser.
         </p>
 
-        <div class="comparison-momentum__intervals">
+        ${
+      lessonMarkup
+        ? `
+          <div class="comparison-momentum__lessons">
+            <p class="eyebrow">Business Memory Reminder</p>
+            <h4>Remember what you learned</h4>
+            <p>
+              Review these learned outcomes when you reassess so you can
+              decide whether the changes are still helping, need revision,
+              or have become part of normal operations.
+            </p>
+
+            <ul class="comparison-improvement-list">
+              ${lessonMarkup}
+            </ul>
+          </div>
+        `
+        : ""
+    }
+
+    <div class="comparison-momentum__intervals">
           ${[30, 60, 90]
             .map(
               (days) => `
@@ -585,6 +838,8 @@ export function renderSnapshotComparisonView(
       </div>
 
       ${renderImplementationProgress(comparison)}
+
+      ${renderOperationalLearning(comparison)}
 
       ${renderSignificantImprovements(comparison)}
 
