@@ -2321,3 +2321,191 @@
   margin: 0;
   line-height: 1.6;
 }
+
+/* Version 0.4 — Standalone Business Memory view */
+.business-memory-view {
+  width: min(100%, 72rem);
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+.business-memory-view__header {
+  padding: 2rem;
+  border: 1px solid rgba(125, 211, 252, 0.24);
+  border-radius: 1rem;
+  background: rgba(125, 211, 252, 0.04);
+}
+
+.business-memory-view__header h1 {
+  margin: 0.5rem 0 1rem;
+  max-width: 46rem;
+}
+
+.business-memory-view__intro {
+  max-width: 50rem;
+  margin: 0;
+  line-height: 1.65;
+}
+
+.business-memory-view__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.business-memory-list {
+  margin-top: 2rem;
+}
+
+.business-memory-list__heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.business-memory-list__heading h2,
+.business-memory-list__heading p {
+  margin: 0;
+}
+
+.business-memory-list__heading p {
+  opacity: 0.75;
+}
+
+.business-memory-list__items {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.business-memory-card {
+  padding: 1.5rem;
+  border: 1px solid rgba(125, 211, 252, 0.2);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.business-memory-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.business-memory-card__header h3 {
+  margin: 0.35rem 0 0;
+  font-size: 1.35rem;
+}
+
+.business-memory-card__status {
+  flex: 0 0 auto;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid rgba(125, 211, 252, 0.35);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.business-memory-card__section {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.business-memory-card__section h4 {
+  margin: 0 0 0.55rem;
+  font-size: 1rem;
+}
+
+.business-memory-card__section p {
+  margin: 0.35rem 0 0;
+  line-height: 1.6;
+}
+
+.business-memory-card__source {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.85rem;
+  opacity: 0.65;
+}
+
+.business-memory-empty {
+  margin-top: 2rem;
+  padding: 2rem;
+  border: 1px dashed rgba(125, 211, 252, 0.35);
+  border-radius: 1rem;
+}
+
+.business-memory-empty h2 {
+  margin-top: 0;
+}
+
+@media (max-width: 640px) {
+  .business-memory-view {
+    padding: 1rem 0.75rem 3rem;
+  }
+
+  .business-memory-view__header {
+    padding: 1.5rem;
+  }
+
+  .business-memory-list__heading,
+  .business-memory-card__header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .business-memory-view__actions .button {
+    width: 100%;
+  }
+}
+
+/* Phone-sized screens remain report-only. */
+@media (max-width: 640px) {
+  .product-navigation {
+    display: none;
+  }
+}
+
+/* Version 0.4 interactive controls should not appear in print */
+@media print {
+  .product-navigation,
+  #view-business-memory,
+  .recommendation-card__outcome-fields,
+  .recommendation-card__recurring-work
+    .recommendation-card__action-field,
+  .recommendation-card__automation-considerations,
+  .recommendation-card__automation-review
+    .recommendation-card__action-field {
+    display: none !important;
+  }
+}
+
+@media print {
+  .business-memory-view__actions,
+  .business-memory-view__export-actions,
+  .business-memory-view__export-status {
+    display: none !important;
+  }
+}
+
+.business-memory-view__export-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.business-memory-view__export-status {
+  min-height: 1.4em;
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-small);
+}
+
+.business-memory-view__export-actions {
+  margin-top: var(--space-5);
+}

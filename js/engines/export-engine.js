@@ -195,3 +195,168 @@ export function createReportFilename(businessName = "") {
 
   return `${safeName || "business"}-snapshot-report.txt`;
 }
+
+
+export function generateBusinessMemoryText({
+  businessName = "",
+  records = []
+} = {}) {
+  const displayBusinessName =
+    businessName.trim() || "Your Business";
+
+  const generatedDate = new Intl.DateTimeFormat("en-US", {
+    dateStyle: "long"
+  }).format(new Date());
+
+  const meaningfulRecords = Array.isArray(records)
+    ? records.filter((record) =>
+        Boolean(
+          record?.change?.summary ||
+          record?.outcome?.summary ||
+          record?.ownerNotes ||
+          record?.adoption?.operationalType !== "none" ||
+          record?.recurringWork?.isRecurring ||
+          (
+            record?.automation?.readiness &&
+            record.automation.readiness !== "not-reviewed"
+          )
+        )
+      )
+    : [];
+
+  const memorySections = meaningfulRecords.flatMap(
+    (record, index) => {
+      const lines = [
+        `${index + 1}. ${
+          record?.change?.summary ||
+          "Improvement memory"
+        }`,
+        `   Outcome: ${formatLabel(
+          record?.outcome?.status || "not-evaluated"
+        )}`
+      ];
+
+      if (record?.outcome?.summary) {
+        lines.push(
+          `   What happened: ${record.outcome.summary}`
+        );
+      }
+
+      if (
+        record?.adoption?.operationalType &&
+        record.adoption.operationalType !== "none"
+      ) {
+        lines.push(
+          `   What this became: ${formatLabel(
+            record.adoption.operationalType
+          )} · ${formatLabel(
+            record.adoption.status || "tested"
+          )}`
+        );
+      }
+
+      if (record?.recurringWork?.isRecurring) {
+        lines.push(
+          `   Recurring work: ${
+            record.recurringWork.frequency ||
+            "Frequency not recorded"
+          }`
+        );
+
+        if (record.recurringWork.trigger) {
+          lines.push(
+            `   Trigger: ${record.recurringWork.trigger}`
+          );
+        }
+
+        if (record.recurringWork.responsiblePerson) {
+          lines.push(
+            `   Responsible: ${
+              record.recurringWork.responsiblePerson
+            }`
+          );
+        }
+
+        if (record.recurringWork.expectedResult) {
+          lines.push(
+            `   Expected result: ${
+              record.recurringWork.expectedResult
+            }`
+          );
+        }
+      }
+
+      if (record?.ownerNotes) {
+        lines.push(
+          `   Lessons learned: ${record.ownerNotes}`
+        );
+      }
+
+      if (
+        record?.automation?.readiness &&
+        record.automation.readiness !== "not-reviewed"
+      ) {
+        lines.push(
+          `   Future automation readiness: ${formatLabel(
+            record.automation.readiness
+          )}`
+        );
+
+        if (record.automation.notes) {
+          lines.push(
+            `   Automation notes: ${
+              record.automation.notes
+            }`
+          );
+        }
+      }
+
+      if (record?.sourceRecommendationTitle) {
+        lines.push(
+          `   Source recommendation: ${
+            record.sourceRecommendationTitle
+          }`
+        );
+      }
+
+      lines.push("");
+
+      return lines;
+    }
+  );
+
+  return [
+    "NILLANINJA BUSINESS DOJO",
+    "BUSINESS MEMORY",
+    "===============",
+    "",
+    displayBusinessName,
+    `Generated: ${generatedDate}`,
+    `${meaningfulRecords.length} ${
+      meaningfulRecords.length === 1
+        ? "memory"
+        : "memories"
+    } recorded`,
+    "",
+    "LEARNED BUSINESS KNOWLEDGE",
+    "--------------------------",
+    meaningfulRecords.length > 0
+      ? memorySections.join("\n").trimEnd()
+      : "No Business Memory has been recorded yet."
+  ]
+    .join("\n")
+    .trim();
+}
+
+
+export function createBusinessMemoryFilename(
+  businessName = ""
+) {
+  const safeName = businessName
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  return `${safeName || "business"}-business-memory.txt`;
+}

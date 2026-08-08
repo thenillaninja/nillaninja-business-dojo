@@ -51,9 +51,11 @@ import {
 } from "./core/recommendation-filters.js";
 import { generateStrengths } from "./engines/strengths-engine.js";
 import {
+  createBusinessMemoryFilename,
   createReportFilename,
+  generateBusinessMemoryText,
   generateReportText
-} from "./engines/export-engine.js?v=2";
+} from "./engines/export-engine.js?v=3";
 import { renderProfileView } from "./views/profile-view.js";
 import { renderAssessmentView } from "./views/assessment-view.js";
 import {
@@ -61,6 +63,7 @@ import {
   renderReportView
 } from "./views/report-view.js?v=4";
 import { renderSnapshotLibraryView } from "./views/snapshot-library-view.js";
+import { renderBusinessMemoryView } from "./views/business-memory-view.js";
 import {
   compareSnapshots
 } from "./core/snapshot-comparison.js";
@@ -262,6 +265,42 @@ function updateStepNavigation(currentStep) {
   });
 }
 
+function updateProductNavigation(currentView) {
+  const destinations = {
+    welcome: "#product-nav-home",
+    profile: "#product-nav-begin",
+    assessment: "#product-nav-begin",
+    report: "#product-nav-begin",
+    "snapshot-library": "#product-nav-snapshots",
+    "snapshot-comparison": "#product-nav-snapshots",
+    "business-memory": "#product-nav-memory"
+  };
+
+  document
+    .querySelectorAll(".product-navigation__item")
+    .forEach((item) => {
+      item.classList.remove("is-current");
+      item.removeAttribute("aria-current");
+    });
+
+  const currentSelector = destinations[currentView];
+
+  if (!currentSelector) {
+    return;
+  }
+
+  const currentItem =
+    document.querySelector(currentSelector);
+
+  if (!currentItem) {
+    return;
+  }
+
+  currentItem.classList.add("is-current");
+  currentItem.setAttribute("aria-current", "page");
+}
+
+
 function focusMainContent() {
   const viewHeading = document.querySelector("#app h1");
 
@@ -274,11 +313,109 @@ function focusMainContent() {
   document.querySelector("#main-content")?.focus();
 }
 
+function bindProductNavigation() {
+  const toggle = document.querySelector(
+    "#product-nav-toggle"
+  );
+
+  const menu = document.querySelector(
+    "#product-nav-menu"
+  );
+
+  const closeMenu = () => {
+    if (!toggle || !menu) {
+      return;
+    }
+
+    menu.hidden = true;
+    toggle.setAttribute("aria-expanded", "false");
+  };
+
+  toggle?.addEventListener("click", () => {
+    if (!menu) {
+      return;
+    }
+
+    const willOpen = menu.hidden;
+
+    menu.hidden = !willOpen;
+    toggle.setAttribute(
+      "aria-expanded",
+      String(willOpen)
+    );
+  });
+
+  document.addEventListener("click", (event) => {
+    if (menu?.hidden) {
+      return;
+    }
+
+    const target = event.target;
+
+    if (
+      toggle?.contains(target) ||
+      menu?.contains(target)
+    ) {
+      return;
+    }
+
+    closeMenu();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (
+      event.key !== "Escape" ||
+      menu?.hidden
+    ) {
+      return;
+    }
+
+    closeMenu();
+    toggle?.focus();
+  });
+
+  document
+    .querySelector("#product-nav-home")
+    ?.addEventListener("click", () => {
+      closeMenu();
+      renderWelcomeView();
+      focusMainContent();
+    });
+
+  document
+    .querySelector("#product-nav-begin")
+    ?.addEventListener("click", () => {
+      closeMenu();
+      updateProductNavigation(null);
+      renderBusinessProfile({}, "product-navigation");
+      focusMainContent();
+    });
+
+  document
+    .querySelector("#product-nav-snapshots")
+    ?.addEventListener("click", () => {
+      closeMenu();
+      renderSnapshotLibrary();
+      focusMainContent();
+    });
+
+  document
+    .querySelector("#product-nav-memory")
+    ?.addEventListener("click", () => {
+      closeMenu();
+      renderBusinessMemory();
+      focusMainContent();
+    });
+}
+
+bindProductNavigation();
+
 function renderWelcomeView() {
   state.navigation.currentView = "welcome";
   state.navigation.currentStep = 1;
 
   updateStepNavigation(1);
+  updateProductNavigation("welcome");
   persistState();
 
   app.innerHTML = `
@@ -325,6 +462,14 @@ function renderWelcomeView() {
         >
           View Snapshot Library
         </button>
+
+        <button
+          class="button button--secondary"
+          type="button"
+          id="view-business-memory"
+        >
+          View Business Memory
+        </button>
       </div>
     </div>
   `;
@@ -342,6 +487,13 @@ function renderWelcomeView() {
       renderSnapshotLibrary();
       focusMainContent();
     });
+
+  document
+    .querySelector("#view-business-memory")
+    ?.addEventListener("click", () => {
+      renderBusinessMemory();
+      focusMainContent();
+    });
 }
 
 function getProfileFromForm(form) {
@@ -355,6 +507,129 @@ function getProfileFromForm(form) {
   return profile;
 }
 
+function renderBusinessMemory() {
+  const records =
+    loadBusinessMemoryCollection().records.map((record) => {
+      const snapshotId = record?.source?.snapshotId;
+      const recommendationId =
+        record?.source?.recommendationId;
+
+      const snapshot = snapshotId
+        ? getSnapshotById(snapshotId)
+        : null;
+
+      const recommendation =
+        snapshot?.results?.recommendations?.find(
+          (item) => item?.id === recommendationId
+        );
+
+      return {
+        ...record,
+        sourceRecommendationTitle:
+          recommendation?.title || ""
+      };
+    });
+
+  state.navigation.currentView = "business-memory";
+  state.navigation.currentStep = 1;
+
+  updateStepNavigation(1);
+  updateProductNavigation("business-memory");
+  persistState();
+
+  app.innerHTML = renderBusinessMemoryView({
+    records
+  });
+
+  document
+    .querySelector("#business-memory-back")
+    ?.addEventListener("click", () => {
+      renderWelcomeView();
+      focusMainContent();
+    });
+
+  document
+    .querySelector("#business-memory-snapshots")
+    ?.addEventListener("click", () => {
+      renderSnapshotLibrary();
+      focusMainContent();
+    });
+
+  const memoryExportStatus =
+    document.querySelector(
+      "#business-memory-export-status"
+    );
+
+  const setMemoryExportStatus = (message) => {
+    if (memoryExportStatus) {
+      memoryExportStatus.textContent = message;
+    }
+  };
+
+  const memoryText = generateBusinessMemoryText({
+    businessName: state.businessProfile.businessName,
+    records
+  });
+
+  document
+    .querySelector("#business-memory-copy")
+    ?.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(memoryText);
+        setMemoryExportStatus(
+          "Business Memory copied to your clipboard."
+        );
+      } catch (error) {
+        console.error(
+          "Unable to copy Business Memory:",
+          error
+        );
+
+        setMemoryExportStatus(
+          "Business Memory could not be copied. Try downloading it instead."
+        );
+      }
+    });
+
+  document
+    .querySelector("#business-memory-download")
+    ?.addEventListener("click", () => {
+      const file = new Blob([memoryText], {
+        type: "text/plain;charset=utf-8"
+      });
+
+      const downloadUrl = URL.createObjectURL(file);
+      const downloadLink = document.createElement("a");
+
+      downloadLink.href = downloadUrl;
+      downloadLink.download =
+        createBusinessMemoryFilename(
+          state.businessProfile.businessName
+        );
+
+      document.body.append(downloadLink);
+      downloadLink.click();
+      downloadLink.remove();
+
+      URL.revokeObjectURL(downloadUrl);
+
+      setMemoryExportStatus(
+        "Business Memory downloaded."
+      );
+    });
+
+  document
+    .querySelector("#business-memory-print")
+    ?.addEventListener("click", () => {
+      setMemoryExportStatus(
+        "Opening your browser print options."
+      );
+
+      window.print();
+    });
+}
+
+
 function renderSnapshotLibrary() {
   const collection = loadSnapshotCollection();
   const mostRecentSnapshot = getMostRecentSnapshot();
@@ -363,6 +638,7 @@ function renderSnapshotLibrary() {
   state.navigation.currentStep = 1;
 
   updateStepNavigation(1);
+  updateProductNavigation("snapshot-library");
   persistState();
 
   const snapshots = [...collection.snapshots].reverse();
@@ -772,6 +1048,7 @@ function renderSnapshotComparison(comparison) {
   state.navigation.currentStep = 1;
 
   updateStepNavigation(1);
+  updateProductNavigation("snapshot-comparison");
   persistState();
 
   const latestSnapshot = comparison.laterSnapshot;
@@ -853,6 +1130,7 @@ function renderBusinessProfile(errors = {}, returnView = null) {
   state.navigation.currentStep = 2;
 
   updateStepNavigation(2);
+  updateProductNavigation("profile");
   persistState();
 
   app.innerHTML = renderProfileView(state.businessProfile, errors);
@@ -1075,6 +1353,7 @@ function renderReport({ preserveScroll = false } = {}) {
   state.navigation.currentStep = 4;
 
   updateStepNavigation(4);
+  updateProductNavigation("report");
   persistState();
 
   const actionPlan = getCurrentActionPlan();
@@ -1728,6 +2007,7 @@ function renderAssessment(errorMessage = "") {
   state.navigation.currentStep = 3;
 
   updateStepNavigation(3);
+  updateProductNavigation("assessment");
   persistState();
 
   const questionIndex = state.navigation.currentQuestionIndex ?? 0;
@@ -1881,6 +2161,10 @@ function renderSavedView() {
   switch (state.navigation.currentView) {
     case "snapshot-library":
       renderSnapshotLibrary();
+      break;
+
+    case "business-memory":
+      renderBusinessMemory();
       break;
 
     case "profile":

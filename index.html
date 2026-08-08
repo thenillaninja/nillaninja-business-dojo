@@ -6,7 +6,7 @@
   <meta name="description" content="NillaNinja Business Dojo helps small business owners understand their operations and identify practical improvements.">
   <title>NillaNinja Business Dojo</title>
 
-  <link rel="stylesheet" href="css/main.css?v=9">
+  <link rel="stylesheet" href="css/main.css?v=10">
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -23,7 +23,65 @@
       </div>
     </header>
 
-    <nav class="step-navigation" aria-label="Assessment progress">
+    <nav class="product-navigation" aria-label="Business Dojo navigation">
+  <div class="product-navigation__inner">
+    <button
+      class="product-navigation__toggle"
+      type="button"
+      id="product-nav-toggle"
+      aria-expanded="false"
+      aria-controls="product-nav-menu"
+    >
+      <span class="product-navigation__hamburger" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+
+      <span>Menu</span>
+    </button>
+
+    <div
+      class="product-navigation__menu"
+      id="product-nav-menu"
+      hidden
+    >
+      <button
+        class="product-navigation__item"
+        type="button"
+        id="product-nav-home"
+      >
+        Home
+      </button>
+
+      <button
+        class="product-navigation__item"
+        type="button"
+        id="product-nav-begin"
+      >
+        Begin Business Snapshot
+      </button>
+
+      <button
+        class="product-navigation__item"
+        type="button"
+        id="product-nav-snapshots"
+      >
+        View Snapshot Library
+      </button>
+
+      <button
+        class="product-navigation__item"
+        type="button"
+        id="product-nav-memory"
+      >
+        View Business Memory
+      </button>
+    </div>
+  </div>
+</nav>
+
+<nav class="step-navigation" aria-label="Assessment progress">
       <ol class="step-navigation__list">
         <li class="step-navigation__item is-current" aria-current="step">
           <span class="step-navigation__number">1</span>
@@ -88,6 +146,6 @@
     </footer>
   </div>
 
-  <script type="module" src="js/app.js?v=16"></script>
+  <script type="module" src="js/app.js?v=17"></script>
 </body>
 </html>
