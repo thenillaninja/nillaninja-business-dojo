@@ -1268,14 +1268,23 @@ function renderReport({ preserveScroll = false } = {}) {
           );
         }
 
-        if (fieldName === "adoptionStatus") {
+        if (
+          fieldName === "adoptionStatus" ||
+          fieldName === "operationalType"
+        ) {
           updatedRecord = updateBusinessMemoryAdoption(
             currentRecord,
             {
-              adoptionStatus: field.value,
+              adoptionStatus:
+                fieldName === "adoptionStatus"
+                  ? field.value
+                  : currentRecord.adoption?.status ||
+                    "tested",
               operationalType:
-                currentRecord.adoption?.operationalType ||
-                "none"
+                fieldName === "operationalType"
+                  ? field.value
+                  : currentRecord.adoption?.operationalType ||
+                    "none"
             }
           );
         }

@@ -1248,6 +1248,65 @@ function renderRecommendations(
                 </option>
               </select>
                 </div>
+
+            <div class="recommendation-card__action-field">
+              <label for="memory-operational-type-${recommendation.id}">
+                What did this become?
+              </label>
+
+              <select
+                id="memory-operational-type-${recommendation.id}"
+                data-business-memory-field="operationalType"
+                data-recommendation-id="${recommendation.id}"
+              >
+                <option
+                  value="none"
+                  ${
+                    (memoryRecord?.adoption?.operationalType ||
+                      "none") === "none"
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  Not standardized yet
+                </option>
+
+                <option
+                  value="recurring-process"
+                  ${memoryRecord?.adoption?.operationalType === "recurring-process" ? "selected" : ""}
+                >
+                  A recurring process
+                </option>
+
+                <option
+                  value="checklist"
+                  ${memoryRecord?.adoption?.operationalType === "checklist" ? "selected" : ""}
+                >
+                  A checklist
+                </option>
+
+                <option
+                  value="responsibility"
+                  ${memoryRecord?.adoption?.operationalType === "responsibility" ? "selected" : ""}
+                >
+                  A responsibility
+                </option>
+
+                <option
+                  value="decision-rule"
+                  ${memoryRecord?.adoption?.operationalType === "decision-rule" ? "selected" : ""}
+                >
+                  A decision rule
+                </option>
+
+                <option
+                  value="business-standard"
+                  ${memoryRecord?.adoption?.operationalType === "business-standard" ? "selected" : ""}
+                >
+                  A business standard
+                </option>
+              </select>
+            </div>
               </div>
             </section>
 
