@@ -6,7 +6,9 @@ const {
   BUSINESS_MEMORY_AUTOMATION_READINESS,
   createBusinessMemoryRecord,
   updateBusinessMemoryOutcome,
-  updateBusinessMemoryAdoption
+  updateBusinessMemoryAdoption,
+  updateBusinessMemoryRecurringWork,
+  updateBusinessMemoryAutomation
 } = await import("../js/core/business-memory.js");
 
 function assert(condition, message) {
@@ -309,3 +311,171 @@ assert(
 );
 
 console.log("Adoption update validation: pass");
+
+const recurringSource = createBusinessMemoryRecord({
+  snapshot: makeSnapshot(),
+  actionPlan: makeActionPlan(),
+  recommendationId: "standardize-customer-follow-up",
+  createdAt: "2026-08-07T12:00:00.000Z"
+});
+
+const recurringUpdated = updateBusinessMemoryRecurringWork(
+  recurringSource,
+  {
+    isRecurring: true,
+    frequency: "  Weekly  ",
+    trigger: "  Every Friday afternoon  ",
+    responsiblePerson: "  Store Manager  ",
+    expectedResult: "  All open estimates reviewed  ",
+    currentMethod: "  Review the follow-up list manually  ",
+    updatedAt: "2026-08-10T12:00:00.000Z"
+  }
+);
+
+assert(
+  recurringUpdated?.recurringWork?.isRecurring === true &&
+    recurringUpdated.recurringWork.frequency === "Weekly" &&
+    recurringUpdated.recurringWork.trigger ===
+      "Every Friday afternoon" &&
+    recurringUpdated.recurringWork.responsiblePerson ===
+      "Store Manager" &&
+    recurringUpdated.recurringWork.expectedResult ===
+      "All open estimates reviewed" &&
+    recurringUpdated.recurringWork.currentMethod ===
+      "Review the follow-up list manually",
+  "Recurring work update test failed."
+);
+
+console.log("Recurring work update: pass");
+
+assert(
+  recurringUpdated.createdAt ===
+    "2026-08-07T12:00:00.000Z" &&
+    recurringUpdated.updatedAt ===
+      "2026-08-10T12:00:00.000Z",
+  "Recurring work timestamp preservation test failed."
+);
+
+console.log("Recurring work timestamp preservation: pass");
+
+assert(
+  recurringSource.recurringWork.isRecurring === false &&
+    recurringSource.recurringWork.frequency === "",
+  "Recurring work update mutated the source record."
+);
+
+console.log("Recurring work immutability: pass");
+
+const recurringCleared = updateBusinessMemoryRecurringWork(
+  recurringUpdated,
+  {
+    isRecurring: false,
+    frequency: "Should be removed",
+    trigger: "Should be removed",
+    responsiblePerson: "Should be removed",
+    expectedResult: "Should be removed",
+    currentMethod: "Should be removed",
+    updatedAt: "2026-08-11T12:00:00.000Z"
+  }
+);
+
+assert(
+  recurringCleared?.recurringWork?.isRecurring === false &&
+    recurringCleared.recurringWork.frequency === "" &&
+    recurringCleared.recurringWork.trigger === "" &&
+    recurringCleared.recurringWork.responsiblePerson === "" &&
+    recurringCleared.recurringWork.expectedResult === "" &&
+    recurringCleared.recurringWork.currentMethod === "",
+  "Recurring work clearing test failed."
+);
+
+console.log("Recurring work clearing: pass");
+
+assert(
+  updateBusinessMemoryRecurringWork(
+    recurringSource,
+    {
+      isRecurring: "yes"
+    }
+  ) === null,
+  "Recurring work boolean validation failed."
+);
+
+assert(
+  updateBusinessMemoryRecurringWork(
+    recurringSource,
+    {
+      isRecurring: true,
+      updatedAt: "not-a-date"
+    }
+  ) === null,
+  "Recurring work timestamp validation failed."
+);
+
+console.log("Recurring work validation: pass");
+
+const automationSource = createBusinessMemoryRecord({
+  snapshot: makeSnapshot(),
+  actionPlan: makeActionPlan(),
+  recommendationId: "standardize-customer-follow-up",
+  createdAt: "2026-08-07T12:00:00.000Z"
+});
+
+const automationUpdated = updateBusinessMemoryAutomation(
+  automationSource,
+  {
+    readiness: "worth-reviewing",
+    notes: "  This process is consistent enough to evaluate later.  ",
+    updatedAt: "2026-08-12T12:00:00.000Z"
+  }
+);
+
+assert(
+  automationUpdated?.automation?.readiness === "worth-reviewing" &&
+    automationUpdated?.automation?.notes ===
+      "This process is consistent enough to evaluate later.",
+  "Automation readiness update test failed."
+);
+
+console.log("Automation readiness update: pass");
+
+assert(
+  automationUpdated.createdAt ===
+    "2026-08-07T12:00:00.000Z" &&
+    automationUpdated.updatedAt ===
+      "2026-08-12T12:00:00.000Z",
+  "Automation timestamp preservation test failed."
+);
+
+console.log("Automation timestamp preservation: pass");
+
+assert(
+  automationSource.automation.readiness === "not-reviewed" &&
+    automationSource.automation.notes === "",
+  "Automation update mutated the source record."
+);
+
+console.log("Automation update immutability: pass");
+
+assert(
+  updateBusinessMemoryAutomation(
+    automationSource,
+    {
+      readiness: "ready-to-execute"
+    }
+  ) === null,
+  "Invalid automation readiness validation failed."
+);
+
+assert(
+  updateBusinessMemoryAutomation(
+    automationSource,
+    {
+      readiness: "strong-candidate",
+      updatedAt: "not-a-date"
+    }
+  ) === null,
+  "Invalid automation timestamp validation failed."
+);
+
+console.log("Automation update validation: pass");

@@ -128,6 +128,83 @@ export function updateBusinessMemoryAdoption(
   });
 }
 
+
+export function updateBusinessMemoryRecurringWork(
+  record,
+  {
+    isRecurring,
+    frequency = "",
+    trigger = "",
+    responsiblePerson = "",
+    expectedResult = "",
+    currentMethod = "",
+    updatedAt = new Date().toISOString()
+  } = {}
+) {
+  if (
+    !record ||
+    typeof record !== "object" ||
+    typeof isRecurring !== "boolean"
+  ) {
+    return null;
+  }
+
+  const timestamp = new Date(updatedAt);
+
+  if (Number.isNaN(timestamp.getTime())) {
+    return null;
+  }
+
+  return structuredClone({
+    ...record,
+    recurringWork: {
+      isRecurring,
+      frequency: isRecurring ? String(frequency).trim() : "",
+      trigger: isRecurring ? String(trigger).trim() : "",
+      responsiblePerson:
+        isRecurring ? String(responsiblePerson).trim() : "",
+      expectedResult:
+        isRecurring ? String(expectedResult).trim() : "",
+      currentMethod:
+        isRecurring ? String(currentMethod).trim() : ""
+    },
+    updatedAt: timestamp.toISOString()
+  });
+}
+
+
+export function updateBusinessMemoryAutomation(
+  record,
+  {
+    readiness,
+    notes = "",
+    updatedAt = new Date().toISOString()
+  } = {}
+) {
+  if (
+    !record ||
+    typeof record !== "object" ||
+    !BUSINESS_MEMORY_AUTOMATION_READINESS.includes(readiness)
+  ) {
+    return null;
+  }
+
+  const timestamp = new Date(updatedAt);
+
+  if (Number.isNaN(timestamp.getTime())) {
+    return null;
+  }
+
+  return structuredClone({
+    ...record,
+    automation: {
+      readiness,
+      notes: String(notes).trim()
+    },
+    updatedAt: timestamp.toISOString()
+  });
+}
+
 export function createBusinessMemoryRecord({
   snapshot,
   actionPlan = null,
