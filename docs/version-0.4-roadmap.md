@@ -188,6 +188,8 @@ Business Dojo can remember recurring work in a structured form without attemptin
 
 ## Phase 6 — Automation Candidate Classification
 
+**Status: Complete**
+
 Allow the platform to identify potential automation candidates without creating or running automation.
 
 Potential classification considerations:

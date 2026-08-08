@@ -2254,3 +2254,70 @@
   + .recommendation-card__action-field {
   margin-top: 1.25rem;
 }
+
+/* Phase 6 — Future automation review */
+.recommendation-card__automation-review {
+  margin-top: 1.75rem;
+}
+
+.recommendation-card__automation-considerations {
+  margin: 1.5rem 0 0;
+  width: 100%;
+}
+
+.recommendation-card__automation-considerations summary {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid currentColor;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.recommendation-card__automation-options {
+  display: grid;
+  gap: 0.8rem;
+  padding: 1rem 0.25rem 0.25rem;
+}
+
+.recommendation-card__automation-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.recommendation-card__automation-option input {
+  flex: 0 0 auto;
+  margin-top: 0.2rem;
+}
+
+/* Give each automation-review question clear vertical separation. */
+.recommendation-card__automation-review
+  > .recommendation-card__action-field {
+  margin-top: 1.25rem;
+}
+
+.recommendation-card__automation-review
+  .recommendation-card__action-field label {
+  margin-bottom: 0.75rem;
+}
+
+/* Give the Business Dojo automation explanation clear separation. */
+.recommendation-card__automation-explanation {
+  margin-top: 1.25rem;
+}
+
+.recommendation-card__automation-explanation
+  .recommendation-card__outcome-eyebrow {
+  margin: 0 0 0.65rem;
+}
+
+.recommendation-card__automation-explanation p:last-child {
+  margin: 0;
+  line-height: 1.6;
+}

@@ -30,7 +30,9 @@ import {
   updateBusinessMemoryOutcome,
   updateBusinessMemoryAdoption,
   updateBusinessMemoryOwnerNotes,
-  updateBusinessMemoryRecurringWork
+  updateBusinessMemoryRecurringWork,
+  updateBusinessMemoryAutomation,
+  explainBusinessMemoryAutomation
 } from "./core/business-memory.js";
 import {
   getBusinessMemoryRecord,
@@ -1342,11 +1344,104 @@ function renderReport({ preserveScroll = false } = {}) {
           );
         }
 
+        const automationFieldMap = {
+          automationRepetitive: "repetitive",
+          automationRuleBased: "ruleBased",
+          automationStableProcess: "stableProcess",
+          automationFrequent: "frequent",
+          automationTimeConsuming: "timeConsuming",
+          automationErrorProne: "errorProne",
+          automationRequiresHumanJudgment:
+            "requiresHumanJudgment",
+          automationRequiresApproval:
+            "requiresApproval",
+          automationContainsSensitiveInformation:
+            "containsSensitiveInformation"
+        };
+
+        if (
+          fieldName === "automationReadiness" ||
+          fieldName === "automationNotes" ||
+          Object.hasOwn(automationFieldMap, fieldName)
+        ) {
+          const considerations = {
+            repetitive:
+              currentRecord.automation?.considerations
+                ?.repetitive || false,
+            ruleBased:
+              currentRecord.automation?.considerations
+                ?.ruleBased || false,
+            stableProcess:
+              currentRecord.automation?.considerations
+                ?.stableProcess || false,
+            frequent:
+              currentRecord.automation?.considerations
+                ?.frequent || false,
+            timeConsuming:
+              currentRecord.automation?.considerations
+                ?.timeConsuming || false,
+            errorProne:
+              currentRecord.automation?.considerations
+                ?.errorProne || false,
+            requiresHumanJudgment:
+              currentRecord.automation?.considerations
+                ?.requiresHumanJudgment || false,
+            requiresApproval:
+              currentRecord.automation?.considerations
+                ?.requiresApproval || false,
+            containsSensitiveInformation:
+              currentRecord.automation?.considerations
+                ?.containsSensitiveInformation || false
+          };
+
+          if (Object.hasOwn(automationFieldMap, fieldName)) {
+            considerations[
+              automationFieldMap[fieldName]
+            ] = field.checked;
+          }
+
+          updatedRecord =
+            updateBusinessMemoryAutomation(
+              currentRecord,
+              {
+                readiness:
+                  fieldName === "automationReadiness"
+                    ? field.value
+                    : currentRecord.automation?.readiness ||
+                      "not-reviewed",
+                considerations,
+                notes:
+                  fieldName === "automationNotes"
+                    ? field.value
+                    : currentRecord.automation?.notes || ""
+              }
+            );
+        }
+
         if (
           !updatedRecord ||
           !saveBusinessMemoryRecord(updatedRecord)
         ) {
           return;
+        }
+
+        if (
+          fieldName === "automationReadiness" ||
+          fieldName === "automationNotes" ||
+          Object.hasOwn(automationFieldMap, fieldName)
+        ) {
+          const explanation = field
+            .closest(".recommendation-card")
+            ?.querySelector(
+              ".recommendation-card__automation-explanation p:last-child"
+            );
+
+          if (explanation) {
+            explanation.textContent =
+              explainBusinessMemoryAutomation(
+                updatedRecord.automation
+              );
+          }
         }
 
         field.dataset.savedValue = field.value;

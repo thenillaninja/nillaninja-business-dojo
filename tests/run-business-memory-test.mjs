@@ -9,7 +9,8 @@ const {
   updateBusinessMemoryAdoption,
   updateBusinessMemoryRecurringWork,
   updateBusinessMemoryAutomation,
-  updateBusinessMemoryOwnerNotes
+  updateBusinessMemoryOwnerNotes,
+  explainBusinessMemoryAutomation
 } = await import("../js/core/business-memory.js");
 
 function assert(condition, message) {
@@ -549,3 +550,128 @@ assert(
 );
 
 console.log("Owner notes validation: pass");
+
+const automationConsiderationSource = createBusinessMemoryRecord({
+  snapshot: makeSnapshot(),
+  actionPlan: makeActionPlan(),
+  recommendationId: "standardize-customer-follow-up",
+  createdAt: "2026-08-07T12:00:00.000Z"
+});
+
+assert(
+  automationConsiderationSource.automation.considerations.repetitive === false &&
+    automationConsiderationSource.automation.considerations.ruleBased === false &&
+    automationConsiderationSource.automation.considerations.stableProcess === false &&
+    automationConsiderationSource.automation.considerations.frequent === false &&
+    automationConsiderationSource.automation.considerations.timeConsuming === false &&
+    automationConsiderationSource.automation.considerations.errorProne === false &&
+    automationConsiderationSource.automation.considerations.requiresHumanJudgment === false &&
+    automationConsiderationSource.automation.considerations.requiresApproval === false &&
+    automationConsiderationSource.automation.considerations.containsSensitiveInformation === false,
+  "Automation consideration defaults failed."
+);
+
+console.log("Automation consideration defaults: pass");
+
+const automationConsiderationUpdated =
+  updateBusinessMemoryAutomation(
+    automationConsiderationSource,
+    {
+      readiness: "worth-reviewing",
+      considerations: {
+        repetitive: true,
+        ruleBased: true,
+        stableProcess: true,
+        frequent: true,
+        timeConsuming: false,
+        errorProne: true,
+        requiresHumanJudgment: false,
+        requiresApproval: true,
+        containsSensitiveInformation: false
+      },
+      notes: "  Good candidate for later review.  ",
+      updatedAt: "2026-08-14T12:00:00.000Z"
+    }
+  );
+
+assert(
+  automationConsiderationUpdated?.automation?.readiness ===
+    "worth-reviewing" &&
+    automationConsiderationUpdated.automation.considerations.repetitive === true &&
+    automationConsiderationUpdated.automation.considerations.ruleBased === true &&
+    automationConsiderationUpdated.automation.considerations.stableProcess === true &&
+    automationConsiderationUpdated.automation.considerations.frequent === true &&
+    automationConsiderationUpdated.automation.considerations.timeConsuming === false &&
+    automationConsiderationUpdated.automation.considerations.errorProne === true &&
+    automationConsiderationUpdated.automation.considerations.requiresHumanJudgment === false &&
+    automationConsiderationUpdated.automation.considerations.requiresApproval === true &&
+    automationConsiderationUpdated.automation.considerations.containsSensitiveInformation === false &&
+    automationConsiderationUpdated.automation.notes ===
+      "Good candidate for later review.",
+  "Automation considerations update failed."
+);
+
+console.log("Automation considerations update: pass");
+
+assert(
+  updateBusinessMemoryAutomation(
+    automationConsiderationSource,
+    {
+      readiness: "worth-reviewing",
+      considerations: {
+        repetitive: "yes"
+      }
+    }
+  ) === null,
+  "Automation consideration boolean validation failed."
+);
+
+console.log("Automation consideration validation: pass");
+
+
+const automationExplanation =
+  explainBusinessMemoryAutomation({
+    readiness: "worth-reviewing",
+    considerations: {
+      repetitive: true,
+      ruleBased: true,
+      stableProcess: true,
+      frequent: false,
+      timeConsuming: false,
+      errorProne: false,
+      requiresHumanJudgment: false,
+      requiresApproval: true,
+      containsSensitiveInformation: false
+    }
+  });
+
+assert(
+  automationExplanation.includes(
+    "worth reviewing for future automation"
+  ) &&
+    automationExplanation.includes("repetitive") &&
+    automationExplanation.includes("rule-based") &&
+    automationExplanation.includes("stable") &&
+    automationExplanation.includes("requires approval"),
+  "Automation explanation test failed."
+);
+
+console.log("Automation explanation: pass");
+
+const emptyAutomationExplanation =
+  explainBusinessMemoryAutomation({
+    readiness: "not-reviewed",
+    considerations: {}
+  });
+
+assert(
+  emptyAutomationExplanation.includes(
+    "has not been reviewed yet"
+  ) &&
+    emptyAutomationExplanation.includes(
+      "No automation characteristics have been identified yet."
+    ),
+  "Empty automation explanation test failed."
+);
+
+console.log("Empty automation explanation: pass");

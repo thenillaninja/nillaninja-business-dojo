@@ -1,5 +1,6 @@
 import { summarizeActionPlanProgress } from "../core/progress.js";
 import { selectNextBestActions } from "../core/next-actions.js";
+import { explainBusinessMemoryAutomation } from "../core/business-memory.js";
 
 function formatCategoryName(category) {
   return category
@@ -1424,6 +1425,124 @@ function renderRecommendations(
                 >${memoryRecord?.recurringWork?.currentMethod || ""}</textarea>
               </div>
             </div>
+
+            <div class="recommendation-card__automation-review">
+              <div class="recommendation-card__outcome-header">
+                <p class="recommendation-card__outcome-eyebrow">
+                  Future automation review
+                </p>
+
+                <h4>
+                  Could this process be a future automation candidate?
+                </h4>
+
+                <p>
+                  Review the characteristics of this work so Business Dojo
+                  can remember why it may or may not be suitable for future
+                  automation. Nothing is created, scheduled, or executed here.
+                </p>
+              </div>
+
+              <details class="recommendation-card__automation-considerations">
+                <summary>
+                  Which characteristics describe this process?
+                </summary>
+
+                <div
+                  class="recommendation-card__automation-options"
+                  role="group"
+                  aria-label="Automation characteristics"
+                >
+
+                ${[
+                  ["automationRepetitive", "repetitive", "Repetitive"],
+                  ["automationRuleBased", "ruleBased", "Rule-based"],
+                  ["automationStableProcess", "stableProcess", "Stable process"],
+                  ["automationFrequent", "frequent", "Frequent"],
+                  ["automationTimeConsuming", "timeConsuming", "Time-consuming"],
+                  ["automationErrorProne", "errorProne", "Error-prone"],
+                  ["automationRequiresHumanJudgment", "requiresHumanJudgment", "Requires human judgment"],
+                  ["automationRequiresApproval", "requiresApproval", "Requires approval"],
+                  ["automationContainsSensitiveInformation", "containsSensitiveInformation", "Contains sensitive information"]
+                ].map(([field, key, label]) => `
+                  <label class="recommendation-card__automation-option">
+                    <input
+                      type="checkbox"
+                      data-business-memory-field="${field}"
+                      data-recommendation-id="${recommendation.id}"
+                      ${memoryRecord?.automation?.considerations?.[key] ? "checked" : ""}
+                    />
+                    <span>${label}</span>
+                  </label>
+                `).join("")}
+
+                </div>
+              </details>
+
+              <div class="recommendation-card__action-field">
+                <label for="memory-automation-readiness-${recommendation.id}">
+                  Automation readiness
+                </label>
+
+                <select
+                  id="memory-automation-readiness-${recommendation.id}"
+                  data-business-memory-field="automationReadiness"
+                  data-recommendation-id="${recommendation.id}"
+                >
+                  <option value="not-reviewed"
+                    ${!memoryRecord?.automation?.readiness || memoryRecord.automation.readiness === "not-reviewed" ? "selected" : ""}>
+                    Not reviewed
+                  </option>
+
+                  <option value="not-suitable"
+                    ${memoryRecord?.automation?.readiness === "not-suitable" ? "selected" : ""}>
+                    Not suitable
+                  </option>
+
+                  <option value="needs-process-improvement"
+                    ${memoryRecord?.automation?.readiness === "needs-process-improvement" ? "selected" : ""}>
+                    Needs process improvement first
+                  </option>
+
+                  <option value="worth-reviewing"
+                    ${memoryRecord?.automation?.readiness === "worth-reviewing" ? "selected" : ""}>
+                    Worth reviewing
+                  </option>
+
+                  <option value="strong-candidate"
+                    ${memoryRecord?.automation?.readiness === "strong-candidate" ? "selected" : ""}>
+                    Strong future candidate
+                  </option>
+                </select>
+              </div>
+
+              <div class="recommendation-card__automation-explanation">
+                <p class="recommendation-card__outcome-eyebrow">
+                  Business Dojo explanation
+                </p>
+
+                <p>
+                  ${explainBusinessMemoryAutomation(
+                    memoryRecord?.automation || {}
+                  )}
+                </p>
+              </div>
+
+              <div class="recommendation-card__action-field">
+                <label for="memory-automation-notes-${recommendation.id}">
+                  Why does this rating fit?
+                </label>
+
+                <textarea
+                  id="memory-automation-notes-${recommendation.id}"
+                  rows="3"
+                  placeholder="Example: The process is repetitive and rule-based, but still requires owner approval."
+                  data-business-memory-field="automationNotes"
+                  data-recommendation-id="${recommendation.id}"
+                >${memoryRecord?.automation?.notes || ""}</textarea>
+              </div>
+            </div>
+
               </div>
             </section>
 
