@@ -120,6 +120,8 @@ Business-memory records persist independently without modifying saved snapshots 
 
 ## Phase 3 — Improvement Outcome Capture
 
+**Status: Complete**
+
 Allow the owner to record what happened after working on a recommendation.
 
 The experience should remain lightweight and plain-English.

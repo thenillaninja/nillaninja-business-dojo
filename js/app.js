@@ -28,7 +28,8 @@ import {
 import {
   createBusinessMemoryRecord,
   updateBusinessMemoryOutcome,
-  updateBusinessMemoryAdoption
+  updateBusinessMemoryAdoption,
+  updateBusinessMemoryOwnerNotes
 } from "./core/business-memory.js";
 import {
   getBusinessMemoryRecord,
@@ -1275,6 +1276,15 @@ function renderReport({ preserveScroll = false } = {}) {
               operationalType:
                 currentRecord.adoption?.operationalType ||
                 "none"
+            }
+          );
+        }
+
+        if (fieldName === "ownerNotes") {
+          updatedRecord = updateBusinessMemoryOwnerNotes(
+            currentRecord,
+            {
+              ownerNotes: field.value
             }
           );
         }

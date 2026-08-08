@@ -8,7 +8,8 @@ const {
   updateBusinessMemoryOutcome,
   updateBusinessMemoryAdoption,
   updateBusinessMemoryRecurringWork,
-  updateBusinessMemoryAutomation
+  updateBusinessMemoryAutomation,
+  updateBusinessMemoryOwnerNotes
 } = await import("../js/core/business-memory.js");
 
 function assert(condition, message) {
@@ -495,3 +496,56 @@ assert(
 );
 
 console.log("Action plan relationship validation: pass");
+
+const ownerNotesSource = createBusinessMemoryRecord({
+  snapshot: makeSnapshot(),
+  actionPlan: makeActionPlan(),
+  recommendationId: "standardize-customer-follow-up",
+  createdAt: "2026-08-07T12:00:00.000Z"
+});
+
+const ownerNotesUpdated = updateBusinessMemoryOwnerNotes(
+  ownerNotesSource,
+  {
+    ownerNotes: "  Customers respond better when follow-up is consistent.  ",
+    updatedAt: "2026-08-13T12:00:00.000Z"
+  }
+);
+
+assert(
+  ownerNotesUpdated?.ownerNotes ===
+    "Customers respond better when follow-up is consistent.",
+  "Owner notes update test failed."
+);
+
+console.log("Owner notes update: pass");
+
+assert(
+  ownerNotesUpdated.createdAt ===
+    "2026-08-07T12:00:00.000Z" &&
+    ownerNotesUpdated.updatedAt ===
+      "2026-08-13T12:00:00.000Z",
+  "Owner notes timestamp preservation test failed."
+);
+
+console.log("Owner notes timestamp preservation: pass");
+
+assert(
+  ownerNotesSource.ownerNotes === "",
+  "Owner notes update mutated the source record."
+);
+
+console.log("Owner notes immutability: pass");
+
+assert(
+  updateBusinessMemoryOwnerNotes(
+    ownerNotesSource,
+    {
+      ownerNotes: "Test",
+      updatedAt: "not-a-date"
+    }
+  ) === null,
+  "Invalid owner notes timestamp validation failed."
+);
+
+console.log("Owner notes validation: pass");

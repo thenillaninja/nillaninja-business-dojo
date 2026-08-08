@@ -1188,6 +1188,20 @@ function renderRecommendations(
                 </div>
 
                 <div class="recommendation-card__action-field">
+                  <label for="memory-learning-${recommendation.id}">
+                    Anything you learned that should be remembered?
+                  </label>
+
+                  <textarea
+                    id="memory-learning-${recommendation.id}"
+                    rows="3"
+                    placeholder="Example: Customers respond better when follow-up happens on a consistent schedule."
+                    data-business-memory-field="ownerNotes"
+                    data-recommendation-id="${recommendation.id}"
+                  >${memoryRecord?.ownerNotes || ""}</textarea>
+                </div>
+
+                <div class="recommendation-card__action-field">
                   <label for="memory-adoption-${recommendation.id}">
                     Is this now part of your normal process?
                   </label>

@@ -205,6 +205,34 @@ export function updateBusinessMemoryAutomation(
   });
 }
 
+
+export function updateBusinessMemoryOwnerNotes(
+  record,
+  {
+    ownerNotes = "",
+    updatedAt = new Date().toISOString()
+  } = {}
+) {
+  if (
+    !record ||
+    typeof record !== "object"
+  ) {
+    return null;
+  }
+
+  const timestamp = new Date(updatedAt);
+
+  if (Number.isNaN(timestamp.getTime())) {
+    return null;
+  }
+
+  return structuredClone({
+    ...record,
+    ownerNotes: String(ownerNotes).trim(),
+    updatedAt: timestamp.toISOString()
+  });
+}
+
 export function createBusinessMemoryRecord({
   snapshot,
   actionPlan = null,
