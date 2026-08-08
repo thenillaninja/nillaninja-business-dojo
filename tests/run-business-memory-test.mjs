@@ -4,7 +4,9 @@ const {
   BUSINESS_MEMORY_ADOPTION_STATUSES,
   BUSINESS_MEMORY_OPERATIONAL_TYPES,
   BUSINESS_MEMORY_AUTOMATION_READINESS,
-  createBusinessMemoryRecord
+  createBusinessMemoryRecord,
+  updateBusinessMemoryOutcome,
+  updateBusinessMemoryAdoption
 } = await import("../js/core/business-memory.js");
 
 function assert(condition, message) {
@@ -159,3 +161,151 @@ assert(
 );
 
 console.log("Optional action plan: pass");
+
+const outcomeSource = createBusinessMemoryRecord({
+  snapshot: makeSnapshot(),
+  actionPlan: makeActionPlan(),
+  recommendationId: "standardize-customer-follow-up",
+  createdAt: "2026-08-07T12:00:00.000Z"
+});
+
+const outcomeUpdated = updateBusinessMemoryOutcome(
+  outcomeSource,
+  {
+    changeSummary: "  Created a two-step follow-up process.  ",
+    changeDetails: "  Added templates and a review step.  ",
+    outcomeStatus: "helped",
+    outcomeSummary: "  Fewer estimates are being forgotten.  ",
+    updatedAt: "2026-08-08T12:00:00.000Z"
+  }
+);
+
+assert(
+  outcomeUpdated?.change?.summary ===
+    "Created a two-step follow-up process." &&
+    outcomeUpdated?.change?.details ===
+      "Added templates and a review step." &&
+    outcomeUpdated?.outcome?.status === "helped" &&
+    outcomeUpdated?.outcome?.summary ===
+      "Fewer estimates are being forgotten.",
+  "Outcome update test failed."
+);
+
+console.log("Outcome update: pass");
+
+assert(
+  outcomeUpdated.createdAt ===
+    "2026-08-07T12:00:00.000Z" &&
+    outcomeUpdated.updatedAt ===
+      "2026-08-08T12:00:00.000Z",
+  "Outcome timestamp preservation test failed."
+);
+
+console.log("Outcome timestamp preservation: pass");
+
+assert(
+  outcomeSource.change.summary === "" &&
+    outcomeSource.outcome.status === "not-evaluated",
+  "Outcome update mutated the source record."
+);
+
+console.log("Outcome update immutability: pass");
+
+assert(
+  updateBusinessMemoryOutcome(
+    outcomeSource,
+    {
+      outcomeStatus: "invalid-status"
+    }
+  ) === null,
+  "Invalid outcome status validation failed."
+);
+
+assert(
+  updateBusinessMemoryOutcome(
+    outcomeSource,
+    {
+      outcomeStatus: "helped",
+      updatedAt: "not-a-date"
+    }
+  ) === null,
+  "Invalid outcome timestamp validation failed."
+);
+
+console.log("Outcome update validation: pass");
+
+const adoptionSource = createBusinessMemoryRecord({
+  snapshot: makeSnapshot(),
+  actionPlan: makeActionPlan(),
+  recommendationId: "standardize-customer-follow-up",
+  createdAt: "2026-08-07T12:00:00.000Z"
+});
+
+const adoptionUpdated = updateBusinessMemoryAdoption(
+  adoptionSource,
+  {
+    adoptionStatus: "adopted",
+    operationalType: "business-standard",
+    updatedAt: "2026-08-09T12:00:00.000Z"
+  }
+);
+
+assert(
+  adoptionUpdated?.adoption?.status === "adopted" &&
+    adoptionUpdated?.adoption?.operationalType === "business-standard",
+  "Adoption update test failed."
+);
+
+console.log("Adoption update: pass");
+
+assert(
+  adoptionUpdated.createdAt === "2026-08-07T12:00:00.000Z" &&
+    adoptionUpdated.updatedAt === "2026-08-09T12:00:00.000Z",
+  "Adoption timestamp preservation test failed."
+);
+
+console.log("Adoption timestamp preservation: pass");
+
+assert(
+  adoptionSource.adoption.status === "tested" &&
+    adoptionSource.adoption.operationalType === "none",
+  "Adoption update mutated the source record."
+);
+
+console.log("Adoption update immutability: pass");
+
+assert(
+  updateBusinessMemoryAdoption(
+    adoptionSource,
+    {
+      adoptionStatus: "invalid-status",
+      operationalType: "business-standard"
+    }
+  ) === null,
+  "Invalid adoption status validation failed."
+);
+
+assert(
+  updateBusinessMemoryAdoption(
+    adoptionSource,
+    {
+      adoptionStatus: "adopted",
+      operationalType: "invalid-type"
+    }
+  ) === null,
+  "Invalid operational type validation failed."
+);
+
+assert(
+  updateBusinessMemoryAdoption(
+    adoptionSource,
+    {
+      adoptionStatus: "adopted",
+      operationalType: "business-standard",
+      updatedAt: "not-a-date"
+    }
+  ) === null,
+  "Invalid adoption timestamp validation failed."
+);
+
+console.log("Adoption update validation: pass");

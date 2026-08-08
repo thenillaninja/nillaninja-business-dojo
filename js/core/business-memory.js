@@ -46,6 +46,88 @@ function createRecordId(prefix) {
     .slice(2)}`;
 }
 
+
+export function updateBusinessMemoryOutcome(
+  record,
+  {
+    changeSummary,
+    changeDetails,
+    outcomeStatus,
+    outcomeSummary,
+    updatedAt = new Date().toISOString()
+  } = {}
+) {
+  if (
+    !record ||
+    typeof record !== "object" ||
+    !BUSINESS_MEMORY_OUTCOME_STATUSES.includes(outcomeStatus)
+  ) {
+    return null;
+  }
+
+  const timestamp = new Date(updatedAt);
+
+  if (Number.isNaN(timestamp.getTime())) {
+    return null;
+  }
+
+  return structuredClone({
+    ...record,
+    change: {
+      summary:
+        changeSummary !== undefined
+          ? String(changeSummary).trim()
+          : record.change?.summary || "",
+      details:
+        changeDetails !== undefined
+          ? String(changeDetails).trim()
+          : record.change?.details || ""
+    },
+    outcome: {
+      status: outcomeStatus,
+      summary:
+        outcomeSummary !== undefined
+          ? String(outcomeSummary).trim()
+          : record.outcome?.summary || ""
+    },
+    updatedAt: timestamp.toISOString()
+  });
+}
+
+
+export function updateBusinessMemoryAdoption(
+  record,
+  {
+    adoptionStatus,
+    operationalType,
+    updatedAt = new Date().toISOString()
+  } = {}
+) {
+  if (
+    !record ||
+    typeof record !== "object" ||
+    !BUSINESS_MEMORY_ADOPTION_STATUSES.includes(adoptionStatus) ||
+    !BUSINESS_MEMORY_OPERATIONAL_TYPES.includes(operationalType)
+  ) {
+    return null;
+  }
+
+  const timestamp = new Date(updatedAt);
+
+  if (Number.isNaN(timestamp.getTime())) {
+    return null;
+  }
+
+  return structuredClone({
+    ...record,
+    adoption: {
+      status: adoptionStatus,
+      operationalType
+    },
+    updatedAt: timestamp.toISOString()
+  });
+}
+
 export function createBusinessMemoryRecord({
   snapshot,
   actionPlan = null,
