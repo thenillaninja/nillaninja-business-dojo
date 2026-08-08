@@ -100,6 +100,8 @@ The data model is documented before implementation and preserves clear relations
 
 ## Phase 2 — Business Memory Storage
 
+**Status: Complete**
+
 Create a dedicated browser-storage collection for business-memory records.
 
 Requirements:
