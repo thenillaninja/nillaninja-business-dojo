@@ -1,0 +1,146 @@
+export const BUSINESS_MEMORY_SCHEMA_VERSION = "0.4";
+
+export const BUSINESS_MEMORY_OUTCOME_STATUSES = [
+  "not-evaluated",
+  "helped",
+  "mixed",
+  "did-not-help",
+  "unknown"
+];
+
+export const BUSINESS_MEMORY_ADOPTION_STATUSES = [
+  "tested",
+  "working",
+  "adopted",
+  "needs-revision",
+  "no-longer-used"
+];
+
+export const BUSINESS_MEMORY_OPERATIONAL_TYPES = [
+  "none",
+  "recurring-process",
+  "checklist",
+  "responsibility",
+  "decision-rule",
+  "business-standard"
+];
+
+export const BUSINESS_MEMORY_AUTOMATION_READINESS = [
+  "not-reviewed",
+  "not-suitable",
+  "needs-process-improvement",
+  "worth-reviewing",
+  "strong-candidate"
+];
+
+function createRecordId(prefix) {
+  if (
+    typeof crypto !== "undefined" &&
+    typeof crypto.randomUUID === "function"
+  ) {
+    return crypto.randomUUID();
+  }
+
+  return `${prefix}-${Date.now()}-${Math.random()
+    .toString(16)
+    .slice(2)}`;
+}
+
+export function createBusinessMemoryRecord({
+  snapshot,
+  actionPlan = null,
+  recommendationId,
+  createdAt = new Date().toISOString()
+} = {}) {
+  if (
+    !snapshot?.id ||
+    !recommendationId ||
+    !Array.isArray(snapshot.results?.recommendations)
+  ) {
+    return null;
+  }
+
+  const recommendationExists =
+    snapshot.results.recommendations.some(
+      (recommendation) =>
+        recommendation?.id === recommendationId
+    );
+
+  if (!recommendationExists) {
+    return null;
+  }
+
+  const businessName =
+    snapshot.business?.name ||
+    snapshot.businessProfile?.businessName?.trim() ||
+    "Your Business";
+
+  const normalizedBusinessName =
+    snapshot.business?.normalizedName ||
+    businessName.trim().toLowerCase().replace(/\s+/g, " ");
+
+  const timestamp = new Date(createdAt);
+
+  if (Number.isNaN(timestamp.getTime())) {
+    return null;
+  }
+
+  const safeTimestamp = timestamp.toISOString();
+
+  return structuredClone({
+    id: createRecordId("business-memory"),
+
+    schemaVersion: BUSINESS_MEMORY_SCHEMA_VERSION,
+    appVersion: snapshot.appVersion || "0.4",
+
+    business: {
+      name: businessName,
+      normalizedName: normalizedBusinessName
+    },
+
+    source: {
+      snapshotId: snapshot.id,
+      actionPlanId: actionPlan?.id || null,
+      recommendationId
+    },
+
+    change: {
+      summary: "",
+      details: ""
+    },
+
+    outcome: {
+      status: "not-evaluated",
+      summary: ""
+    },
+
+    adoption: {
+      status: "tested",
+      operationalType: "none"
+    },
+
+    recurringWork: {
+      isRecurring: false,
+      frequency: "",
+      trigger: "",
+      responsiblePerson: "",
+      expectedResult: "",
+      currentMethod: ""
+    },
+
+    automation: {
+      readiness: "not-reviewed",
+      notes: ""
+    },
+
+    review: {
+      reviewDate: null,
+      notes: ""
+    },
+
+    ownerNotes: "",
+
+    createdAt: safeTimestamp,
+    updatedAt: safeTimestamp
+  });
+}
