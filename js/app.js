@@ -25,6 +25,16 @@ import {
   saveSnapshot,
   updateSnapshotBusinessProfile
 } from "./core/snapshot-storage.js";
+import {
+  createBusinessMemoryRecord,
+  updateBusinessMemoryOutcome,
+  updateBusinessMemoryAdoption
+} from "./core/business-memory.js";
+import {
+  getBusinessMemoryRecord,
+  loadBusinessMemoryCollection,
+  saveBusinessMemoryRecord
+} from "./core/business-memory-storage.js";
 import { validateBusinessProfile } from "./core/validation.js";
 import {
   getQuestionByIndex,
@@ -175,6 +185,44 @@ function getCurrentActionPlan() {
   return snapshot
     ? ensureActionPlanForSnapshot(snapshot)
     : null;
+}
+
+function ensureBusinessMemoryForRecommendation(
+  recommendationId
+) {
+  const snapshotId = state.metadata.currentSnapshotId;
+
+  if (!snapshotId || !recommendationId) {
+    return null;
+  }
+
+  const existingRecord = getBusinessMemoryRecord(
+    snapshotId,
+    recommendationId
+  );
+
+  if (existingRecord) {
+    return existingRecord;
+  }
+
+  const snapshot = getSnapshotById(snapshotId);
+  const actionPlan = getCurrentActionPlan();
+
+  if (!snapshot) {
+    return null;
+  }
+
+  const record = createBusinessMemoryRecord({
+    snapshot,
+    actionPlan,
+    recommendationId
+  });
+
+  if (!record || !saveBusinessMemoryRecord(record)) {
+    return null;
+  }
+
+  return record;
 }
 
 function saveCompletedSnapshot() {
@@ -1033,10 +1081,18 @@ function renderReport({ preserveScroll = false } = {}) {
     recommendationFilters
   );
 
+  const businessMemoryRecords =
+    loadBusinessMemoryCollection().records.filter(
+      (record) =>
+        record?.source?.snapshotId ===
+        state.metadata.currentSnapshotId
+    );
+
   app.innerHTML = renderReportView({
     businessProfile: state.businessProfile,
     results: state.results,
     actionPlan,
+    businessMemoryRecords,
     visibleRecommendations,
     recommendationFilters
   });
@@ -1156,6 +1212,77 @@ function renderReport({ preserveScroll = false } = {}) {
         );
 
         if (!updatedPlan || !saveActionPlan(updatedPlan)) {
+          return;
+        }
+
+        field.dataset.savedValue = field.value;
+      });
+    });
+
+  document
+    .querySelectorAll("[data-business-memory-field]")
+    .forEach((field) => {
+      field.addEventListener("change", () => {
+        const recommendationId =
+          field.dataset.recommendationId;
+
+        const currentRecord =
+          ensureBusinessMemoryForRecommendation(
+            recommendationId
+          );
+
+        if (!currentRecord) {
+          return;
+        }
+
+        const fieldName =
+          field.dataset.businessMemoryField;
+
+        let updatedRecord = currentRecord;
+
+        if (
+          fieldName === "changeSummary" ||
+          fieldName === "outcomeStatus" ||
+          fieldName === "outcomeSummary"
+        ) {
+          updatedRecord = updateBusinessMemoryOutcome(
+            currentRecord,
+            {
+              changeSummary:
+                fieldName === "changeSummary"
+                  ? field.value
+                  : currentRecord.change?.summary || "",
+              changeDetails:
+                currentRecord.change?.details || "",
+              outcomeStatus:
+                fieldName === "outcomeStatus"
+                  ? field.value
+                  : currentRecord.outcome?.status ||
+                    "not-evaluated",
+              outcomeSummary:
+                fieldName === "outcomeSummary"
+                  ? field.value
+                  : currentRecord.outcome?.summary || ""
+            }
+          );
+        }
+
+        if (fieldName === "adoptionStatus") {
+          updatedRecord = updateBusinessMemoryAdoption(
+            currentRecord,
+            {
+              adoptionStatus: field.value,
+              operationalType:
+                currentRecord.adoption?.operationalType ||
+                "none"
+            }
+          );
+        }
+
+        if (
+          !updatedRecord ||
+          !saveBusinessMemoryRecord(updatedRecord)
+        ) {
           return;
         }
 

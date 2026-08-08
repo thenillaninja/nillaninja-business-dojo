@@ -2087,3 +2087,114 @@
     widows: 3;
   }
 }
+
+.recommendation-card__outcome {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.12));
+  border-radius: 1rem;
+  background: rgba(8, 18, 28, 0.28);
+}
+
+.recommendation-card__outcome-header {
+  margin-bottom: 1.5rem;
+}
+
+.recommendation-card__outcome-eyebrow {
+  margin: 0 0 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.recommendation-card__outcome-header h4 {
+  margin: 0 0 0.65rem;
+  font-size: 1.2rem;
+}
+
+.recommendation-card__outcome-header p:last-child {
+  margin: 0;
+  max-width: 48rem;
+  line-height: 1.6;
+}
+
+.recommendation-card__outcome-fields {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.recommendation-card__outcome
+  .recommendation-card__action-field {
+  width: 100%;
+  min-width: 0;
+}
+
+.recommendation-card__outcome
+  .recommendation-card__action-field label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.recommendation-card__outcome textarea,
+.recommendation-card__outcome select {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+}
+
+.recommendation-card__outcome textarea {
+  min-height: 7rem;
+  padding: 0.9rem 1rem;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.recommendation-card__outcome select {
+  min-height: 2.9rem;
+  padding: 0.65rem 0.8rem;
+}
+
+@media (min-width: 760px) {
+  .recommendation-card__outcome {
+    padding: 1.75rem;
+  }
+
+  .recommendation-card__outcome-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.35rem 1.5rem;
+  }
+}
+
+@media (max-width: 759px) {
+  .recommendation-card__outcome {
+    padding: 1.25rem;
+  }
+}
+
+.recommendation-card__action-controls
+  > .recommendation-card__outcome {
+  grid-column: 1 / -1;
+  width: 100%;
+  max-width: none;
+}
+
+.recommendation-card__outcome-fields {
+  width: 100%;
+}
+
+@media (min-width: 760px) {
+  .recommendation-card__outcome-fields {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .recommendation-card__outcome-header {
+    max-width: 52rem;
+  }
+}
+
+.recommendation-card__outcome select {
+  min-height: 3.25rem;
+  padding: 0.8rem 2.5rem 0.8rem 1rem;
+}

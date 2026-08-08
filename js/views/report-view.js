@@ -924,7 +924,8 @@ function renderRecommendationFilters(
 
 function renderRecommendations(
   recommendations = [],
-  actionPlan = null
+  actionPlan = null,
+  businessMemoryRecords = []
 ) {
   if (!Array.isArray(recommendations) || recommendations.length === 0) {
     return `
@@ -943,6 +944,12 @@ function renderRecommendations(
       const actionItem = actionPlan?.items?.find(
         (item) =>
           item.recommendationId === recommendation.id
+      );
+
+      const memoryRecord = businessMemoryRecords.find(
+        (record) =>
+          record?.source?.recommendationId ===
+          recommendation.id
       );
 
       const status =
@@ -1083,6 +1090,153 @@ function renderRecommendations(
               actionItem,
               recommendation.id
             )}
+
+            <section
+              class="recommendation-card__outcome"
+              aria-labelledby="outcome-heading-${recommendation.id}"
+            >
+              <div class="recommendation-card__outcome-header">
+                <p class="recommendation-card__outcome-eyebrow">
+                  Improvement outcome
+                </p>
+
+                <h4 id="outcome-heading-${recommendation.id}">
+                  What changed?
+                </h4>
+
+                <p>
+                  Capture what you tried and whether it helped. Keep it short;
+                  this becomes part of your business memory.
+                </p>
+              </div>
+
+              <div class="recommendation-card__outcome-fields">
+                <div class="recommendation-card__action-field">
+                  <label for="memory-change-${recommendation.id}">
+                    What did you change?
+                  </label>
+
+                  <textarea
+                    id="memory-change-${recommendation.id}"
+                    rows="3"
+                    placeholder="Example: We started reviewing open estimates every Friday."
+                    data-business-memory-field="changeSummary"
+                    data-recommendation-id="${recommendation.id}"
+                  >${memoryRecord?.change?.summary || ""}</textarea>
+                </div>
+
+                <div class="recommendation-card__action-field">
+                  <label for="memory-outcome-${recommendation.id}">
+                    Did it help?
+                  </label>
+
+                  <select
+                id="memory-outcome-${recommendation.id}"
+                data-business-memory-field="outcomeStatus"
+                data-recommendation-id="${recommendation.id}"
+              >
+                <option
+                  value="not-evaluated"
+                  ${
+                    (memoryRecord?.outcome?.status ||
+                      "not-evaluated") === "not-evaluated"
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  Not evaluated yet
+                </option>
+                <option
+                  value="helped"
+                  ${memoryRecord?.outcome?.status === "helped" ? "selected" : ""}
+                >
+                  Yes, it helped
+                </option>
+                <option
+                  value="mixed"
+                  ${memoryRecord?.outcome?.status === "mixed" ? "selected" : ""}
+                >
+                  Somewhat / mixed result
+                </option>
+                <option
+                  value="did-not-help"
+                  ${memoryRecord?.outcome?.status === "did-not-help" ? "selected" : ""}
+                >
+                  No, it did not help
+                </option>
+                <option
+                  value="unknown"
+                  ${memoryRecord?.outcome?.status === "unknown" ? "selected" : ""}
+                >
+                  Not sure yet
+                </option>
+              </select>
+                </div>
+
+                <div class="recommendation-card__action-field">
+                  <label for="memory-outcome-summary-${recommendation.id}">
+                    What happened afterward?
+                  </label>
+
+                  <textarea
+                    id="memory-outcome-summary-${recommendation.id}"
+                    rows="3"
+                    placeholder="Example: Fewer customer follow-ups were missed."
+                    data-business-memory-field="outcomeSummary"
+                    data-recommendation-id="${recommendation.id}"
+                  >${memoryRecord?.outcome?.summary || ""}</textarea>
+                </div>
+
+                <div class="recommendation-card__action-field">
+                  <label for="memory-adoption-${recommendation.id}">
+                    Is this now part of your normal process?
+                  </label>
+
+                  <select
+                id="memory-adoption-${recommendation.id}"
+                data-business-memory-field="adoptionStatus"
+                data-recommendation-id="${recommendation.id}"
+              >
+                <option
+                  value="tested"
+                  ${
+                    (memoryRecord?.adoption?.status ||
+                      "tested") === "tested"
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  Still testing it
+                </option>
+                <option
+                  value="working"
+                  ${memoryRecord?.adoption?.status === "working" ? "selected" : ""}
+                >
+                  Working on making it consistent
+                </option>
+                <option
+                  value="adopted"
+                  ${memoryRecord?.adoption?.status === "adopted" ? "selected" : ""}
+                >
+                  Yes, we adopted it
+                </option>
+                <option
+                  value="needs-revision"
+                  ${memoryRecord?.adoption?.status === "needs-revision" ? "selected" : ""}
+                >
+                  It needs revision
+                </option>
+                <option
+                  value="no-longer-used"
+                  ${memoryRecord?.adoption?.status === "no-longer-used" ? "selected" : ""}
+                >
+                  We stopped using it
+                </option>
+              </select>
+                </div>
+              </div>
+            </section>
+
           </div>
         </article>
       `;
@@ -1231,6 +1385,7 @@ export function renderReportView({
   businessProfile,
   results,
   actionPlan,
+  businessMemoryRecords = [],
   visibleRecommendations = results?.recommendations || [],
   recommendationFilters = {}
 }) {
@@ -1340,7 +1495,8 @@ export function renderReportView({
         >
           ${renderRecommendations(
             visibleRecommendations,
-            actionPlan
+            actionPlan,
+            businessMemoryRecords
           )}
         </div>
 
