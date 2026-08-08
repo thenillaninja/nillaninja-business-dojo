@@ -11,11 +11,27 @@ function createEmptyBusinessMemoryCollection() {
   };
 }
 
+function isValidBusinessMemoryRecord(record) {
+  return Boolean(
+    record &&
+    typeof record === "object" &&
+    record.id &&
+    record.schemaVersion &&
+    record.business?.name &&
+    record.business?.normalizedName &&
+    record.source?.snapshotId &&
+    record.source?.recommendationId &&
+    record.createdAt &&
+    record.updatedAt
+  );
+}
+
 function isValidBusinessMemoryCollection(value) {
   return Boolean(
     value &&
     typeof value === "object" &&
-    Array.isArray(value.records)
+    Array.isArray(value.records) &&
+    value.records.every(isValidBusinessMemoryRecord)
   );
 }
 

@@ -192,3 +192,53 @@ assert(
 );
 
 console.log("Invalid input handling: pass");
+
+localStorage.setItem(
+  BUSINESS_MEMORY_STORAGE_KEY,
+  JSON.stringify({
+    schemaVersion: "0.4",
+    updatedAt: null,
+    records: [
+      {
+        id: "broken-record",
+        schemaVersion: "0.4",
+        business: {
+          name: "Broken Business",
+          normalizedName: "broken business"
+        },
+        source: {
+          snapshotId: "snapshot-1"
+        },
+        createdAt: "2026-08-07T12:00:00.000Z",
+        updatedAt: "2026-08-07T12:00:00.000Z"
+      }
+    ]
+  })
+);
+
+const malformedRecordCollection =
+  loadBusinessMemoryCollection();
+
+assert(
+  malformedRecordCollection.records.length === 0 &&
+    malformedRecordCollection.schemaVersion === "0.4",
+  "Malformed record fallback failed."
+);
+
+console.log("Malformed record fallback: pass");
+
+const invalidCollectionSave = saveBusinessMemoryCollection({
+  schemaVersion: "0.4",
+  records: [
+    {
+      id: "incomplete-record"
+    }
+  ]
+});
+
+assert(
+  invalidCollectionSave === false,
+  "Invalid collection record validation failed."
+);
+
+console.log("Invalid collection record validation: pass");
