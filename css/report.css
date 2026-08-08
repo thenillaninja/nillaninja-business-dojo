@@ -2240,3 +2240,17 @@
   .recommendation-card__action-field {
   grid-column: 1;
 }
+
+.recommendation-card__outcome
+  .recommendation-card__action-field label,
+.recommendation-card__recurring-work
+  .recommendation-card__action-field label {
+  margin-bottom: 0.75rem;
+}
+
+/* Give each recurring-work question clear vertical separation. */
+.recommendation-card__recurring-work
+  .recommendation-card__action-field
+  + .recommendation-card__action-field {
+  margin-top: 1.25rem;
+}

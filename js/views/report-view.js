@@ -1307,6 +1307,123 @@ function renderRecommendations(
                 </option>
               </select>
             </div>
+
+            <div class="recommendation-card__recurring-work">
+              <div class="recommendation-card__outcome-header">
+                <p class="recommendation-card__outcome-eyebrow">
+                  Recurring work
+                </p>
+
+                <h4>
+                  Does this create work that repeats?
+                </h4>
+
+                <p>
+                  Describe the routine so Business Dojo can remember how
+                  this work normally happens. Nothing is scheduled or
+                  automated here.
+                </p>
+              </div>
+
+              <div class="recommendation-card__action-field">
+                <label for="memory-recurring-${recommendation.id}">
+                  Does this work repeat?
+                </label>
+
+                <select
+                  id="memory-recurring-${recommendation.id}"
+                  data-business-memory-field="isRecurring"
+                  data-recommendation-id="${recommendation.id}"
+                >
+                  <option
+                    value="false"
+                    ${memoryRecord?.recurringWork?.isRecurring ? "" : "selected"}
+                  >
+                    No
+                  </option>
+
+                  <option
+                    value="true"
+                    ${memoryRecord?.recurringWork?.isRecurring ? "selected" : ""}
+                  >
+                    Yes
+                  </option>
+                </select>
+              </div>
+
+              <div class="recommendation-card__action-field">
+                <label for="memory-frequency-${recommendation.id}">
+                  How often?
+                </label>
+
+                <input
+                  id="memory-frequency-${recommendation.id}"
+                  type="text"
+                  value="${memoryRecord?.recurringWork?.frequency || ""}"
+                  placeholder="Example: Weekly, monthly, after every job"
+                  data-business-memory-field="frequency"
+                  data-recommendation-id="${recommendation.id}"
+                />
+              </div>
+
+              <div class="recommendation-card__action-field">
+                <label for="memory-trigger-${recommendation.id}">
+                  What triggers it?
+                </label>
+
+                <input
+                  id="memory-trigger-${recommendation.id}"
+                  type="text"
+                  value="${memoryRecord?.recurringWork?.trigger || ""}"
+                  placeholder="Example: Every Friday or when a job is completed"
+                  data-business-memory-field="trigger"
+                  data-recommendation-id="${recommendation.id}"
+                />
+              </div>
+
+              <div class="recommendation-card__action-field">
+                <label for="memory-responsible-${recommendation.id}">
+                  Who is responsible?
+                </label>
+
+                <input
+                  id="memory-responsible-${recommendation.id}"
+                  type="text"
+                  value="${memoryRecord?.recurringWork?.responsiblePerson || ""}"
+                  placeholder="Owner, manager, or team member"
+                  data-business-memory-field="responsiblePerson"
+                  data-recommendation-id="${recommendation.id}"
+                />
+              </div>
+
+              <div class="recommendation-card__action-field">
+                <label for="memory-expected-result-${recommendation.id}">
+                  What should happen when it is done?
+                </label>
+
+                <textarea
+                  id="memory-expected-result-${recommendation.id}"
+                  rows="3"
+                  placeholder="Example: Every open estimate has been reviewed and followed up."
+                  data-business-memory-field="expectedResult"
+                  data-recommendation-id="${recommendation.id}"
+                >${memoryRecord?.recurringWork?.expectedResult || ""}</textarea>
+              </div>
+
+              <div class="recommendation-card__action-field">
+                <label for="memory-current-method-${recommendation.id}">
+                  How do you handle it today?
+                </label>
+
+                <textarea
+                  id="memory-current-method-${recommendation.id}"
+                  rows="3"
+                  placeholder="Example: We review a spreadsheet manually."
+                  data-business-memory-field="currentMethod"
+                  data-recommendation-id="${recommendation.id}"
+                >${memoryRecord?.recurringWork?.currentMethod || ""}</textarea>
+              </div>
+            </div>
               </div>
             </section>
 

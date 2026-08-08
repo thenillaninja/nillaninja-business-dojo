@@ -29,7 +29,8 @@ import {
   createBusinessMemoryRecord,
   updateBusinessMemoryOutcome,
   updateBusinessMemoryAdoption,
-  updateBusinessMemoryOwnerNotes
+  updateBusinessMemoryOwnerNotes,
+  updateBusinessMemoryRecurringWork
 } from "./core/business-memory.js";
 import {
   getBusinessMemoryRecord,
@@ -1294,6 +1295,49 @@ function renderReport({ preserveScroll = false } = {}) {
             currentRecord,
             {
               ownerNotes: field.value
+            }
+          );
+        }
+
+        if (
+          fieldName === "isRecurring" ||
+          fieldName === "frequency" ||
+          fieldName === "trigger" ||
+          fieldName === "responsiblePerson" ||
+          fieldName === "expectedResult" ||
+          fieldName === "currentMethod"
+        ) {
+          const isRecurring =
+            fieldName === "isRecurring"
+              ? field.value === "true"
+              : Boolean(
+                  currentRecord.recurringWork?.isRecurring
+                );
+
+          updatedRecord = updateBusinessMemoryRecurringWork(
+            currentRecord,
+            {
+              isRecurring,
+              frequency:
+                fieldName === "frequency"
+                  ? field.value
+                  : currentRecord.recurringWork?.frequency || "",
+              trigger:
+                fieldName === "trigger"
+                  ? field.value
+                  : currentRecord.recurringWork?.trigger || "",
+              responsiblePerson:
+                fieldName === "responsiblePerson"
+                  ? field.value
+                  : currentRecord.recurringWork?.responsiblePerson || "",
+              expectedResult:
+                fieldName === "expectedResult"
+                  ? field.value
+                  : currentRecord.recurringWork?.expectedResult || "",
+              currentMethod:
+                fieldName === "currentMethod"
+                  ? field.value
+                  : currentRecord.recurringWork?.currentMethod || ""
             }
           );
         }

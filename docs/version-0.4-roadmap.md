@@ -164,6 +164,8 @@ Business Dojo can distinguish temporary implementation activity from practices t
 
 ## Phase 5 — Recurring Work Identification
 
+**Status: Complete**
+
 Allow structured identification of work that repeats.
 
 Potential information:
