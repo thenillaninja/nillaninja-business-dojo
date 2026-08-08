@@ -479,3 +479,19 @@ assert(
 );
 
 console.log("Automation update validation: pass");
+
+const mismatchedActionPlan = {
+  id: "action-plan-2",
+  snapshotId: "different-snapshot"
+};
+
+assert(
+  createBusinessMemoryRecord({
+    snapshot: makeSnapshot(),
+    actionPlan: mismatchedActionPlan,
+    recommendationId: "standardize-customer-follow-up"
+  }) === null,
+  "Mismatched action plan relationship validation failed."
+);
+
+console.log("Action plan relationship validation: pass");

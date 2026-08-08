@@ -219,6 +219,13 @@ export function createBusinessMemoryRecord({
     return null;
   }
 
+  if (
+    actionPlan &&
+    actionPlan.snapshotId !== snapshot.id
+  ) {
+    return null;
+  }
+
   const recommendationExists =
     snapshot.results.recommendations.some(
       (recommendation) =>
